@@ -17,12 +17,11 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="app.css" />
-    <Content Include="index.html" />
+    <TypeScriptCompile Include="src\point.ts" />
+    <TypeScriptCompile Include="src\size.ts" />
+    <TypeScriptCompile Include="src\item.ts" />
+    <TypeScriptCompile Include="src\utils.ts" />
     <Content Include="web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="app.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">
