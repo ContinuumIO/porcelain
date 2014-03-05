@@ -1,0 +1,7 @@
+*.suo
+*.user
+[Oo]bj/
+[Bb]in/
+[Dd]ebug*/
+[Rr]elease*/
+[Bb]uild/
