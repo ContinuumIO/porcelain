@@ -7,87 +7,73 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    export class Point {
+    export class Point implements IPoint {
+
+        static fromIPoint(point: IPoint): Point {
+            return new Point(point.x, point.y);
+        }
+
+        x: number;
+        y: number;
 
         constructor(x: number = 0, y: number = 0) {
-            this._x = x;
-            this._y = y;
+            this.x = x;
+            this.y = y;
         }
 
-        x(): number {
-            return this._x;
-        }
-
-        setX(x: number): void {
-            this._x = x;
-        }
-
-        y(): number {
-            return this._y;
-        }
-
-        setY(y: number): void {
-            this._y = y;
+        copy(): Point {
+            return new Point(this.x, this.y);
         }
 
         isNull(): boolean {
-            return this._x == 0 && this._y == 0;
+            return this.x == 0 && this.y == 0;
         }
 
         manhattanLength(): number {
-            return Math.abs(this._x) + Math.abs(this._y);
+            return Math.abs(this.x) + Math.abs(this.y);
         }
 
-        equals(other: Point): boolean {
-            return this._x == other._x && this._y == other._y;
+        equals(other: IPoint): boolean {
+            return this.x == other.x && this.y == other.y;
         }
 
-        add(other: Point): void {
-            this._x += other._x;
-            this._y += other._y;
+        add(other: IPoint): void {
+            this.x += other.x;
+            this.y += other.y;
         }
 
-        added(other: Point): Point {
-            var x = this._x + other._x;
-            var y = this._y + other._y;
-            return new Point(x, y);
+        added(other: IPoint): Point {
+            return new Point(this.x + other.x, this.y + other.y);
         }
 
-        subtract(other: Point): void {
-            this._x -= other._x;
-            this._y -= other._y;
+        subtract(other: IPoint): void {
+            this.x -= other.x;
+            this.y -= other.y;
         }
 
-        subtracted(other: Point): Point {
-            var x = this._x - other._x;
-            var y = this._y - other._y;
-            return new Point(x, y);
+        subtracted(other: IPoint): Point {
+            return new Point(this.x - other.x, this.y - other.y);
         }
 
         multiply(factor: number): void {
-            this._x *= factor;
-            this._y *= factor;
+            this.x *= factor;
+            this.y *= factor;
         }
 
         multiplied(factor: number): Point {
-            var x = this._x * factor;
-            var y = this._y * factor;
-            return new Point(x, y);
+            return new Point(this.x * factor, this.y * factor);
         }
 
         divide(factor: number): void {
-            this._x /= factor;
-            this._y /= factor;
+            this.x = Math.floor(this.x / factor);
+            this.y = Math.floor(this.y / factor);
         }
 
         divided(factor: number): Point {
-            var x = this._x / factor;
-            var y = this._y / factor;
+            var x = Math.floor(this.x / factor);
+            var y = Math.floor(this.y / factor);
             return new Point(x, y);
         }
-
-        private _x: number;
-        private _y: number;
     }
 
 }

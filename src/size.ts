@@ -7,113 +7,105 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    export class Size {
+    export class Size implements ISize {
+
+        static fromISize(size: ISize): Size {
+            return new Size(size.width, size.height);
+        }
+
+        width: number;
+        height: number;
 
         constructor(width: number = -1, height: number = -1) {
-            this._width = width;
-            this._height = height;
+            this.width = width;
+            this.height = height;
         }
 
-        width(): number {
-            return this._width;
-        }
-
-        setWidth(width: number): void {
-            this._width = width;
-        }
-
-        height(): number {
-            return this._height;
-        }
-
-        setHeight(height: number): void {
-            this._height = height;
+        copy(): Size {
+            return new Size(this.width, this.height);
         }
 
         isEmpty(): boolean {
-            return this._width == 0 || this._height == 0;
+            return this.width == 0 || this.height == 0;
         }
 
         isNull(): boolean {
-            return this._width == 0 && this._height == 0;
+            return this.width == 0 && this.height == 0;
         }
 
         isValid(): boolean {
-            return this._width >= 0 && this._height >= 0;
+            return this.width >= 0 && this.height >= 0;
         }
 
-        boundedTo(other: Size): Size {
-            var width = Math.min(this._width, other._width);
-            var height = Math.min(this._height, other._height);
+        boundedTo(other: ISize): Size {
+            var width = Math.min(this.width, other.width);
+            var height = Math.min(this.height, other.height);
             return new Size(width, height);
         }
 
-        expandedTo(other: Size): Size {
-            var width = Math.max(this._width, other._width);
-            var height = Math.max(this._height, other._height);
+        expandedTo(other: ISize): Size {
+            var width = Math.max(this.width, other.width);
+            var height = Math.max(this.height, other.height);
             return new Size(width, height);
         }
 
         transpose(): void {
-            var width = this._width;
-            this._width = this._height;
-            this._height = width;
+            var width = this.width;
+            this.width = this.height;
+            this.height = width;
         }
 
         transposed(): Size {
-            return new Size(this._height, this._width);
+            return new Size(this.height, this.width);
         }
 
-        equals(other: Size): boolean {
-            return this._width == other._width && this._height == other._height;
+        equals(other: ISize): boolean {
+            return this.width == other.width && this.height == other.height;
         }
 
-        add(other: Size): void {
-            this._width += other._width;
-            this._height += other._height;
+        add(other: ISize): void {
+            this.width += other.width;
+            this.height += other.height;
         }
 
-        added(other: Size): Size {
-            var width = this._width + other._width;
-            var height = this._height + other._height;
+        added(other: ISize): Size {
+            var width = this.width + other.width;
+            var height = this.height + other.height;
             return new Size(width, height);
         }
 
-        subtract(other: Size): void {
-            this._width -= other._width;
-            this._height -= other._height;
+        subtract(other: ISize): void {
+            this.width -= other.width;
+            this.height -= other.height;
         }
 
-        subtracted(other: Size): Size {
-            var width = this._width - other._width;
-            var height = this._height - other._height;
+        subtracted(other: ISize): Size {
+            var width = this.width - other.width;
+            var height = this.height - other.height;
             return new Size(width, height);
         }
 
         multiply(factor: number): void {
-            this._width *= factor;
-            this._height *= factor;
+            this.width *= factor;
+            this.height *= factor;
         }
 
         multiplied(factor: number): Size {
-            var width = this._width * factor;
-            var height = this._height * factor;
+            var width = this.width * factor;
+            var height = this.height * factor;
             return new Size(width, height);
         }
 
         divide(factor: number): void {
-            this._width /= factor;
-            this._height /= factor;
+            this.width = Math.floor(this.width / factor);
+            this.height = Math.floor(this.height / factor);
         }
 
         divided(factor: number): Size {
-            var width = this._width / factor;
-            var height = this._height / factor;
+            var width = Math.floor(this.width / factor);
+            var height = Math.floor(this.height / factor);
             return new Size(width, height);
         }
-
-        private _width: number;
-        private _height: number;
     }
 
 }

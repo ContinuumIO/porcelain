@@ -11,78 +11,64 @@ var porcelain;
         function Point(x, y) {
             if (typeof x === "undefined") { x = 0; }
             if (typeof y === "undefined") { y = 0; }
-            this._x = x;
-            this._y = y;
+            this.x = x;
+            this.y = y;
         }
-        Point.prototype.x = function () {
-            return this._x;
+        Point.fromIPoint = function (point) {
+            return new Point(point.x, point.y);
         };
 
-        Point.prototype.setX = function (x) {
-            this._x = x;
-        };
-
-        Point.prototype.y = function () {
-            return this._y;
-        };
-
-        Point.prototype.setY = function (y) {
-            this._y = y;
+        Point.prototype.copy = function () {
+            return new Point(this.x, this.y);
         };
 
         Point.prototype.isNull = function () {
-            return this._x == 0 && this._y == 0;
+            return this.x == 0 && this.y == 0;
         };
 
         Point.prototype.manhattanLength = function () {
-            return Math.abs(this._x) + Math.abs(this._y);
+            return Math.abs(this.x) + Math.abs(this.y);
         };
 
         Point.prototype.equals = function (other) {
-            return this._x == other._x && this._y == other._y;
+            return this.x == other.x && this.y == other.y;
         };
 
         Point.prototype.add = function (other) {
-            this._x += other._x;
-            this._y += other._y;
+            this.x += other.x;
+            this.y += other.y;
         };
 
         Point.prototype.added = function (other) {
-            var x = this._x + other._x;
-            var y = this._y + other._y;
-            return new Point(x, y);
+            return new Point(this.x + other.x, this.y + other.y);
         };
 
         Point.prototype.subtract = function (other) {
-            this._x -= other._x;
-            this._y -= other._y;
+            this.x -= other.x;
+            this.y -= other.y;
         };
 
         Point.prototype.subtracted = function (other) {
-            var x = this._x - other._x;
-            var y = this._y - other._y;
-            return new Point(x, y);
+            return new Point(this.x - other.x, this.y - other.y);
         };
 
         Point.prototype.multiply = function (factor) {
-            this._x *= factor;
-            this._y *= factor;
+            this.x *= factor;
+            this.y *= factor;
         };
 
         Point.prototype.multiplied = function (factor) {
-            var x = this._x * factor;
-            var y = this._y * factor;
-            return new Point(x, y);
+            return new Point(this.x * factor, this.y * factor);
         };
 
         Point.prototype.divide = function (factor) {
-            this._x /= factor;
-            this._y /= factor;
+            this.x = Math.floor(this.x / factor);
+            this.y = Math.floor(this.y / factor);
         };
 
         Point.prototype.divided = function (factor) {
-            var x = this._x / factor;
-            var y = this._y / factor;
+            var x = Math.floor(this.x / factor);
+            var y = Math.floor(this.y / factor);
             return new Point(x, y);
         };
         return Point;

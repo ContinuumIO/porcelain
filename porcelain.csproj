@@ -21,6 +21,10 @@
     <TypeScriptCompile Include="src\size.ts" />
     <TypeScriptCompile Include="src\item.ts" />
     <TypeScriptCompile Include="src\utils.ts" />
+    <TypeScriptCompile Include="src\rect.ts" />
+    <TypeScriptCompile Include="src\i_point.d.ts" />
+    <TypeScriptCompile Include="src\i_size.d.ts" />
+    <TypeScriptCompile Include="src\i_rect.d.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
