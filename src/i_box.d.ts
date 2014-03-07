@@ -5,16 +5,13 @@
 |
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
-var porcelain;
-(function (porcelain) {
-    function removeItem(array, item) {
-        var i = array.indexOf(item);
-        if (i !== -1) {
-            array.splice(i, 1);
-            return true;
-        }
-        return false;
+declare module porcelain {
+
+    export interface IBox {
+        left: number;
+        top: number;
+        right: number;
+        bottom: number;
     }
-    porcelain.removeItem = removeItem;
-})(porcelain || (porcelain = {}));
-//# sourceMappingURL=utils.js.map
+
+}

@@ -8,9 +8,9 @@
 module porcelain {
 
     export function removeItem<T>(array: T[], item: T): boolean {
-        var index = array.indexOf(item);
-        if (index !== -1) {
-            array.splice(index, 1);
+        var i = array.indexOf(item);
+        if (i !== -1) {
+            array.splice(i, 1);
             return true;
         }
         return false;

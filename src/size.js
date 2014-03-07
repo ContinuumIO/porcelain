@@ -8,19 +8,35 @@
 var porcelain;
 (function (porcelain) {
     var Size = (function () {
-        function Size(width, height) {
-            if (typeof width === "undefined") { width = -1; }
-            if (typeof height === "undefined") { height = -1; }
-            this.width = width;
-            this.height = height;
+        function Size(size) {
+            if (typeof size === "undefined") { size = { width: -1, height: -1 }; }
+            this.width = size.width;
+            this.height = size.height;
         }
-        Size.fromISize = function (size) {
-            return new Size(size.width, size.height);
-        };
+        Object.defineProperty(Size.prototype, "size", {
+            get: function () {
+                return { width: this.width, height: this.height };
+            },
+            set: function (size) {
+                this.width = size.width;
+                this.height = size.height;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
-        Size.prototype.copy = function () {
-            return new Size(this.width, this.height);
-        };
+
+        Object.defineProperty(Size.prototype, "size$", {
+            get: function () {
+                return new Size(this.size);
+            },
+            set: function (size) {
+                this.size = size;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         Size.prototype.isEmpty = function () {
             return this.width == 0 || this.height == 0;
@@ -35,25 +51,37 @@ var porcelain;
         };
 
         Size.prototype.boundedTo = function (other) {
-            var width = Math.min(this.width, other.width);
-            var height = Math.min(this.height, other.height);
-            return new Size(width, height);
+            var w = Math.min(this.width, other.width);
+            var h = Math.min(this.height, other.height);
+            return { width: w, height: h };
+        };
+
+        Size.prototype.boundedTo$ = function (other) {
+            return new Size(this.boundedTo(other));
         };
 
         Size.prototype.expandedTo = function (other) {
-            var width = Math.max(this.width, other.width);
-            var height = Math.max(this.height, other.height);
-            return new Size(width, height);
+            var w = Math.max(this.width, other.width);
+            var h = Math.max(this.height, other.height);
+            return { width: w, height: h };
+        };
+
+        Size.prototype.expandedTo$ = function (other) {
+            return new Size(this.expandedTo(other));
         };
 
         Size.prototype.transpose = function () {
-            var width = this.width;
+            var w = this.width;
             this.width = this.height;
-            this.height = width;
+            this.height = w;
         };
 
         Size.prototype.transposed = function () {
-            return new Size(this.height, this.width);
+            return { width: this.height, height: this.width };
+        };
+
+        Size.prototype.transposed$ = function () {
+            return new Size(this.transposed());
         };
 
         Size.prototype.equals = function (other) {
@@ -66,9 +94,13 @@ var porcelain;
         };
 
         Size.prototype.added = function (other) {
-            var width = this.width + other.width;
-            var height = this.height + other.height;
-            return new Size(width, height);
+            var w = this.width + other.width;
+            var h = this.height + other.height;
+            return { width: w, height: h };
+        };
+
+        Size.prototype.added$ = function (other) {
+            return new Size(this.added(other));
         };
 
         Size.prototype.subtract = function (other) {
@@ -77,9 +109,13 @@ var porcelain;
         };
 
         Size.prototype.subtracted = function (other) {
-            var width = this.width - other.width;
-            var height = this.height - other.height;
-            return new Size(width, height);
+            var w = this.width - other.width;
+            var h = this.height - other.height;
+            return { width: w, height: h };
+        };
+
+        Size.prototype.subtracted$ = function (other) {
+            return new Size(this.subtracted(other));
         };
 
         Size.prototype.multiply = function (factor) {
@@ -88,9 +124,13 @@ var porcelain;
         };
 
         Size.prototype.multiplied = function (factor) {
-            var width = this.width * factor;
-            var height = this.height * factor;
-            return new Size(width, height);
+            var w = this.width * factor;
+            var h = this.height * factor;
+            return { width: w, height: h };
+        };
+
+        Size.prototype.multiplied$ = function (factor) {
+            return new Size(this.multiplied(factor));
         };
 
         Size.prototype.divide = function (factor) {
@@ -99,9 +139,13 @@ var porcelain;
         };
 
         Size.prototype.divided = function (factor) {
-            var width = Math.floor(this.width / factor);
-            var height = Math.floor(this.height / factor);
-            return new Size(width, height);
+            var w = Math.floor(this.width / factor);
+            var h = Math.floor(this.height / factor);
+            return { width: w, height: h };
+        };
+
+        Size.prototype.divided$ = function (factor) {
+            return new Size(this.divided(factor));
         };
         return Size;
     })();

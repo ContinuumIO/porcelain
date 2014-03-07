@@ -25,6 +25,7 @@
     <TypeScriptCompile Include="src\i_point.d.ts" />
     <TypeScriptCompile Include="src\i_size.d.ts" />
     <TypeScriptCompile Include="src\i_rect.d.ts" />
+    <TypeScriptCompile Include="src\i_box.d.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

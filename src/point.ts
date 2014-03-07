@@ -9,20 +9,29 @@ module porcelain {
 
     export class Point implements IPoint {
 
-        static fromIPoint(point: IPoint): Point {
-            return new Point(point.x, point.y);
-        }
-
         x: number;
         y: number;
 
-        constructor(x: number = 0, y: number = 0) {
-            this.x = x;
-            this.y = y;
+        constructor(point: IPoint = { x: 0, y: 0 }) {
+            this.x = point.x;
+            this.y = point.y;
         }
 
-        copy(): Point {
-            return new Point(this.x, this.y);
+        get point(): IPoint {
+            return { x: this.x, y: this.y };
+        }
+
+        set point(point: IPoint) {
+            this.x = point.x;
+            this.y = point.y;
+        }
+
+        get point$(): Point {
+            return new Point(this.point);
+        }
+
+        set point$(point: Point) {
+            this.point = point;
         }
 
         isNull(): boolean {
@@ -42,8 +51,12 @@ module porcelain {
             this.y += other.y;
         }
 
-        added(other: IPoint): Point {
-            return new Point(this.x + other.x, this.y + other.y);
+        added(other: IPoint): IPoint {
+            return { x: this.x + other.x, y: this.y + other.y };
+        }
+
+        added$(other: IPoint): Point {
+            return new Point(this.added(other));
         }
 
         subtract(other: IPoint): void {
@@ -51,8 +64,12 @@ module porcelain {
             this.y -= other.y;
         }
 
-        subtracted(other: IPoint): Point {
-            return new Point(this.x - other.x, this.y - other.y);
+        subtracted(other: IPoint): IPoint {
+            return { x: this.x - other.x, y: this.y - other.y };
+        }
+
+        subtracted$(other: IPoint): Point {
+            return new Point(this.subtracted(other));
         }
 
         multiply(factor: number): void {
@@ -60,8 +77,12 @@ module porcelain {
             this.y *= factor;
         }
 
-        multiplied(factor: number): Point {
-            return new Point(this.x * factor, this.y * factor);
+        multiplied(factor: number): IPoint {
+            return { x: this.x * factor, y: this.y * factor };
+        }
+
+        multiplied$(factor: number): Point {
+            return new Point(this.multiplied(factor));
         }
 
         divide(factor: number): void {
@@ -69,10 +90,14 @@ module porcelain {
             this.y = Math.floor(this.y / factor);
         }
 
-        divided(factor: number): Point {
+        divided(factor: number): IPoint {
             var x = Math.floor(this.x / factor);
             var y = Math.floor(this.y / factor);
-            return new Point(x, y);
+            return { x: x, y: y };
+        }
+
+        divided$(factor: number): Point {
+            return new Point(this.divided(factor));
         }
     }
 
