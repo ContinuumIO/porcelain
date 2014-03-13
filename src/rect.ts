@@ -14,7 +14,7 @@ module porcelain {
         right: number;
         bottom: number;
 
-        constructor(rect: IRect = { x: 0, y: 0, width: 0, height: 0 }) {
+        constructor(rect: IRect = nullRect()) {
             this.left = rect.x;
             this.top = rect.y;
             this.right = rect.x + rect.width;
@@ -149,11 +149,12 @@ module porcelain {
         }
 
         get rect(): IRect {
-            var x = this.left;
-            var y = this.top;
-            var w = this.width;
-            var h = this.height;
-            return { x: x, y: y, width: w, height: h };
+            return {
+                x: this.left,
+                y: this.top,
+                width: this.right - this.left,
+                height: this.bottom - this.top,
+            };
         }
 
         set rect(rect: IRect) {
@@ -172,11 +173,12 @@ module porcelain {
         }
 
         get box(): IBox {
-            var l = this.left;
-            var t = this.top;
-            var r = this.right;
-            var b = this.bottom;
-            return { left: l, top: t, right: r, bottom: b };
+            return {
+                left: this.left,
+                top: this.top,
+                right: this.right,
+                bottom: this.bottom
+            };
         }
 
         set box(box: IBox) {
@@ -270,7 +272,7 @@ module porcelain {
             if (this.isNull()) {
                 return false;
             }
-            var temp: number
+            var temp: number;
             var l = this.left;
             var r = this.right;
             if (r < l) {
@@ -297,10 +299,7 @@ module porcelain {
         }
 
         intersects(rect: IRect): boolean {
-            if (this.isNull()) {
-                return false;
-            }
-            if (rect.width === 0 && rect.height === 0) {
+            if (this.isNull() || isNull(rect)) {
                 return false;
             }
             var temp: number;
@@ -341,9 +340,55 @@ module porcelain {
             return true;
         }
 
-        /*
-        intersected
-        */
+        intersected(rect: IRect): IRect {
+            if (this.isNull() || isNull(rect)) {
+                return nullRect();
+            }
+            var temp: number;
+            var l1 = this.left;
+            var r1 = this.right;
+            if (r1 < l1) {
+                temp = l1;
+                l1 = r1;
+                r1 = temp;
+            }
+            var l2 = rect.x;
+            var r2 = l2 + rect.width;
+            if (r2 < l2) {
+                temp = l2;
+                l2 = r2;
+                r2 = temp;
+            }
+            if (l1 >= r2 || l2 >= r1) {
+                return nullRect();
+            }
+            var t1 = this.top;
+            var b1 = this.bottom;
+            if (b1 < t1) {
+                temp = t1;
+                t1 = b1;
+                b1 = temp;
+            }
+            var t2 = rect.y;
+            var b2 = t2 + rect.height;
+            if (b2 < t2) {
+                temp = t2;
+                t2 = b2;
+                b2 = temp;
+            }
+            if (t1 >= b2 || t2 >= b1) {
+                return nullRect();
+            }
+            var x = Math.max(l1, l2);
+            var y = Math.max(t1, t2);
+            var width = Math.min(r1, r2) - x;
+            var height = Math.min(b1, b2) - y;
+            return { x: x, y: y, width: width, height: height };
+        }
+
+        intersected$(rect: IRect): Rect {
+            return new Rect(this.intersected(rect));
+        }
 
         normalize(): void {
             var temp: number;
@@ -401,10 +446,72 @@ module porcelain {
             return new Rect(this.translated(dx, dy));
         }
 
-        /*
-        united
+        united(rect: IRect): IRect {
+            if (this.isNull()) {
+                return copyRect(rect);
+            }
+            if (isNull(rect)) {
+                return copyRect(this);
+            }
+            var temp: number;
+            var l1 = this.left;
+            var r1 = this.right;
+            if (r1 < l1) {
+                temp = l1;
+                l1 = r1;
+                r1 = temp;
+            }
+            var l2 = rect.x;
+            var r2 = l2 + rect.width;
+            if (r2 < l2) {
+                temp = l2;
+                l2 = r2;
+                r2 = temp;
+            }
+            var t1 = this.top;
+            var b1 = this.bottom;
+            if (b1 < t1) {
+                temp = t1;
+                t1 = b1;
+                b1 = temp;
+            }
+            var t2 = rect.y;
+            var b2 = t2 + rect.height;
+            if (b2 < t2) {
+                temp = t2;
+                t2 = b2;
+                b2 = temp;
+            }
+            var x = Math.min(l1, l2);
+            var y = Math.min(t1, t2);
+            var width = Math.max(r1, r2) - x;
+            var height = Math.max(b1, b2) - y;
+            return { x: x, y: y, width: width, height: height };
+        }
 
-        */
+        united$(rect: IRect): Rect {
+            return new Rect(this.united(rect));
+        }
+    }
+
+
+    function nullRect(): IRect {
+        return { x: 0, y: 0, width: 0, height: 0 };
+    }
+
+
+    function copyRect(rect: IRect): IRect {
+        return {
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height
+        };
+    }
+
+
+    function isNull(rect: IRect): boolean {
+        return rect.width === 0 || rect.height === 0;
     }
 
 }
