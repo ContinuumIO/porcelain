@@ -7,7 +7,7 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    class Signal<Payload> {
+    export class Signal<Payload> {
 
         connect(handler: (Payload) => void) { }
 

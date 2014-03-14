@@ -17,5 +17,6 @@ var porcelain;
         };
         return Signal;
     })();
+    porcelain.Signal = Signal;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=signal.js.map
