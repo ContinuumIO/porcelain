@@ -7,7 +7,7 @@
 |----------------------------------------------------------------------------*/
 declare module porcelain {
 
-    export interface IPoint {
+    interface IPoint {
         x: number;
         y: number;
     }

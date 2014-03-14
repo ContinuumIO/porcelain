@@ -7,7 +7,7 @@
 |----------------------------------------------------------------------------*/
 declare module porcelain {
 
-    export interface ISize {
+    interface ISize {
         width: number;
         height: number;
     }

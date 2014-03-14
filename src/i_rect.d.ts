@@ -7,7 +7,7 @@
 |----------------------------------------------------------------------------*/
 declare module porcelain {
 
-    export interface IRect {
+    interface IRect {
         x: number;
         y: number;
         width: number;

@@ -7,7 +7,7 @@
 |----------------------------------------------------------------------------*/
 declare module porcelain {
 
-    export interface IBox {
+    interface IBox {
         left: number;
         top: number;
         right: number;
