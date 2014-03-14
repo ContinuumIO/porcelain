@@ -8,10 +8,26 @@
 var porcelain;
 (function (porcelain) {
     var Point = (function () {
-        function Point(point) {
-            if (typeof point === "undefined") { point = { x: 0, y: 0 }; }
-            this.x = point.x;
-            this.y = point.y;
+        function Point(first, second) {
+            switch (arguments.length) {
+                case 0:
+                    this.x = 0;
+                    this.y = 0;
+                    break;
+                case 1:
+                    var point = first;
+                    this.x = point.x;
+                    this.y = point.y;
+                    break;
+                case 2:
+                    var x = first;
+                    var y = second;
+                    this.x = x;
+                    this.y = y;
+                    break;
+                default:
+                    throw "invalid constructor call";
+            }
         }
         Object.defineProperty(Point.prototype, "point", {
             get: function () {
@@ -44,7 +60,7 @@ var porcelain;
         };
 
         Point.prototype.added = function (other) {
-            return new Point({ x: this.x + other.x, y: this.y + other.y });
+            return new Point(this.x + other.x, this.y + other.y);
         };
 
         Point.prototype.subtract = function (other) {
@@ -53,7 +69,7 @@ var porcelain;
         };
 
         Point.prototype.subtracted = function (other) {
-            return new Point({ x: this.x - other.x, y: this.y - other.y });
+            return new Point(this.x - other.x, this.y - other.y);
         };
 
         Point.prototype.multiply = function (factor) {
@@ -62,7 +78,7 @@ var porcelain;
         };
 
         Point.prototype.multiplied = function (factor) {
-            return new Point({ x: this.x * factor, y: this.y * factor });
+            return new Point(this.x * factor, this.y * factor);
         };
 
         Point.prototype.divide = function (factor) {
@@ -73,7 +89,7 @@ var porcelain;
         Point.prototype.divided = function (factor) {
             var x = Math.floor(this.x / factor);
             var y = Math.floor(this.y / factor);
-            return new Point({ x: x, y: y });
+            return new Point(x, y);
         };
         return Point;
     })();

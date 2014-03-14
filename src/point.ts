@@ -12,9 +12,29 @@ module porcelain {
         x: number;
         y: number;
 
-        constructor(point: IPoint = { x: 0, y: 0 }) {
-            this.x = point.x;
-            this.y = point.y;
+        constructor();
+        constructor(point: IPoint);
+        constructor(x: number, y: number);
+        constructor(first?, second?) {
+            switch (arguments.length) {
+                case 0:
+                    this.x = 0;
+                    this.y = 0;
+                    break;
+                case 1: 
+                    var point = <IPoint>first;
+                    this.x = point.x;
+                    this.y = point.y;
+                    break;
+                case 2: 
+                    var x = <number>first;
+                    var y = <number>second;
+                    this.x = x;
+                    this.y = y;
+                    break;
+                default:
+                    throw "invalid constructor call";
+            }
         }
 
         get point(): IPoint {
@@ -44,7 +64,7 @@ module porcelain {
         }
 
         added(other: IPoint): Point {
-            return new Point({ x: this.x + other.x, y: this.y + other.y });
+            return new Point(this.x + other.x, this.y + other.y);
         }
 
         subtract(other: IPoint): void {
@@ -53,7 +73,7 @@ module porcelain {
         }
 
         subtracted(other: IPoint): Point {
-            return new Point({ x: this.x - other.x, y: this.y - other.y });
+            return new Point(this.x - other.x, this.y - other.y);
         }
 
         multiply(factor: number): void {
@@ -62,7 +82,7 @@ module porcelain {
         }
 
         multiplied(factor: number): Point {
-            return new Point({ x: this.x * factor, y: this.y * factor });
+            return new Point(this.x * factor, this.y * factor);
         }
 
         divide(factor: number): void {
@@ -73,7 +93,7 @@ module porcelain {
         divided(factor: number): Point {
             var x = Math.floor(this.x / factor);
             var y = Math.floor(this.y / factor);
-            return new Point({ x: x, y: y });
+            return new Point(x, y);
         }
     }
 
