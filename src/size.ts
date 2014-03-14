@@ -12,9 +12,29 @@ module porcelain {
         width: number;
         height: number;
 
-        constructor(size: ISize = { width: -1, height: -1 }) {
-            this.width = size.width;
-            this.height = size.height;
+        constructor();
+        constructor(size: ISize);
+        constructor(width: number, height: number);
+        constructor(first?, second?) {
+            switch (arguments.length) {
+                case 0:
+                    this.width = -1;
+                    this.height = -1;
+                    break;
+                case 1:
+                    var size = <ISize>first;
+                    this.width = size.width;
+                    this.height = size.height;
+                    break;
+                case 2:
+                    var width = <number>first;
+                    var height = <number>second;
+                    this.width = width;
+                    this.height = height;
+                    break;
+                default:
+                    throw "invalid constructor call";
+            }
         }
 
         get size(): ISize {
@@ -41,23 +61,23 @@ module porcelain {
         boundedTo(other: ISize): Size {
             var w = Math.min(this.width, other.width);
             var h = Math.min(this.height, other.height);
-            return new Size({ width: w, height: h });
+            return new Size(w, h);
         }
 
         expandedTo(other: ISize): Size {
             var w = Math.max(this.width, other.width);
             var h = Math.max(this.height, other.height);
-            return new Size({ width: w, height: h });
+            return new Size(w, h);
         }
 
         transpose(): void {
-            var w = this.width;
+            var temp = this.width;
             this.width = this.height;
-            this.height = w;
+            this.height = temp;
         }
 
         transposed(): Size {
-            return new Size({ width: this.height, height: this.width });
+            return new Size(this.height, this.width);
         }
 
         equals(other: ISize): boolean {
@@ -72,7 +92,7 @@ module porcelain {
         added(other: ISize): Size {
             var w = this.width + other.width;
             var h = this.height + other.height;
-            return new Size({ width: w, height: h });
+            return new Size(w, h);
         }
 
         subtract(other: ISize): void {
@@ -83,7 +103,7 @@ module porcelain {
         subtracted(other: ISize): Size {
             var w = this.width - other.width;
             var h = this.height - other.height;
-            return new Size({ width: w, height: h });
+            return new Size(w, h);
         }
 
         multiply(factor: number): void {
@@ -94,7 +114,7 @@ module porcelain {
         multiplied(factor: number): Size {
             var w = this.width * factor;
             var h = this.height * factor;
-            return new Size({ width: w, height: h });
+            return new Size(w, h);
         }
 
         divide(factor: number): void {
@@ -105,7 +125,7 @@ module porcelain {
         divided(factor: number): Size {
             var w = Math.floor(this.width / factor);
             var h = Math.floor(this.height / factor);
-            return new Size({ width: w, height: h });
+            return new Size(w, h);
         }
     }
 
