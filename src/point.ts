@@ -26,14 +26,6 @@ module porcelain {
             this.y = point.y;
         }
 
-        get point$(): Point {
-            return new Point(this.point);
-        }
-
-        set point$(point: Point) {
-            this.point = point;
-        }
-
         isNull(): boolean {
             return this.x == 0 && this.y == 0;
         }
@@ -51,12 +43,8 @@ module porcelain {
             this.y += other.y;
         }
 
-        added(other: IPoint): IPoint {
-            return { x: this.x + other.x, y: this.y + other.y };
-        }
-
-        added$(other: IPoint): Point {
-            return new Point(this.added(other));
+        added(other: IPoint): Point {
+            return new Point({ x: this.x + other.x, y: this.y + other.y });
         }
 
         subtract(other: IPoint): void {
@@ -64,12 +52,8 @@ module porcelain {
             this.y -= other.y;
         }
 
-        subtracted(other: IPoint): IPoint {
-            return { x: this.x - other.x, y: this.y - other.y };
-        }
-
-        subtracted$(other: IPoint): Point {
-            return new Point(this.subtracted(other));
+        subtracted(other: IPoint): Point {
+            return new Point({ x: this.x - other.x, y: this.y - other.y });
         }
 
         multiply(factor: number): void {
@@ -77,12 +61,8 @@ module porcelain {
             this.y *= factor;
         }
 
-        multiplied(factor: number): IPoint {
-            return { x: this.x * factor, y: this.y * factor };
-        }
-
-        multiplied$(factor: number): Point {
-            return new Point(this.multiplied(factor));
+        multiplied(factor: number): Point {
+            return new Point({ x: this.x * factor, y: this.y * factor });
         }
 
         divide(factor: number): void {
@@ -90,14 +70,10 @@ module porcelain {
             this.y = Math.floor(this.y / factor);
         }
 
-        divided(factor: number): IPoint {
+        divided(factor: number): Point {
             var x = Math.floor(this.x / factor);
             var y = Math.floor(this.y / factor);
-            return { x: x, y: y };
-        }
-
-        divided$(factor: number): Point {
-            return new Point(this.divided(factor));
+            return new Point({ x: x, y: y });
         }
     }
 

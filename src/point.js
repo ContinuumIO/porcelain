@@ -26,18 +26,6 @@ var porcelain;
         });
 
 
-        Object.defineProperty(Point.prototype, "point$", {
-            get: function () {
-                return new Point(this.point);
-            },
-            set: function (point) {
-                this.point = point;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         Point.prototype.isNull = function () {
             return this.x == 0 && this.y == 0;
         };
@@ -56,11 +44,7 @@ var porcelain;
         };
 
         Point.prototype.added = function (other) {
-            return { x: this.x + other.x, y: this.y + other.y };
-        };
-
-        Point.prototype.added$ = function (other) {
-            return new Point(this.added(other));
+            return new Point({ x: this.x + other.x, y: this.y + other.y });
         };
 
         Point.prototype.subtract = function (other) {
@@ -69,11 +53,7 @@ var porcelain;
         };
 
         Point.prototype.subtracted = function (other) {
-            return { x: this.x - other.x, y: this.y - other.y };
-        };
-
-        Point.prototype.subtracted$ = function (other) {
-            return new Point(this.subtracted(other));
+            return new Point({ x: this.x - other.x, y: this.y - other.y });
         };
 
         Point.prototype.multiply = function (factor) {
@@ -82,11 +62,7 @@ var porcelain;
         };
 
         Point.prototype.multiplied = function (factor) {
-            return { x: this.x * factor, y: this.y * factor };
-        };
-
-        Point.prototype.multiplied$ = function (factor) {
-            return new Point(this.multiplied(factor));
+            return new Point({ x: this.x * factor, y: this.y * factor });
         };
 
         Point.prototype.divide = function (factor) {
@@ -97,11 +73,7 @@ var porcelain;
         Point.prototype.divided = function (factor) {
             var x = Math.floor(this.x / factor);
             var y = Math.floor(this.y / factor);
-            return { x: x, y: y };
-        };
-
-        Point.prototype.divided$ = function (factor) {
-            return new Point(this.divided(factor));
+            return new Point({ x: x, y: y });
         };
         return Point;
     })();

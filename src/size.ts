@@ -26,14 +26,6 @@ module porcelain {
             this.height = size.height;
         }
 
-        get size$(): Size {
-            return new Size(this.size);
-        }
-
-        set size$(size: Size) {
-            this.size = size;
-        }
-
         isEmpty(): boolean {
             return this.width == 0 || this.height == 0;
         }
@@ -46,24 +38,16 @@ module porcelain {
             return this.width >= 0 && this.height >= 0;
         }
 
-        boundedTo(other: ISize): ISize {
+        boundedTo(other: ISize): Size {
             var w = Math.min(this.width, other.width);
             var h = Math.min(this.height, other.height);
-            return { width: w, height: h };
+            return new Size({ width: w, height: h });
         }
 
-        boundedTo$(other: ISize): Size {
-            return new Size(this.boundedTo(other));
-        }
-
-        expandedTo(other: ISize): ISize {
+        expandedTo(other: ISize): Size {
             var w = Math.max(this.width, other.width);
             var h = Math.max(this.height, other.height);
-            return { width: w, height: h };
-        }
-
-        expandedTo$(other: ISize): Size {
-            return new Size(this.expandedTo(other));
+            return new Size({ width: w, height: h });
         }
 
         transpose(): void {
@@ -72,12 +56,8 @@ module porcelain {
             this.height = w;
         }
 
-        transposed(): ISize {
-            return { width: this.height, height: this.width };
-        }
-
-        transposed$(): Size {
-            return new Size(this.transposed());
+        transposed(): Size {
+            return new Size({ width: this.height, height: this.width });
         }
 
         equals(other: ISize): boolean {
@@ -89,14 +69,10 @@ module porcelain {
             this.height += other.height;
         }
 
-        added(other: ISize): ISize {
+        added(other: ISize): Size {
             var w = this.width + other.width;
             var h = this.height + other.height;
-            return { width: w, height: h };
-        }
-        
-        added$(other: ISize): Size { 
-            return new Size(this.added(other));
+            return new Size({ width: w, height: h });
         }
 
         subtract(other: ISize): void {
@@ -104,14 +80,10 @@ module porcelain {
             this.height -= other.height;
         }
 
-        subtracted(other: ISize): ISize {
+        subtracted(other: ISize): Size {
             var w = this.width - other.width;
             var h = this.height - other.height;
-            return { width: w, height: h };
-        }
-
-        subtracted$(other: ISize): Size {
-            return new Size(this.subtracted(other));
+            return new Size({ width: w, height: h });
         }
 
         multiply(factor: number): void {
@@ -119,14 +91,10 @@ module porcelain {
             this.height *= factor;
         }
 
-        multiplied(factor: number): ISize {
+        multiplied(factor: number): Size {
             var w = this.width * factor;
             var h = this.height * factor;
-            return { width: w, height: h };
-        }
-
-        multiplied$(factor: number): Size {
-            return new Size(this.multiplied(factor));
+            return new Size({ width: w, height: h });
         }
 
         divide(factor: number): void {
@@ -134,14 +102,10 @@ module porcelain {
             this.height = Math.floor(this.height / factor);
         }
 
-        divided(factor: number): ISize {
+        divided(factor: number): Size {
             var w = Math.floor(this.width / factor);
             var h = Math.floor(this.height / factor);
-            return { width: w, height: h };
-        }
-
-        divided$(factor: number): Size {
-            return new Size(this.divided(factor));
+            return new Size({ width: w, height: h });
         }
     }
 

@@ -9,7 +9,7 @@ var porcelain;
 (function (porcelain) {
     var Rect = (function () {
         function Rect(rect) {
-            if (typeof rect === "undefined") { rect = nullRect(); }
+            if (typeof rect === "undefined") { rect = { x: 0, y: 0, width: 0, height: 0 }; }
             this.left = rect.x;
             this.top = rect.y;
             this.right = rect.x + rect.width;
@@ -76,18 +76,6 @@ var porcelain;
         });
 
 
-        Object.defineProperty(Rect.prototype, "topLeft$", {
-            get: function () {
-                return new porcelain.Point(this.topLeft);
-            },
-            set: function (point) {
-                this.topLeft = point;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         Object.defineProperty(Rect.prototype, "topRight", {
             get: function () {
                 return { x: this.right, y: this.top };
@@ -95,18 +83,6 @@ var porcelain;
             set: function (point) {
                 this.right = point.x;
                 this.top = point.y;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Rect.prototype, "topRight$", {
-            get: function () {
-                return new porcelain.Point(this.topRight);
-            },
-            set: function (point) {
-                this.topRight = point;
             },
             enumerable: true,
             configurable: true
@@ -126,18 +102,6 @@ var porcelain;
         });
 
 
-        Object.defineProperty(Rect.prototype, "bottomLeft$", {
-            get: function () {
-                return new porcelain.Point(this.bottomLeft);
-            },
-            set: function (point) {
-                this.bottomLeft = point;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         Object.defineProperty(Rect.prototype, "bottomRight", {
             get: function () {
                 return { x: this.right, y: this.bottom };
@@ -145,18 +109,6 @@ var porcelain;
             set: function (point) {
                 this.right = point.x;
                 this.bottom = point.y;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Rect.prototype, "bottomRight$", {
-            get: function () {
-                return new porcelain.Point(this.bottomRight);
-            },
-            set: function (point) {
-                this.bottomRight = point;
             },
             enumerable: true,
             configurable: true
@@ -173,14 +125,6 @@ var porcelain;
             configurable: true
         });
 
-        Object.defineProperty(Rect.prototype, "center$", {
-            get: function () {
-                return new porcelain.Point(this.center);
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         Object.defineProperty(Rect.prototype, "size", {
             get: function () {
                 return { width: this.width, height: this.height };
@@ -188,18 +132,6 @@ var porcelain;
             set: function (size) {
                 this.width = size.width;
                 this.height = size.height;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Rect.prototype, "size$", {
-            get: function () {
-                return new porcelain.Size(this.size);
-            },
-            set: function (size) {
-                this.size = size;
             },
             enumerable: true,
             configurable: true
@@ -220,18 +152,6 @@ var porcelain;
                 this.top = rect.y;
                 this.right = rect.x + rect.width;
                 this.bottom = rect.y + rect.height;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Rect.prototype, "rect$", {
-            get: function () {
-                return new Rect(this.rect);
-            },
-            set: function (rect) {
-                this.rect = rect;
             },
             enumerable: true,
             configurable: true
@@ -276,10 +196,6 @@ var porcelain;
         Rect.prototype.moveBottom = function (pos) {
             this.top = pos - this.bottom;
             this.bottom = pos;
-        };
-
-        Rect.prototype.moveTo = function (point) {
-            this.moveTopLeft(point);
         };
 
         Rect.prototype.moveTopLeft = function (point) {
@@ -331,11 +247,7 @@ var porcelain;
             var y = this.top + dy1;
             var w = this.right + dx2 - x;
             var h = this.bottom + dy2 - y;
-            return { x: x, y: y, width: w, height: h };
-        };
-
-        Rect.prototype.adjusted$ = function (dx1, dy1, dx2, dy2) {
-            return new Rect(this.adjusted(dx1, dy2, dx2, dy2));
+            return new Rect({ x: x, y: y, width: w, height: h });
         };
 
         Rect.prototype.contains = function (point) {
@@ -412,7 +324,7 @@ var porcelain;
 
         Rect.prototype.intersected = function (rect) {
             if (this.isNull() || isNull(rect)) {
-                return nullRect();
+                return new Rect();
             }
             var temp;
             var l1 = this.left;
@@ -430,7 +342,7 @@ var porcelain;
                 r2 = temp;
             }
             if (l1 >= r2 || l2 >= r1) {
-                return nullRect();
+                return new Rect();
             }
             var t1 = this.top;
             var b1 = this.bottom;
@@ -447,17 +359,13 @@ var porcelain;
                 b2 = temp;
             }
             if (t1 >= b2 || t2 >= b1) {
-                return nullRect();
+                return new Rect();
             }
             var x = Math.max(l1, l2);
             var y = Math.max(t1, t2);
-            var width = Math.min(r1, r2) - x;
-            var height = Math.min(b1, b2) - y;
-            return { x: x, y: y, width: width, height: height };
-        };
-
-        Rect.prototype.intersected$ = function (rect) {
-            return new Rect(this.intersected(rect));
+            var w = Math.min(r1, r2) - x;
+            var h = Math.min(b1, b2) - y;
+            return new Rect({ x: x, y: y, width: w, height: h });
         };
 
         Rect.prototype.normalize = function () {
@@ -490,11 +398,7 @@ var porcelain;
                 t = b;
                 b = temp;
             }
-            return { x: l, y: t, width: r - l, height: b - t };
-        };
-
-        Rect.prototype.normalized$ = function () {
-            return new Rect(this.normalized());
+            return new Rect({ x: l, y: t, width: r - l, height: b - t });
         };
 
         Rect.prototype.translate = function (dx, dy) {
@@ -509,19 +413,15 @@ var porcelain;
             var y = this.top + dy;
             var w = this.width;
             var h = this.height;
-            return { x: x, y: y, width: w, height: h };
-        };
-
-        Rect.prototype.translated$ = function (dx, dy) {
-            return new Rect(this.translated(dx, dy));
+            return new Rect({ x: x, y: y, width: w, height: h });
         };
 
         Rect.prototype.united = function (rect) {
             if (this.isNull()) {
-                return copyRect(rect);
+                return new Rect(rect);
             }
             if (isNull(rect)) {
-                return copyRect(this);
+                return new Rect(this);
             }
             var temp;
             var l1 = this.left;
@@ -554,30 +454,13 @@ var porcelain;
             }
             var x = Math.min(l1, l2);
             var y = Math.min(t1, t2);
-            var width = Math.max(r1, r2) - x;
-            var height = Math.max(b1, b2) - y;
-            return { x: x, y: y, width: width, height: height };
-        };
-
-        Rect.prototype.united$ = function (rect) {
-            return new Rect(this.united(rect));
+            var w = Math.max(r1, r2) - x;
+            var h = Math.max(b1, b2) - y;
+            return new Rect({ x: x, y: y, width: w, height: h });
         };
         return Rect;
     })();
     porcelain.Rect = Rect;
-
-    function nullRect() {
-        return { x: 0, y: 0, width: 0, height: 0 };
-    }
-
-    function copyRect(rect) {
-        return {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height
-        };
-    }
 
     function isNull(rect) {
         return rect.width === 0 || rect.height === 0;

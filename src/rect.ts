@@ -14,7 +14,7 @@ module porcelain {
         right: number;
         bottom: number;
 
-        constructor(rect: IRect = nullRect()) {
+        constructor(rect: IRect = { x: 0, y: 0, width: 0, height: 0 }) {
             this.left = rect.x;
             this.top = rect.y;
             this.right = rect.x + rect.width;
@@ -62,14 +62,6 @@ module porcelain {
             this.top = point.y;
         }
 
-        get topLeft$(): Point {
-            return new Point(this.topLeft);
-        }
-
-        set topLeft$(point: Point) {
-            this.topLeft = point;
-        }
-
         get topRight(): IPoint {
             return { x: this.right, y: this.top };
         }
@@ -77,14 +69,6 @@ module porcelain {
         set topRight(point: IPoint) {
             this.right = point.x;
             this.top = point.y;
-        }
-
-        get topRight$(): Point {
-            return new Point(this.topRight);
-        }
-
-        set topRight$(point: Point) {
-            this.topRight = point;
         }
 
         get bottomLeft(): IPoint {
@@ -96,14 +80,6 @@ module porcelain {
             this.bottom = point.y;
         }
 
-        get bottomLeft$(): Point {
-            return new Point(this.bottomLeft);
-        }
-
-        set bottomLeft$(point: Point) {
-            this.bottomLeft = point;
-        }
-
         get bottomRight(): IPoint {
             return { x: this.right, y: this.bottom };
         }
@@ -113,22 +89,10 @@ module porcelain {
             this.bottom = point.y;
         }
 
-        get bottomRight$(): Point {
-            return new Point(this.bottomRight);
-        }
-
-        set bottomRight$(point: Point) {
-            this.bottomRight = point;
-        }
-
         get center(): IPoint {
             var x = this.left + Math.floor(this.width / 2);
             var y = this.top + Math.floor(this.height / 2);
             return { x: x, y: y };
-        }
-
-        get center$(): Point {
-            return new Point(this.center);
         }
 
         get size(): ISize {
@@ -138,14 +102,6 @@ module porcelain {
         set size(size: ISize) {
             this.width = size.width;
             this.height = size.height;
-        }
-
-        get size$(): Size {
-            return new Size(this.size);
-        }
-
-        set size$(size: Size) {
-            this.size = size;
         }
 
         get rect(): IRect {
@@ -162,14 +118,6 @@ module porcelain {
             this.top = rect.y;
             this.right = rect.x + rect.width;
             this.bottom = rect.y + rect.height;
-        }
-
-        get rect$(): Rect {
-            return new Rect(this.rect);
-        }
-
-        set rect$(rect: Rect) {
-            this.rect = rect;
         }
 
         get box(): IBox {
@@ -206,10 +154,6 @@ module porcelain {
         moveBottom(pos: number): void {
             this.top = pos - this.bottom;
             this.bottom = pos;
-        }
-
-        moveTo(point: IPoint): void {
-            this.moveTopLeft(point);
         }
 
         moveTopLeft(point: IPoint): void {
@@ -256,16 +200,12 @@ module porcelain {
             this.bottom += dy2;
         }
 
-        adjusted(dx1: number, dy1: number, dx2: number, dy2: number): IRect {
+        adjusted(dx1: number, dy1: number, dx2: number, dy2: number): Rect {
             var x = this.left + dx1;
             var y = this.top + dy1;
             var w = this.right + dx2 - x;
             var h = this.bottom + dy2 - y;
-            return { x: x, y: y, width: w, height: h };
-        }
-
-        adjusted$(dx1: number, dy1: number, dx2: number, dy2: number): Rect {
-            return new Rect(this.adjusted(dx1, dy2, dx2, dy2));
+            return new Rect({ x: x, y: y, width: w, height: h });
         }
 
         contains(point: IPoint): boolean {
@@ -340,9 +280,9 @@ module porcelain {
             return true;
         }
 
-        intersected(rect: IRect): IRect {
+        intersected(rect: IRect): Rect {
             if (this.isNull() || isNull(rect)) {
-                return nullRect();
+                return new Rect();
             }
             var temp: number;
             var l1 = this.left;
@@ -360,7 +300,7 @@ module porcelain {
                 r2 = temp;
             }
             if (l1 >= r2 || l2 >= r1) {
-                return nullRect();
+                return new Rect();
             }
             var t1 = this.top;
             var b1 = this.bottom;
@@ -377,17 +317,13 @@ module porcelain {
                 b2 = temp;
             }
             if (t1 >= b2 || t2 >= b1) {
-                return nullRect();
+                return new Rect();
             }
             var x = Math.max(l1, l2);
             var y = Math.max(t1, t2);
-            var width = Math.min(r1, r2) - x;
-            var height = Math.min(b1, b2) - y;
-            return { x: x, y: y, width: width, height: height };
-        }
-
-        intersected$(rect: IRect): Rect {
-            return new Rect(this.intersected(rect));
+            var w = Math.min(r1, r2) - x;
+            var h = Math.min(b1, b2) - y;
+            return new Rect({ x: x, y: y, width: w, height: h });
         }
 
         normalize(): void {
@@ -404,7 +340,7 @@ module porcelain {
             }
         }
 
-        normalized(): IRect {
+        normalized(): Rect {
             var temp: number;
             var l = this.left;
             var r = this.right;
@@ -420,11 +356,7 @@ module porcelain {
                 t = b;
                 b = temp;
             }
-            return { x: l, y: t, width: r - l, height: b - t };
-        }
-
-        normalized$(): Rect {
-            return new Rect(this.normalized());
+            return new Rect({ x: l, y: t, width: r - l, height: b - t });
         }
 
         translate(dx: number, dy: number): void {
@@ -434,24 +366,20 @@ module porcelain {
             this.bottom += dy;
         }
 
-        translated(dx: number, dy: number): IRect {
+        translated(dx: number, dy: number): Rect {
             var x = this.left + dx;
             var y = this.top + dy;
             var w = this.width;
             var h = this.height;
-            return { x: x, y: y, width: w, height: h };
+            return new Rect({ x: x, y: y, width: w, height: h });
         }
 
-        translated$(dx: number, dy: number): Rect {
-            return new Rect(this.translated(dx, dy));
-        }
-
-        united(rect: IRect): IRect {
+        united(rect: IRect): Rect {
             if (this.isNull()) {
-                return copyRect(rect);
+                return new Rect(rect);
             }
             if (isNull(rect)) {
-                return copyRect(this);
+                return new Rect(this);
             }
             var temp: number;
             var l1 = this.left;
@@ -484,29 +412,10 @@ module porcelain {
             }
             var x = Math.min(l1, l2);
             var y = Math.min(t1, t2);
-            var width = Math.max(r1, r2) - x;
-            var height = Math.max(b1, b2) - y;
-            return { x: x, y: y, width: width, height: height };
+            var w = Math.max(r1, r2) - x;
+            var h = Math.max(b1, b2) - y;
+            return new Rect({ x: x, y: y, width: w, height: h });
         }
-
-        united$(rect: IRect): Rect {
-            return new Rect(this.united(rect));
-        }
-    }
-
-
-    function nullRect(): IRect {
-        return { x: 0, y: 0, width: 0, height: 0 };
-    }
-
-
-    function copyRect(rect: IRect): IRect {
-        return {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height
-        };
     }
 
 
