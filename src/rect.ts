@@ -14,11 +14,65 @@ module porcelain {
         right: number;
         bottom: number;
 
-        constructor(rect: IRect = { x: 0, y: 0, width: 0, height: 0 }) {
-            this.left = rect.x;
-            this.top = rect.y;
-            this.right = rect.x + rect.width;
-            this.bottom = rect.y + rect.height;
+        constructor();
+        constructor(box: IBox);
+        constructor(rect: IRect);
+        constructor(topLeft: IPoint, size: ISize);
+        constructor(topLeft: IPoint, bottomRight: IPoint);
+        constructor(x: number, y: number, width: number, height: number);
+        constructor(first?, second?, third?, fourth?) {
+            switch (arguments.length) {
+                case 0:
+                    this.left = 0;
+                    this.top = 0;
+                    this.right = 0;
+                    this.bottom = 0;
+                    break;
+                case 1:
+                    if (first.left === undefined) {
+                        var rect = <IRect>first;
+                        this.left = rect.x;
+                        this.top = rect.y;
+                        this.right = rect.x + rect.width;
+                        this.bottom = rect.y + rect.height;
+                    } else {
+                        var box = <IBox>first;
+                        this.left = box.left;
+                        this.top = box.top;
+                        this.right = box.right;
+                        this.bottom = box.bottom;
+                    }
+                    break;
+                case 2:
+                    if (second.x === undefined) {
+                        var topLeft = <IPoint>first;
+                        var size = <ISize>second;
+                        this.left = first.x;
+                        this.top = first.y;
+                        this.right = first.x + size.width;
+                        this.bottom = first.y + size.height;
+                    } else {
+                        var topLeft = <IPoint>first;
+                        var bottomRight = <IPoint>second;
+                        this.left = topLeft.x;
+                        this.top = topLeft.y;
+                        this.right = bottomRight.x;
+                        this.bottom = bottomRight.y;
+                    }
+                    break;
+                case 4:
+                    var x = <number>first;
+                    var y = <number>second;
+                    var width = <number>third;
+                    var height = <number>fourth;
+                    this.left = x;
+                    this.top = y;
+                    this.right = x + width;
+                    this.bottom = y + height;
+                    break;
+                default:
+                    throw "invalid constructor call";
+            }
         }
 
         get x(): number {
@@ -177,8 +231,8 @@ module porcelain {
         }
 
         moveCenter(point: IPoint): void {
-            this.left = point.x + Math.floor(this.width / 2);
-            this.top = point.y + Math.floor(this.height / 2);
+            this.moveLeft(point.x + Math.floor(this.width / 2));
+            this.moveTop(point.y + Math.floor(this.height / 2));
         }
 
         isEmpty(): boolean {
@@ -201,11 +255,9 @@ module porcelain {
         }
 
         adjusted(dx1: number, dy1: number, dx2: number, dy2: number): Rect {
-            var x = this.left + dx1;
-            var y = this.top + dy1;
-            var w = this.right + dx2 - x;
-            var h = this.bottom + dy2 - y;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var rect = new Rect(this);
+            rect.adjust(dx1, dy1, dx2, dy2);
+            return rect;
         }
 
         contains(point: IPoint): boolean {
@@ -239,7 +291,10 @@ module porcelain {
         }
 
         intersects(rect: IRect): boolean {
-            if (this.isNull() || isNull(rect)) {
+            if (this.isNull()) {
+                return false;
+            }
+            if (rect.width === 0 && rect.height === 0) {
                 return false;
             }
             var temp: number;
@@ -281,7 +336,10 @@ module porcelain {
         }
 
         intersected(rect: IRect): Rect {
-            if (this.isNull() || isNull(rect)) {
+            if (this.isNull()) {
+                return new Rect();
+            }
+            if (rect.width === 0 && rect.height === 0) {
                 return new Rect();
             }
             var temp: number;
@@ -319,11 +377,11 @@ module porcelain {
             if (t1 >= b2 || t2 >= b1) {
                 return new Rect();
             }
-            var x = Math.max(l1, l2);
-            var y = Math.max(t1, t2);
-            var w = Math.min(r1, r2) - x;
-            var h = Math.min(b1, b2) - y;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var l = Math.max(l1, l2);
+            var t = Math.max(t1, t2);
+            var r = Math.min(r1, r2);
+            var b = Math.min(b1, b2);
+            return new Rect({ left: l, top: t, right: r, bottom: b });
         }
 
         normalize(): void {
@@ -341,22 +399,9 @@ module porcelain {
         }
 
         normalized(): Rect {
-            var temp: number;
-            var l = this.left;
-            var r = this.right;
-            if (r < l) {
-                temp = l;
-                l = r;
-                r = temp;
-            }
-            var t = this.top;
-            var b = this.bottom;
-            if (b < t) {
-                temp = t;
-                t = b;
-                b = temp;
-            }
-            return new Rect({ x: l, y: t, width: r - l, height: b - t });
+            var rect = new Rect(this);
+            rect.normalize();
+            return rect;
         }
 
         translate(dx: number, dy: number): void {
@@ -367,18 +412,16 @@ module porcelain {
         }
 
         translated(dx: number, dy: number): Rect {
-            var x = this.left + dx;
-            var y = this.top + dy;
-            var w = this.width;
-            var h = this.height;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var rect = new Rect(this);
+            rect.translate(dx, dy);
+            return rect;
         }
 
         united(rect: IRect): Rect {
             if (this.isNull()) {
                 return new Rect(rect);
             }
-            if (isNull(rect)) {
+            if (rect.width === 0 && rect.height === 0) {
                 return new Rect(this);
             }
             var temp: number;
@@ -410,17 +453,12 @@ module porcelain {
                 t2 = b2;
                 b2 = temp;
             }
-            var x = Math.min(l1, l2);
-            var y = Math.min(t1, t2);
-            var w = Math.max(r1, r2) - x;
-            var h = Math.max(b1, b2) - y;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var l = Math.min(l1, l2);
+            var t = Math.min(t1, t2);
+            var r = Math.max(r1, r2);
+            var b = Math.max(b1, b2);
+            return new Rect({ left: l, top: t, right: r, bottom: b });
         }
-    }
-
-
-    function isNull(rect: IRect): boolean {
-        return rect.width === 0 || rect.height === 0;
     }
 
 }

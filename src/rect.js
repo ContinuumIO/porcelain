@@ -8,12 +8,59 @@
 var porcelain;
 (function (porcelain) {
     var Rect = (function () {
-        function Rect(rect) {
-            if (typeof rect === "undefined") { rect = { x: 0, y: 0, width: 0, height: 0 }; }
-            this.left = rect.x;
-            this.top = rect.y;
-            this.right = rect.x + rect.width;
-            this.bottom = rect.y + rect.height;
+        function Rect(first, second, third, fourth) {
+            switch (arguments.length) {
+                case 0:
+                    this.left = 0;
+                    this.top = 0;
+                    this.right = 0;
+                    this.bottom = 0;
+                    break;
+                case 1:
+                    if (first.left === undefined) {
+                        var rect = first;
+                        this.left = rect.x;
+                        this.top = rect.y;
+                        this.right = rect.x + rect.width;
+                        this.bottom = rect.y + rect.height;
+                    } else {
+                        var box = first;
+                        this.left = box.left;
+                        this.top = box.top;
+                        this.right = box.right;
+                        this.bottom = box.bottom;
+                    }
+                    break;
+                case 2:
+                    if (second.x === undefined) {
+                        var topLeft = first;
+                        var size = second;
+                        this.left = first.x;
+                        this.top = first.y;
+                        this.right = first.x + size.width;
+                        this.bottom = first.y + size.height;
+                    } else {
+                        var topLeft = first;
+                        var bottomRight = second;
+                        this.left = topLeft.x;
+                        this.top = topLeft.y;
+                        this.right = bottomRight.x;
+                        this.bottom = bottomRight.y;
+                    }
+                    break;
+                case 4:
+                    var x = first;
+                    var y = second;
+                    var width = third;
+                    var height = fourth;
+                    this.left = x;
+                    this.top = y;
+                    this.right = x + width;
+                    this.bottom = y + height;
+                    break;
+                default:
+                    throw "invalid constructor call";
+            }
         }
         Object.defineProperty(Rect.prototype, "x", {
             get: function () {
@@ -219,8 +266,8 @@ var porcelain;
         };
 
         Rect.prototype.moveCenter = function (point) {
-            this.left = point.x + Math.floor(this.width / 2);
-            this.top = point.y + Math.floor(this.height / 2);
+            this.moveLeft(point.x + Math.floor(this.width / 2));
+            this.moveTop(point.y + Math.floor(this.height / 2));
         };
 
         Rect.prototype.isEmpty = function () {
@@ -243,11 +290,9 @@ var porcelain;
         };
 
         Rect.prototype.adjusted = function (dx1, dy1, dx2, dy2) {
-            var x = this.left + dx1;
-            var y = this.top + dy1;
-            var w = this.right + dx2 - x;
-            var h = this.bottom + dy2 - y;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var rect = new Rect(this);
+            rect.adjust(dx1, dy1, dx2, dy2);
+            return rect;
         };
 
         Rect.prototype.contains = function (point) {
@@ -281,7 +326,10 @@ var porcelain;
         };
 
         Rect.prototype.intersects = function (rect) {
-            if (this.isNull() || isNull(rect)) {
+            if (this.isNull()) {
+                return false;
+            }
+            if (rect.width === 0 && rect.height === 0) {
                 return false;
             }
             var temp;
@@ -323,7 +371,10 @@ var porcelain;
         };
 
         Rect.prototype.intersected = function (rect) {
-            if (this.isNull() || isNull(rect)) {
+            if (this.isNull()) {
+                return new Rect();
+            }
+            if (rect.width === 0 && rect.height === 0) {
                 return new Rect();
             }
             var temp;
@@ -361,11 +412,11 @@ var porcelain;
             if (t1 >= b2 || t2 >= b1) {
                 return new Rect();
             }
-            var x = Math.max(l1, l2);
-            var y = Math.max(t1, t2);
-            var w = Math.min(r1, r2) - x;
-            var h = Math.min(b1, b2) - y;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var l = Math.max(l1, l2);
+            var t = Math.max(t1, t2);
+            var r = Math.min(r1, r2);
+            var b = Math.min(b1, b2);
+            return new Rect({ left: l, top: t, right: r, bottom: b });
         };
 
         Rect.prototype.normalize = function () {
@@ -383,22 +434,9 @@ var porcelain;
         };
 
         Rect.prototype.normalized = function () {
-            var temp;
-            var l = this.left;
-            var r = this.right;
-            if (r < l) {
-                temp = l;
-                l = r;
-                r = temp;
-            }
-            var t = this.top;
-            var b = this.bottom;
-            if (b < t) {
-                temp = t;
-                t = b;
-                b = temp;
-            }
-            return new Rect({ x: l, y: t, width: r - l, height: b - t });
+            var rect = new Rect(this);
+            rect.normalize();
+            return rect;
         };
 
         Rect.prototype.translate = function (dx, dy) {
@@ -409,18 +447,16 @@ var porcelain;
         };
 
         Rect.prototype.translated = function (dx, dy) {
-            var x = this.left + dx;
-            var y = this.top + dy;
-            var w = this.width;
-            var h = this.height;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var rect = new Rect(this);
+            rect.translate(dx, dy);
+            return rect;
         };
 
         Rect.prototype.united = function (rect) {
             if (this.isNull()) {
                 return new Rect(rect);
             }
-            if (isNull(rect)) {
+            if (rect.width === 0 && rect.height === 0) {
                 return new Rect(this);
             }
             var temp;
@@ -452,18 +488,14 @@ var porcelain;
                 t2 = b2;
                 b2 = temp;
             }
-            var x = Math.min(l1, l2);
-            var y = Math.min(t1, t2);
-            var w = Math.max(r1, r2) - x;
-            var h = Math.max(b1, b2) - y;
-            return new Rect({ x: x, y: y, width: w, height: h });
+            var l = Math.min(l1, l2);
+            var t = Math.min(t1, t2);
+            var r = Math.max(r1, r2);
+            var b = Math.max(b1, b2);
+            return new Rect({ left: l, top: t, right: r, bottom: b });
         };
         return Rect;
     })();
     porcelain.Rect = Rect;
-
-    function isNull(rect) {
-        return rect.width === 0 || rect.height === 0;
-    }
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=rect.js.map
