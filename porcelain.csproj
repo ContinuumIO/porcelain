@@ -26,6 +26,12 @@
     <TypeScriptCompile Include="scripts\i_rect.d.ts" />
     <TypeScriptCompile Include="scripts\i_box.d.ts" />
     <TypeScriptCompile Include="scripts\signal.ts" />
+    <Content Include="css\app.css" />
+    <Content Include="css\item.css" />
+    <Content Include="css\window.css" />
+    <TypeScriptCompile Include="scripts\window.ts" />
+    <Content Include="index.html" />
+    <TypeScriptCompile Include="scripts\utils.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
