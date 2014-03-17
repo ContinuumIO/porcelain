@@ -9,55 +9,10 @@ module porcelain {
 
     export class Item {
 
-        constructor(parent: Item = null) {
-            this.parent = parent;
-        }
+        constructor() { }
 
         //
-        //  parent-child methods
-        //
-        get parent(): Item {
-            return this._parent;
-        }
-
-        set parent(parent: Item) {
-            var old = this._parent;
-            if (parent === old) {
-                return;
-            }
-            if (parent === this) {
-                throw "cannot use 'this' as Item parent";
-            }
-            this._parent = parent;
-            if (old !== null) {
-                var i = old._children.indexOf(this);
-                if (i !== -1) {
-                    old._children.splice(i, 1);
-                    old.childRemoved(this);
-                }
-            }
-            if (parent !== null) {
-                parent._children.push(this);
-                parent.childAdded(this);
-            }
-            this.parentChanged(old, parent);
-        }
-
-        get children(): Item[] {
-            if (this._children !== null) {
-                return this._children.slice();
-            }
-            return [];
-        }
-
-        childAdded(child: Item): void { }
-
-        childRemoved(child: Item): void { }
-
-        parentChanged(old: Item, parent: Item): void { }
-
-        //
-        // geometry methods
+        // Geometry Methods
         //
         get x(): number {
             return this._geometry.left;
@@ -87,27 +42,27 @@ module porcelain {
             return this._geometry.rect;
         }
 
-        sizeHint(): Size {
-            return new Size();
-        }
-
         move(point: IPoint): void {
             this._geometry.moveTopLeft(point);
-            this.refreshElementGeometry(true, false);
+            this._updateElementGeometry(true, false);
         }
 
         resize(size: ISize): void {
             this._geometry.size = size;
-            this.refreshElementGeometry(false, true);
+            this._updateElementGeometry(false, true);
         }
 
         setGeometry(rect: IRect): void {
             this._geometry.rect = rect;
-            this.refreshElementGeometry(true, true);
+            this._updateElementGeometry(true, true);
+        }
+
+        sizeHint(): Size {
+            return new Size();
         }
 
         //
-        // DOM methods
+        // DOM Methods
         //
         get element(): HTMLDivElement {
             return this._element;
@@ -115,10 +70,14 @@ module porcelain {
 
         render(): void {
             this._element = document.createElement("div");
-            this._element.style.position = "absolute";
+            this._element.className = "porcelain-Item";
+            this._updateElementGeometry(true, true);
         }
         
-        refreshElementGeometry(pos: boolean, size: boolean): void {
+        // 
+        // Private API
+        //
+        private _updateElementGeometry(pos: boolean, size: boolean): void {
             var geo = this._geometry;
             var style = this._element.style;
             if (pos) {
@@ -131,8 +90,6 @@ module porcelain {
             }
         }
 
-        private _parent: Item = null;
-        private _children: Item[] = null;
         private _geometry: Rect = new Rect();
         private _element: HTMLDivElement = null;
     }
