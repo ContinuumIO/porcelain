@@ -17,15 +17,15 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\point.ts" />
-    <TypeScriptCompile Include="src\size.ts" />
-    <TypeScriptCompile Include="src\item.ts" />
-    <TypeScriptCompile Include="src\rect.ts" />
-    <TypeScriptCompile Include="src\i_point.d.ts" />
-    <TypeScriptCompile Include="src\i_size.d.ts" />
-    <TypeScriptCompile Include="src\i_rect.d.ts" />
-    <TypeScriptCompile Include="src\i_box.d.ts" />
-    <TypeScriptCompile Include="src\signal.ts" />
+    <TypeScriptCompile Include="scripts\point.ts" />
+    <TypeScriptCompile Include="scripts\size.ts" />
+    <TypeScriptCompile Include="scripts\item.ts" />
+    <TypeScriptCompile Include="scripts\rect.ts" />
+    <TypeScriptCompile Include="scripts\i_point.d.ts" />
+    <TypeScriptCompile Include="scripts\i_size.d.ts" />
+    <TypeScriptCompile Include="scripts\i_rect.d.ts" />
+    <TypeScriptCompile Include="scripts\i_box.d.ts" />
+    <TypeScriptCompile Include="scripts\signal.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
