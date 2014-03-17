@@ -80,7 +80,7 @@ module porcelain {
         }
 
         set x(pos: number) {
-            this.left = pos;
+            this.moveLeft(pos);
         }
 
         get y(): number {
@@ -88,7 +88,7 @@ module porcelain {
         }
 
         set y(pos: number) {
-            this.top = pos;
+            this.moveTop(pos);
         }
 
         get width(): number {
@@ -147,6 +147,14 @@ module porcelain {
             var x = this.left + Math.floor(this.width / 2);
             var y = this.top + Math.floor(this.height / 2);
             return { x: x, y: y };
+        }
+
+        get pos(): IPoint {
+            return this.topLeft;
+        }
+
+        set pos(point: IPoint) {
+            this.moveTopLeft(point);
         }
 
         get size(): ISize {

@@ -19,6 +19,7 @@
         public bottomLeft : IPoint;
         public bottomRight : IPoint;
         public center : IPoint;
+        public pos : IPoint;
         public size : ISize;
         public rect : IRect;
         public box : IBox;

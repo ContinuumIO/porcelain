@@ -67,7 +67,7 @@ var porcelain;
                 return this.left;
             },
             set: function (pos) {
-                this.left = pos;
+                this.moveLeft(pos);
             },
             enumerable: true,
             configurable: true
@@ -79,7 +79,7 @@ var porcelain;
                 return this.top;
             },
             set: function (pos) {
-                this.top = pos;
+                this.moveTop(pos);
             },
             enumerable: true,
             configurable: true
@@ -171,6 +171,18 @@ var porcelain;
             enumerable: true,
             configurable: true
         });
+
+        Object.defineProperty(Rect.prototype, "pos", {
+            get: function () {
+                return this.topLeft;
+            },
+            set: function (point) {
+                this.moveTopLeft(point);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         Object.defineProperty(Rect.prototype, "size", {
             get: function () {
