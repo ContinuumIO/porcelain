@@ -8,14 +8,16 @@
         public pos : IPoint;
         public size : ISize;
         public rect : IRect;
-        public move(point: IPoint): void;
-        public resize(size: ISize): void;
-        public setGeometry(rect: IRect): void;
+        public minimumSize : ISize;
+        public maximumSize : ISize;
         public sizeHint(): Size;
         public element : HTMLDivElement;
+        public createElement(): HTMLDivElement;
         public render(): void;
-        private _updateElementGeometry(pos, size);
+        private _syncGeometry();
         private _geometry;
+        private _minSize;
+        private _maxSize;
         private _element;
     }
 }

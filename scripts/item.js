@@ -7,93 +7,151 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    var ITEM_CLASS = "porcelain-Item";
+
+    var MAX_ITEM_DIM = (1 << 16) - 1;
+    var MAX_ITEM_SIZE = new porcelain.Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
+
     var Item = (function () {
         function Item() {
             this._geometry = new porcelain.Rect();
+            this._minSize = new porcelain.Size(0, 0);
+            this._maxSize = new porcelain.Size(MAX_ITEM_SIZE);
             this._element = null;
         }
         Object.defineProperty(Item.prototype, "x", {
-            //
-            // Geometry Methods
-            //
             get: function () {
-                return this._geometry.left;
+                return this._geometry.x;
+            },
+            set: function (x) {
+                this._geometry.x = x;
+                this._syncGeometry();
             },
             enumerable: true,
             configurable: true
         });
 
+
         Object.defineProperty(Item.prototype, "y", {
             get: function () {
-                return this._geometry.top;
+                return this._geometry.y;
+            },
+            set: function (y) {
+                this._geometry.y = y;
+                this._syncGeometry();
             },
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(Item.prototype, "width", {
             get: function () {
                 return this._geometry.width;
             },
+            set: function (width) {
+                width = Math.max(this._minSize.width, width);
+                width = Math.min(this._maxSize.width, width);
+                this._geometry.width = width;
+                this._syncGeometry();
+            },
             enumerable: true,
             configurable: true
         });
+
 
         Object.defineProperty(Item.prototype, "height", {
             get: function () {
                 return this._geometry.height;
             },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Item.prototype, "pos", {
-            get: function () {
-                return this._geometry.topLeft;
+            set: function (height) {
+                height = Math.max(this._minSize.height, height);
+                height = Math.min(this._maxSize.height, height);
+                this._geometry.height = height;
+                this._syncGeometry();
             },
             enumerable: true,
             configurable: true
         });
+
+
+        Object.defineProperty(Item.prototype, "pos", {
+            get: function () {
+                return this._geometry.pos;
+            },
+            set: function (pos) {
+                this._geometry.pos = pos;
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         Object.defineProperty(Item.prototype, "size", {
             get: function () {
                 return this._geometry.size;
             },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Item.prototype, "rect", {
-            get: function () {
-                return this._geometry.rect;
+            set: function (size) {
+                var sz = new porcelain.Size(size);
+                sz = sz.expandedTo(this._minSize).boundedTo(this._maxSize);
+                this._geometry.size = sz;
+                this._syncGeometry();
             },
             enumerable: true,
             configurable: true
         });
 
-        Item.prototype.move = function (point) {
-            this._geometry.moveTopLeft(point);
-            this._updateElementGeometry(true, false);
-        };
 
-        Item.prototype.resize = function (size) {
-            this._geometry.size = size;
-            this._updateElementGeometry(false, true);
-        };
+        Object.defineProperty(Item.prototype, "rect", {
+            get: function () {
+                return this._geometry.rect;
+            },
+            set: function (rect) {
+                var sz = new porcelain.Size(rect.width, rect.height);
+                sz = sz.expandedTo(this._minSize).boundedTo(this._maxSize);
+                this._geometry.rect = {
+                    x: rect.x,
+                    y: rect.y,
+                    width: sz.width,
+                    height: sz.height
+                };
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
 
-        Item.prototype.setGeometry = function (rect) {
-            this._geometry.rect = rect;
-            this._updateElementGeometry(true, true);
-        };
+
+        Object.defineProperty(Item.prototype, "minimumSize", {
+            get: function () {
+                return this._minSize.size;
+            },
+            set: function (size) {
+                this._minSize = new porcelain.Size(size);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "maximumSize", {
+            get: function () {
+                return this._maxSize.size;
+            },
+            set: function (size) {
+                this._maxSize = new porcelain.Size(size);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         Item.prototype.sizeHint = function () {
             return new porcelain.Size();
         };
 
         Object.defineProperty(Item.prototype, "element", {
-            //
-            // DOM Methods
-            //
             get: function () {
                 return this._element;
             },
@@ -101,23 +159,24 @@ var porcelain;
             configurable: true
         });
 
-        Item.prototype.render = function () {
-            this._element = document.createElement("div");
-            this._element.className = "porcelain-Item";
-            this._updateElementGeometry(true, true);
+        Item.prototype.createElement = function () {
+            var element = document.createElement("div");
+            element.className = ITEM_CLASS;
+            return element;
         };
 
-        //
-        // Private API
-        //
-        Item.prototype._updateElementGeometry = function (pos, size) {
-            var geo = this._geometry;
-            var style = this._element.style;
-            if (pos) {
+        Item.prototype.render = function () {
+            if (this.element === null) {
+                this._element = this.createElement();
+            }
+        };
+
+        Item.prototype._syncGeometry = function () {
+            if (this._element !== null) {
+                var geo = this._geometry;
+                var style = this._element.style;
                 style.left = geo.left + "px";
                 style.top = geo.top + "px";
-            }
-            if (size) {
                 style.width = geo.width + "px";
                 style.height = geo.height + "px";
             }
