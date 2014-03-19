@@ -17,6 +17,8 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="scripts\i_viewport.d.ts" />
+    <TypeScriptCompile Include="scripts\jquery.d.ts" />
     <TypeScriptCompile Include="scripts\point.ts" />
     <TypeScriptCompile Include="scripts\size.ts" />
     <TypeScriptCompile Include="scripts\item.ts" />
@@ -29,6 +31,7 @@
     <Content Include="css\app.css" />
     <Content Include="css\item.css" />
     <Content Include="css\window.css" />
+    <TypeScriptCompile Include="scripts\viewport.ts" />
     <TypeScriptCompile Include="scripts\window.ts" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="scripts\utils.ts" />
