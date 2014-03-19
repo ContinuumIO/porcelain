@@ -1,114 +1,121 @@
-﻿.porcelain-Window 
-{
-    position: absolute;
-    background-color: cyan;
-    box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.2);
+﻿/*-----------------------------------------------------------------------------
+| Copyright (c) 2014, Nucleic Development Team.
+|
+| Distributed under the terms of the Modified BSD License.
+|
+| The full license is in the file COPYING.txt, distributed with this software.
+|----------------------------------------------------------------------------*/
+.porcelain-Window {
+    border: 1px solid #4C8AC0;
+    box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.1);
 }
 
 
-.porcelain-Window-leftHandle
-{
+.porcelain-Window-leftHandle {
     position: absolute;
     left: 0px;
-    top: 5px;
-    bottom: 5px;
-    width: 5px;
-    background-color: blue;
+    top: 6px;
+    bottom: 6px;
+    width: 6px;
+    background-color: #63B4FB;
     cursor: w-resize;
 }
 
 
-.porcelain-Window-topHandle
-{
+.porcelain-Window-topHandle {
     position: absolute;
     top: 0px;
-    left: 5px;
-    right: 5px;
-    height: 5px;
-    background-color: yellow;
+    left: 6px;
+    right: 6px;
+    height: 6px;
+    background-color: #63B4FB;
     cursor: n-resize;
 }
 
 
-.porcelain-Window-rightHandle
-{
+.porcelain-Window-rightHandle {
     position: absolute;
     right: 0px;
-    top: 5px;
-    bottom: 5px;
-    width: 5px;
-    background-color: red;
+    top: 6px;
+    bottom: 6px;
+    width: 6px;
+    background-color: #63B4FB;
     cursor: e-resize;
 }
 
 
-.porcelain-Window-bottomHandle
-{
+.porcelain-Window-bottomHandle {
     position: absolute;
     bottom: 0px;
-    left: 5px;
-    right: 5px;
-    height: 5px;
-    background-color: green;
+    left: 15px;
+    right: 15px;
+    height: 6px;
+    background-color: #63B4FB;
     cursor: s-resize;
 }
 
 
-.porcelain-Window-topLeftHandle
-{
+.porcelain-Window-topLeftHandle {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 5px;
-    height: 5px;
-    background-color: black;
+    width: 6px;
+    height: 6px;
+    background-color: #63B4FB;
     cursor: nw-resize;
 }
 
 
-.porcelain-Window-topRightHandle
-{
+.porcelain-Window-topRightHandle {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 5px;
-    height: 5px;
-    background-color: black;
+    width: 6px;
+    height: 6px;
+    background-color: #63B4FB;
     cursor: ne-resize;
 }
 
 
-.porcelain-Window-bottomLeftHandle
-{
+.porcelain-Window-bottomLeftHandle {
     position: absolute;
     left: 0px;
     bottom: 0px;
-    width: 5px;
-    height: 5px;
-    background-color: black;
+    width: 15px;
+    height: 6px;
+    background-color: #63B4FB;
     cursor: sw-resize;
 }
 
 
-.porcelain-Window-bottomRightHandle
-{
+.porcelain-Window-bottomRightHandle {
     position: absolute;
     right: 0px;
     bottom: 0px;
-    width: 5px;
-    height: 5px;
-    background-color: black;
+    width: 15px;
+    height: 6px;
+    background-color: #63B4FB;
     cursor: se-resize;
 }
 
 
-.porcelain-Window-titleBar
-{
+.porcelain-Window-titleBar {
     position: absolute;
-    left: 5px;
-    top: 5px;
-    right: 5px;
-    height: 25px;
-    background-color: gray;
-    cursor: move;
+    left: 6px;
+    top: 6px;
+    right: 6px;
+    height: 23px;
+    background-color: #63B4FB;
+}
+
+
+.porcelain-Window-body {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px solid #5499D6;
+    background-color: #F0F0F0;
+    left: 6px;
+    top: 29px;
+    right: 6px;
+    bottom: 6px;
 }
