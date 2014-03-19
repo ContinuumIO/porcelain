@@ -35,6 +35,7 @@
     <TypeScriptCompile Include="scripts\window.ts" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="scripts\utils.ts" />
+    <TypeScriptCompile Include="scripts\zstack.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
