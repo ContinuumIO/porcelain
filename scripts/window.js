@@ -27,8 +27,7 @@ var porcelain;
     var BOTTOM_LEFT_HANDLE_CLASS = "porcelain-Window-bottomLeftHandle";
     var BOTTOM_RIGHT_HANDLE_CLASS = "porcelain-Window-bottomRightHandle";
 
-    // XXX temporary
-    porcelain.topLevelItems = [];
+    var windowStack = new porcelain.ZStack(1000);
 
     var Window = (function (_super) {
         __extends(Window, _super);
@@ -282,29 +281,22 @@ var porcelain;
             this._pressOffsetX = 0;
             this._pressOffsetY = 0;
             this._body = null;
-
-            // XXX temporary
-            porcelain.topLevelItems.push(this);
             this.minimumSize = { width: 192, height: 192 };
             this.maximumSize = { width: 640, height: 480 };
             this.rect = { x: 50, y: 50, width: 100, height: 100 };
         }
         Window.prototype.show = function () {
             this._create();
-
-            // XXX temporary
+            windowStack.add(this);
             $("body").append(this.element);
         };
 
         Window.prototype.raise = function () {
-            var z = 0;
-            $.each(porcelain.topLevelItems, function (index, item) {
-                var e = $(item.element);
-                if (e.length) {
-                    z = Math.max(z, parseInt(e.css("z-index")) || 0);
-                }
-            });
-            $(this.element).css("z-index", z + 1);
+            windowStack.raise(this);
+        };
+
+        Window.prototype.lower = function () {
+            windowStack.lower(this);
         };
 
         // protected

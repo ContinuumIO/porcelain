@@ -1,9 +1,9 @@
 ﻿declare module porcelain {
-    var topLevelItems: Item[];
     class Window extends Item {
         constructor();
         public show(): void;
         public raise(): void;
+        public lower(): void;
         public _create(): void;
         private _onMouseDown;
         private _onLeftHandleDown;

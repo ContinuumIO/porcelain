@@ -21,15 +21,12 @@ module porcelain {
     var BOTTOM_LEFT_HANDLE_CLASS = "porcelain-Window-bottomLeftHandle";
     var BOTTOM_RIGHT_HANDLE_CLASS = "porcelain-Window-bottomRightHandle";
 
-    // XXX temporary
-    export var topLevelItems: Item[] = []
+    var windowStack = new ZStack(1000);
 
     export class Window extends Item {
 
         constructor() {
             super();
-            // XXX temporary
-            topLevelItems.push(this);
             this.minimumSize = { width: 192, height: 192 };
             this.maximumSize = { width: 640, height: 480 };
             this.rect = { x: 50, y: 50, width: 100, height: 100 };
@@ -37,19 +34,16 @@ module porcelain {
 
         show(): void {
             this._create();
-            // XXX temporary
+            windowStack.add(this);
             $("body").append(this.element);
         }
 
         raise(): void {
-            var z = 0;
-            $.each(topLevelItems, function (index, item) {
-                var e = $(item.element);
-                if (e.length) {
-                    z = Math.max(z, parseInt(e.css("z-index")) || 0);
-                }
-            });
-            $(this.element).css("z-index", z + 1);
+            windowStack.raise(this);
+        }
+
+        lower(): void {
+            windowStack.lower(this);
         }
 
         // protected
