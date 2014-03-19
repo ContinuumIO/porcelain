@@ -12,4 +12,7 @@ declare module porcelain {
         y: number;
     }
 
+    interface ITaggedPoint<T> extends IPoint {
+        tag: T;
+    }
 }

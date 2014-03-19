@@ -286,7 +286,7 @@ var porcelain;
             this.rect = { x: 50, y: 50, width: 100, height: 100 };
         }
         Window.prototype.show = function () {
-            this._create();
+            this.create();
             windowStack.add(this);
             $("body").append(this.element);
         };
@@ -299,13 +299,12 @@ var porcelain;
             windowStack.lower(this);
         };
 
-        // protected
-        Window.prototype._create = function () {
-            _super.prototype._create.call(this);
-
-            if (this._body !== null) {
+        Window.prototype.create = function () {
+            if (this._body) {
                 return;
             }
+
+            _super.prototype.create.call(this);
 
             var titleBar = $("<div>").addClass(TITLE_BAR_CLASS).mousedown(this._onTitleBarDown);
 
@@ -332,7 +331,7 @@ var porcelain;
             this._body = body[0];
         };
         return Window;
-    })(porcelain.Item);
+    })(porcelain.Widget);
     porcelain.Window = Window;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=window.js.map

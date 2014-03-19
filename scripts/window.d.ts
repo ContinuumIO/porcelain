@@ -1,10 +1,10 @@
 ﻿declare module porcelain {
-    class Window extends Item {
+    class Window extends Widget {
         constructor();
         public show(): void;
         public raise(): void;
         public lower(): void;
-        public _create(): void;
+        public create(): void;
         private _onMouseDown;
         private _onLeftHandleDown;
         private _onLeftHandleUp;

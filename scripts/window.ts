@@ -23,7 +23,7 @@ module porcelain {
 
     var windowStack = new ZStack(1000);
 
-    export class Window extends Item {
+    export class Window extends Widget {
 
         constructor() {
             super();
@@ -33,7 +33,7 @@ module porcelain {
         }
 
         show(): void {
-            this._create();
+            this.create();
             windowStack.add(this);
             $("body").append(this.element);
         }
@@ -46,13 +46,12 @@ module porcelain {
             windowStack.lower(this);
         }
 
-        // protected
-        _create(): void {
-            super._create();
-
-            if (this._body !== null) {
+        create(): void {
+            if (this._body) {
                 return;
             }
+
+            super.create();
 
             var titleBar = $("<div>")
                 .addClass(TITLE_BAR_CLASS)
