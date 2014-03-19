@@ -1,29 +1,48 @@
 ﻿declare module porcelain {
-    class Item implements IRect, IBox {
+    class Item {
+        /**
+        * Construct a new Item.
+        * @class
+        * @classdesc The base class of porcelain visual items.
+        * An Item is represented by a single <div>. The div
+        * contents and layout are specified by subclasses.
+        */
         constructor();
-        public left : number;
-        public top : number;
-        public right : number;
-        public bottom : number;
-        public x : number;
-        public y : number;
+        /**
+        * Get the width of the item in pixels.
+        * @readonly
+        * @type {number}
+        */
         public width : number;
+        /**
+        * Get the height of the item in pixels.
+        * @readonly
+        * @type {number}
+        */
         public height : number;
-        public topLeft : IPoint;
-        public topRight : IPoint;
-        public bottomLeft : IPoint;
-        public bottomRight : IPoint;
-        public pos : IPoint;
+        /**
+        * Get the size of the item. This is more efficient than
+        * getting `width` and `height` independently.
+        * @readonly
+        * @type {ISize}
+        */
         public size : ISize;
-        public rect : IRect;
-        public minimumSize : ISize;
-        public maximumSize : ISize;
+        /**
+        * The item's internal div element.
+        * @readonly
+        * @type {HTMLDivElement}
+        */
         public element : HTMLDivElement;
-        public _create(): void;
-        private _syncGeometry();
-        private _geometry;
-        private _minSize;
-        private _maxSize;
+        /**
+        * Create the item's internal div element. This is a
+        * no-op if the element has already been created.
+        */
+        public create(): void;
+        /**
+        * Destroy the item's internal div element. This is a
+        * no-op if the element has already been destroyed.
+        */
+        public destroy(): void;
         private _element;
     }
 }

@@ -9,287 +9,73 @@ var porcelain;
 (function (porcelain) {
     var ITEM_CLASS = "porcelain-Item";
 
-    var MIN_ITEM_SIZE = new porcelain.Size(0, 0);
-    var MAX_ITEM_DIM = (1 << 16) - 1;
-    var MAX_ITEM_SIZE = new porcelain.Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
-
     var Item = (function () {
+        /**
+        * Construct a new Item.
+        * @class
+        * @classdesc The base class of porcelain visual items.
+        * An Item is represented by a single <div>. The div
+        * contents and layout are specified by subclasses.
+        */
         function Item() {
-            this._geometry = new porcelain.Rect();
-            this._minSize = new porcelain.Size(MIN_ITEM_SIZE);
-            this._maxSize = new porcelain.Size(MAX_ITEM_SIZE);
             this._element = null;
         }
-        Object.defineProperty(Item.prototype, "left", {
-            get: function () {
-                return this._geometry.left;
-            },
-            set: function (left) {
-                var min = this._geometry.right - this._maxSize.width;
-                var max = this._geometry.right - this._minSize.width;
-                this._geometry.left = Math.min(Math.max(min, left), max);
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "top", {
-            get: function () {
-                return this._geometry.top;
-            },
-            set: function (top) {
-                var min = this._geometry.bottom - this._maxSize.height;
-                var max = this._geometry.bottom - this._minSize.height;
-                this._geometry.top = Math.min(Math.max(min, top), max);
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "right", {
-            get: function () {
-                return this._geometry.right;
-            },
-            set: function (right) {
-                var min = this._geometry.left + this._minSize.width;
-                var max = this._geometry.left + this._maxSize.width;
-                this._geometry.right = Math.min(Math.max(min, right), max);
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "bottom", {
-            get: function () {
-                return this._geometry.bottom;
-            },
-            set: function (bottom) {
-                var min = this._geometry.top + this._minSize.height;
-                var max = this._geometry.top + this._maxSize.height;
-                this._geometry.bottom = Math.min(Math.max(min, bottom), max);
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "x", {
-            get: function () {
-                return this._geometry.x;
-            },
-            set: function (x) {
-                this._geometry.x = x;
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "y", {
-            get: function () {
-                return this._geometry.y;
-            },
-            set: function (y) {
-                this._geometry.y = y;
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         Object.defineProperty(Item.prototype, "width", {
+            /**
+            * Get the width of the item in pixels.
+            * @readonly
+            * @type {number}
+            */
             get: function () {
-                return this._geometry.width;
-            },
-            set: function (width) {
-                var min = this._minSize.width;
-                var max = this._maxSize.width;
-                this._geometry.width = Math.min(Math.max(min, width), max);
-                this._syncGeometry();
+                if (!this._element) {
+                    return 0;
+                }
+                return this._element.getBoundingClientRect().width;
             },
             enumerable: true,
             configurable: true
         });
-
 
         Object.defineProperty(Item.prototype, "height", {
+            /**
+            * Get the height of the item in pixels.
+            * @readonly
+            * @type {number}
+            */
             get: function () {
-                return this._geometry.height;
-            },
-            set: function (height) {
-                var min = this._minSize.height;
-                var max = this._maxSize.height;
-                this._geometry.height = Math.min(Math.max(min, height), max);
-                this._syncGeometry();
+                if (!this._element) {
+                    return 0;
+                }
+                return this._element.getBoundingClientRect().height;
             },
             enumerable: true,
             configurable: true
         });
-
-
-        Object.defineProperty(Item.prototype, "topLeft", {
-            get: function () {
-                return { x: this._geometry.left, y: this._geometry.top };
-            },
-            set: function (point) {
-                var minx = this._geometry.right - this._maxSize.width;
-                var maxx = this._geometry.right - this._minSize.width;
-                var miny = this._geometry.bottom - this._maxSize.height;
-                var maxy = this._geometry.bottom - this._minSize.height;
-                var x = Math.min(Math.max(minx, point.x), maxx);
-                var y = Math.min(Math.max(miny, point.y), maxy);
-                this._geometry.topLeft = { x: x, y: y };
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "topRight", {
-            get: function () {
-                return { x: this._geometry.right, y: this._geometry.top };
-            },
-            set: function (point) {
-                var minx = this._geometry.left + this._minSize.width;
-                var maxx = this._geometry.left + this._maxSize.width;
-                var miny = this._geometry.bottom - this._maxSize.height;
-                var maxy = this._geometry.bottom - this._minSize.height;
-                var x = Math.min(Math.max(minx, point.x), maxx);
-                var y = Math.min(Math.max(miny, point.y), maxy);
-                this._geometry.topRight = { x: x, y: y };
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "bottomLeft", {
-            get: function () {
-                return { x: this._geometry.left, y: this._geometry.bottom };
-            },
-            set: function (point) {
-                var minx = this._geometry.right - this._maxSize.width;
-                var maxx = this._geometry.right - this._minSize.width;
-                var miny = this._geometry.top + this._minSize.height;
-                var maxy = this._geometry.top + this._maxSize.height;
-                var x = Math.min(Math.max(minx, point.x), maxx);
-                var y = Math.min(Math.max(miny, point.y), maxy);
-                this._geometry.bottomLeft = { x: x, y: y };
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "bottomRight", {
-            get: function () {
-                return { x: this._geometry.right, y: this._geometry.bottom };
-            },
-            set: function (point) {
-                var minx = this._geometry.left + this._minSize.width;
-                var maxx = this._geometry.left + this._maxSize.width;
-                var miny = this._geometry.top + this._minSize.height;
-                var maxy = this._geometry.top + this._maxSize.height;
-                var x = Math.min(Math.max(minx, point.x), maxx);
-                var y = Math.min(Math.max(miny, point.y), maxy);
-                this._geometry.bottomRight = { x: x, y: y };
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "pos", {
-            get: function () {
-                return this._geometry.pos;
-            },
-            set: function (pos) {
-                this._geometry.pos = pos;
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
 
         Object.defineProperty(Item.prototype, "size", {
+            /**
+            * Get the size of the item. This is more efficient than
+            * getting `width` and `height` independently.
+            * @readonly
+            * @type {ISize}
+            */
             get: function () {
-                return this._geometry.size;
-            },
-            set: function (size) {
-                var minw = this._minSize.width;
-                var minh = this._minSize.height;
-                var maxw = this._maxSize.width;
-                var maxh = this._maxSize.height;
-                var w = Math.min(Math.max(minw, size.width), maxw);
-                var h = Math.min(Math.max(minh, size.height), maxh);
-                this._geometry.size = { width: w, height: h };
-                this._syncGeometry();
+                if (!this._element) {
+                    return { width: 0, height: 0 };
+                }
+                var r = this._element.getBoundingClientRect();
+                return { width: r.width, height: r.height };
             },
             enumerable: true,
             configurable: true
         });
-
-
-        Object.defineProperty(Item.prototype, "rect", {
-            get: function () {
-                return this._geometry.rect;
-            },
-            set: function (rect) {
-                var minw = this._minSize.width;
-                var minh = this._minSize.height;
-                var maxw = this._maxSize.width;
-                var maxh = this._maxSize.height;
-                var w = Math.min(Math.max(minw, rect.width), maxw);
-                var h = Math.min(Math.max(minh, rect.height), maxh);
-                this._geometry.rect = { x: rect.x, y: rect.y, width: w, height: h };
-                this._syncGeometry();
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "minimumSize", {
-            get: function () {
-                return this._minSize.size;
-            },
-            set: function (size) {
-                // XXX clip and update
-                this._minSize = new porcelain.Size(size);
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Item.prototype, "maximumSize", {
-            get: function () {
-                return this._maxSize.size;
-            },
-            set: function (size) {
-                // XXX clip and update
-                this._maxSize = new porcelain.Size(size);
-            },
-            enumerable: true,
-            configurable: true
-        });
-
 
         Object.defineProperty(Item.prototype, "element", {
+            /**
+            * The item's internal div element.
+            * @readonly
+            * @type {HTMLDivElement}
+            */
             get: function () {
                 return this._element;
             },
@@ -297,26 +83,28 @@ var porcelain;
             configurable: true
         });
 
-        // protected
-        Item.prototype._create = function () {
-            if (this._element !== null) {
+        /**
+        * Create the item's internal div element. This is a
+        * no-op if the element has already been created.
+        */
+        Item.prototype.create = function () {
+            if (this._element) {
                 return;
             }
             this._element = document.createElement("div");
             $(this._element).addClass(ITEM_CLASS);
-            this._syncGeometry();
         };
 
-        Item.prototype._syncGeometry = function () {
-            if (this._element !== null) {
-                var geo = this._geometry;
-                $(this._element).css({
-                    left: geo.left,
-                    top: geo.top,
-                    width: geo.width,
-                    height: geo.height
-                });
+        /**
+        * Destroy the item's internal div element. This is a
+        * no-op if the element has already been destroyed.
+        */
+        Item.prototype.destroy = function () {
+            if (!this._element) {
+                return;
             }
+            $(this._element).remove();
+            this._element = null;
         };
         return Item;
     })();
