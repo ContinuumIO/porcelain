@@ -9,16 +9,77 @@ var porcelain;
 (function (porcelain) {
     var ITEM_CLASS = "porcelain-Item";
 
+    var MIN_ITEM_SIZE = new porcelain.Size(0, 0);
     var MAX_ITEM_DIM = (1 << 16) - 1;
     var MAX_ITEM_SIZE = new porcelain.Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
 
     var Item = (function () {
         function Item() {
             this._geometry = new porcelain.Rect();
-            this._minSize = new porcelain.Size(0, 0);
+            this._minSize = new porcelain.Size(MIN_ITEM_SIZE);
             this._maxSize = new porcelain.Size(MAX_ITEM_SIZE);
             this._element = null;
         }
+        Object.defineProperty(Item.prototype, "left", {
+            get: function () {
+                return this._geometry.left;
+            },
+            set: function (left) {
+                var min = this._geometry.right - this._maxSize.width;
+                var max = this._geometry.right - this._minSize.width;
+                this._geometry.left = Math.min(Math.max(min, left), max);
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "top", {
+            get: function () {
+                return this._geometry.top;
+            },
+            set: function (top) {
+                var min = this._geometry.bottom - this._maxSize.height;
+                var max = this._geometry.bottom - this._minSize.height;
+                this._geometry.top = Math.min(Math.max(min, top), max);
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "right", {
+            get: function () {
+                return this._geometry.right;
+            },
+            set: function (right) {
+                var min = this._geometry.left + this._minSize.width;
+                var max = this._geometry.left + this._maxSize.width;
+                this._geometry.right = Math.min(Math.max(min, right), max);
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "bottom", {
+            get: function () {
+                return this._geometry.bottom;
+            },
+            set: function (bottom) {
+                var min = this._geometry.top + this._minSize.height;
+                var max = this._geometry.top + this._maxSize.height;
+                this._geometry.bottom = Math.min(Math.max(min, bottom), max);
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         Object.defineProperty(Item.prototype, "x", {
             get: function () {
                 return this._geometry.x;
@@ -50,9 +111,9 @@ var porcelain;
                 return this._geometry.width;
             },
             set: function (width) {
-                width = Math.max(this._minSize.width, width);
-                width = Math.min(this._maxSize.width, width);
-                this._geometry.width = width;
+                var min = this._minSize.width;
+                var max = this._maxSize.width;
+                this._geometry.width = Math.min(Math.max(min, width), max);
                 this._syncGeometry();
             },
             enumerable: true,
@@ -65,9 +126,85 @@ var porcelain;
                 return this._geometry.height;
             },
             set: function (height) {
-                height = Math.max(this._minSize.height, height);
-                height = Math.min(this._maxSize.height, height);
-                this._geometry.height = height;
+                var min = this._minSize.height;
+                var max = this._maxSize.height;
+                this._geometry.height = Math.min(Math.max(min, height), max);
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "topLeft", {
+            get: function () {
+                return { x: this._geometry.left, y: this._geometry.top };
+            },
+            set: function (point) {
+                var minx = this._geometry.right - this._maxSize.width;
+                var maxx = this._geometry.right - this._minSize.width;
+                var miny = this._geometry.bottom - this._maxSize.height;
+                var maxy = this._geometry.bottom - this._minSize.height;
+                var x = Math.min(Math.max(minx, point.x), maxx);
+                var y = Math.min(Math.max(miny, point.y), maxy);
+                this._geometry.topLeft = { x: x, y: y };
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "topRight", {
+            get: function () {
+                return { x: this._geometry.right, y: this._geometry.top };
+            },
+            set: function (point) {
+                var minx = this._geometry.left + this._minSize.width;
+                var maxx = this._geometry.left + this._maxSize.width;
+                var miny = this._geometry.bottom - this._maxSize.height;
+                var maxy = this._geometry.bottom - this._minSize.height;
+                var x = Math.min(Math.max(minx, point.x), maxx);
+                var y = Math.min(Math.max(miny, point.y), maxy);
+                this._geometry.topRight = { x: x, y: y };
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "bottomLeft", {
+            get: function () {
+                return { x: this._geometry.left, y: this._geometry.bottom };
+            },
+            set: function (point) {
+                var minx = this._geometry.right - this._maxSize.width;
+                var maxx = this._geometry.right - this._minSize.width;
+                var miny = this._geometry.top + this._minSize.height;
+                var maxy = this._geometry.top + this._maxSize.height;
+                var x = Math.min(Math.max(minx, point.x), maxx);
+                var y = Math.min(Math.max(miny, point.y), maxy);
+                this._geometry.bottomLeft = { x: x, y: y };
+                this._syncGeometry();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Item.prototype, "bottomRight", {
+            get: function () {
+                return { x: this._geometry.right, y: this._geometry.bottom };
+            },
+            set: function (point) {
+                var minx = this._geometry.left + this._minSize.width;
+                var maxx = this._geometry.left + this._maxSize.width;
+                var miny = this._geometry.top + this._minSize.height;
+                var maxy = this._geometry.top + this._maxSize.height;
+                var x = Math.min(Math.max(minx, point.x), maxx);
+                var y = Math.min(Math.max(miny, point.y), maxy);
+                this._geometry.bottomRight = { x: x, y: y };
                 this._syncGeometry();
             },
             enumerable: true,
@@ -93,9 +230,13 @@ var porcelain;
                 return this._geometry.size;
             },
             set: function (size) {
-                var sz = new porcelain.Size(size);
-                sz = sz.expandedTo(this._minSize).boundedTo(this._maxSize);
-                this._geometry.size = sz;
+                var minw = this._minSize.width;
+                var minh = this._minSize.height;
+                var maxw = this._maxSize.width;
+                var maxh = this._maxSize.height;
+                var w = Math.min(Math.max(minw, size.width), maxw);
+                var h = Math.min(Math.max(minh, size.height), maxh);
+                this._geometry.size = { width: w, height: h };
                 this._syncGeometry();
             },
             enumerable: true,
@@ -108,14 +249,13 @@ var porcelain;
                 return this._geometry.rect;
             },
             set: function (rect) {
-                var sz = new porcelain.Size(rect.width, rect.height);
-                sz = sz.expandedTo(this._minSize).boundedTo(this._maxSize);
-                this._geometry.rect = {
-                    x: rect.x,
-                    y: rect.y,
-                    width: sz.width,
-                    height: sz.height
-                };
+                var minw = this._minSize.width;
+                var minh = this._minSize.height;
+                var maxw = this._maxSize.width;
+                var maxh = this._maxSize.height;
+                var w = Math.min(Math.max(minw, rect.width), maxw);
+                var h = Math.min(Math.max(minh, rect.height), maxh);
+                this._geometry.rect = { x: rect.x, y: rect.y, width: w, height: h };
                 this._syncGeometry();
             },
             enumerable: true,
@@ -128,6 +268,7 @@ var porcelain;
                 return this._minSize.size;
             },
             set: function (size) {
+                // XXX clip and update
                 this._minSize = new porcelain.Size(size);
             },
             enumerable: true,
@@ -140,16 +281,13 @@ var porcelain;
                 return this._maxSize.size;
             },
             set: function (size) {
+                // XXX clip and update
                 this._maxSize = new porcelain.Size(size);
             },
             enumerable: true,
             configurable: true
         });
 
-
-        Item.prototype.sizeHint = function () {
-            return new porcelain.Size();
-        };
 
         Object.defineProperty(Item.prototype, "element", {
             get: function () {
@@ -159,26 +297,25 @@ var porcelain;
             configurable: true
         });
 
-        Item.prototype.createElement = function () {
-            var element = document.createElement("div");
-            element.className = ITEM_CLASS;
-            return element;
-        };
-
-        Item.prototype.render = function () {
-            if (this.element === null) {
-                this._element = this.createElement();
+        // protected
+        Item.prototype._create = function () {
+            if (this._element !== null) {
+                return;
             }
+            this._element = document.createElement("div");
+            $(this._element).addClass(ITEM_CLASS);
+            this._syncGeometry();
         };
 
         Item.prototype._syncGeometry = function () {
             if (this._element !== null) {
                 var geo = this._geometry;
-                var style = this._element.style;
-                style.left = geo.left + "px";
-                style.top = geo.top + "px";
-                style.width = geo.width + "px";
-                style.height = geo.height + "px";
+                $(this._element).css({
+                    left: geo.left,
+                    top: geo.top,
+                    width: geo.width,
+                    height: geo.height
+                });
             }
         };
         return Item;

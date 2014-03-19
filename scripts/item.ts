@@ -9,13 +9,57 @@ module porcelain {
 
     var ITEM_CLASS = "porcelain-Item";
 
+    var MIN_ITEM_SIZE = new Size(0, 0);
     var MAX_ITEM_DIM = (1 << 16) - 1;
     var MAX_ITEM_SIZE = new Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
 
-
-    export class Item {
+    export class Item implements IRect, IBox {
 
         constructor() { }
+
+        get left(): number {
+            return this._geometry.left;
+        }
+
+        set left(left: number) {
+            var min = this._geometry.right - this._maxSize.width;
+            var max = this._geometry.right - this._minSize.width;
+            this._geometry.left = Math.min(Math.max(min, left), max);
+            this._syncGeometry()
+        }
+
+        get top(): number {
+            return this._geometry.top;
+        }
+
+        set top(top: number) {
+            var min = this._geometry.bottom - this._maxSize.height;
+            var max = this._geometry.bottom - this._minSize.height;
+            this._geometry.top = Math.min(Math.max(min, top), max);
+            this._syncGeometry()
+        }
+
+        get right(): number {
+            return this._geometry.right;
+        }
+
+        set right(right: number) {
+            var min = this._geometry.left + this._minSize.width;
+            var max = this._geometry.left + this._maxSize.width;
+            this._geometry.right = Math.min(Math.max(min, right), max);
+            this._syncGeometry();
+        }
+
+        get bottom(): number {
+            return this._geometry.bottom;
+        }
+
+        set bottom(bottom: number) {
+            var min = this._geometry.top + this._minSize.height;
+            var max = this._geometry.top + this._maxSize.height;
+            this._geometry.bottom = Math.min(Math.max(min, bottom), max);
+            this._syncGeometry();
+        }
 
         get x(): number {
             return this._geometry.x;
@@ -40,9 +84,9 @@ module porcelain {
         }
 
         set width(width: number) {
-            width = Math.max(this._minSize.width, width);
-            width = Math.min(this._maxSize.width, width);
-            this._geometry.width = width;
+            var min = this._minSize.width;
+            var max = this._maxSize.width;
+            this._geometry.width = Math.min(Math.max(min, width), max);
             this._syncGeometry();
         }
 
@@ -51,9 +95,69 @@ module porcelain {
         }
 
         set height(height: number) {
-            height = Math.max(this._minSize.height, height);
-            height = Math.min(this._maxSize.height, height);
-            this._geometry.height = height;
+            var min = this._minSize.height;
+            var max = this._maxSize.height;
+            this._geometry.height = Math.min(Math.max(min, height), max);
+            this._syncGeometry();
+        }
+
+        get topLeft(): IPoint {
+            return { x: this._geometry.left, y: this._geometry.top };
+        }
+
+        set topLeft(point: IPoint) {
+            var minx = this._geometry.right - this._maxSize.width;
+            var maxx = this._geometry.right - this._minSize.width;
+            var miny = this._geometry.bottom - this._maxSize.height;
+            var maxy = this._geometry.bottom - this._minSize.height;
+            var x = Math.min(Math.max(minx, point.x), maxx);
+            var y = Math.min(Math.max(miny, point.y), maxy);
+            this._geometry.topLeft = { x: x, y: y };
+            this._syncGeometry();
+        }
+
+        get topRight(): IPoint {
+            return { x: this._geometry.right, y: this._geometry.top };
+        }
+
+        set topRight(point: IPoint) {
+            var minx = this._geometry.left + this._minSize.width;
+            var maxx = this._geometry.left + this._maxSize.width;
+            var miny = this._geometry.bottom - this._maxSize.height;
+            var maxy = this._geometry.bottom - this._minSize.height;
+            var x = Math.min(Math.max(minx, point.x), maxx);
+            var y = Math.min(Math.max(miny, point.y), maxy);
+            this._geometry.topRight = { x: x, y: y };
+            this._syncGeometry();
+        }
+
+        get bottomLeft(): IPoint {
+            return { x: this._geometry.left, y: this._geometry.bottom };
+        }
+
+        set bottomLeft(point: IPoint) {
+            var minx = this._geometry.right - this._maxSize.width;
+            var maxx = this._geometry.right - this._minSize.width;
+            var miny = this._geometry.top + this._minSize.height;
+            var maxy = this._geometry.top + this._maxSize.height;
+            var x = Math.min(Math.max(minx, point.x), maxx);
+            var y = Math.min(Math.max(miny, point.y), maxy);
+            this._geometry.bottomLeft = { x: x, y: y };
+            this._syncGeometry();
+        }
+
+        get bottomRight(): IPoint {
+            return { x: this._geometry.right, y: this._geometry.bottom };
+        }
+
+        set bottomRight(point: IPoint) {
+            var minx = this._geometry.left + this._minSize.width;
+            var maxx = this._geometry.left + this._maxSize.width;
+            var miny = this._geometry.top + this._minSize.height;
+            var maxy = this._geometry.top + this._maxSize.height;
+            var x = Math.min(Math.max(minx, point.x), maxx);
+            var y = Math.min(Math.max(miny, point.y), maxy);
+            this._geometry.bottomRight = { x: x, y: y };
             this._syncGeometry();
         }
 
@@ -71,9 +175,13 @@ module porcelain {
         }
 
         set size(size: ISize) {
-            var sz = new Size(size);
-            sz = sz.expandedTo(this._minSize).boundedTo(this._maxSize);
-            this._geometry.size = sz;
+            var minw = this._minSize.width;
+            var minh = this._minSize.height;
+            var maxw = this._maxSize.width;
+            var maxh = this._maxSize.height;
+            var w = Math.min(Math.max(minw, size.width), maxw);
+            var h = Math.min(Math.max(minh, size.height), maxh);
+            this._geometry.size = { width: w, height: h };
             this._syncGeometry();
         }
 
@@ -82,14 +190,13 @@ module porcelain {
         }
 
         set rect(rect: IRect) {
-            var sz = new Size(rect.width, rect.height);
-            sz = sz.expandedTo(this._minSize).boundedTo(this._maxSize);
-            this._geometry.rect = {
-                x: rect.x,
-                y: rect.y,
-                width: sz.width,
-                height: sz.height
-            };
+            var minw = this._minSize.width;
+            var minh = this._minSize.height;
+            var maxw = this._maxSize.width;
+            var maxh = this._maxSize.height;
+            var w = Math.min(Math.max(minw, rect.width), maxw);
+            var h = Math.min(Math.max(minh, rect.height), maxh);
+            this._geometry.rect = { x: rect.x, y: rect.y, width: w, height: h };
             this._syncGeometry();
         }
 
@@ -98,6 +205,7 @@ module porcelain {
         }
 
         set minimumSize(size: ISize) {
+            // XXX clip and update
             this._minSize = new Size(size);
         }
 
@@ -106,42 +214,38 @@ module porcelain {
         }
 
         set maximumSize(size: ISize) {
+            // XXX clip and update
             this._maxSize = new Size(size);
-        }
-
-        sizeHint(): Size {
-            return new Size();
         }
 
         get element(): HTMLDivElement {
             return this._element;
         }
 
-        createElement(): HTMLDivElement {
-            var element = document.createElement("div");
-            element.className = ITEM_CLASS;
-            return element
+        // protected
+        _create(): void {
+            if (this._element !== null) {
+                return;
+            }
+            this._element = document.createElement("div");
+            $(this._element).addClass(ITEM_CLASS);
+            this._syncGeometry();
         }
 
-        render(): void {
-            if (this.element === null) {
-                this._element = this.createElement();
-            }
-        }
-        
         private _syncGeometry(): void {
             if (this._element !== null) {
                 var geo = this._geometry;
-                var style = this._element.style;
-                style.left = geo.left + "px";
-                style.top = geo.top + "px";
-                style.width = geo.width + "px";
-                style.height = geo.height + "px";
+                $(this._element).css({
+                    left: geo.left,
+                    top: geo.top,
+                    width: geo.width,
+                    height: geo.height
+                });
             }
         }
 
         private _geometry: Rect = new Rect();
-        private _minSize: Size = new Size(0, 0);
+        private _minSize: Size = new Size(MIN_ITEM_SIZE);
         private _maxSize: Size = new Size(MAX_ITEM_SIZE);
         private _element: HTMLDivElement = null;
     }
