@@ -7,11 +7,42 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    export class Signal<Payload> {
-
-        connect(handler: (Payload) => void) { }
-
-        disconnect(handler: (Payload) => void) { }
-
+    export interface SignalHandler<T> {
+        (T): void;
     }
+
+    export class Signal<T> {
+
+        connect(handler: SignalHandler<T>): void {
+            if (!this._handlers) {
+                this._handlers = [];
+            }
+            var i = this._handlers.indexOf(handler);
+            if (i === -1) {
+                this._handlers.push(handler);
+            }
+        }
+
+        disconnect(handler: SignalHandler<T>): void {
+            if (!this._handlers) {
+                return;
+            }
+            var i = this._handlers.indexOf(handler);
+            if (i !== -1) {
+                this._handlers.splice(i, 1);
+            }
+        }
+
+        emit(arg: T): void {
+            if (!this._handlers || !this._handlers.length) {
+                return;
+            }
+            $.each(this._handlers.slice(), function (index, handler) {
+                handler(arg);
+            });
+        }
+
+        private _handlers: SignalHandler<T>[] = null;
+    }
+
 }

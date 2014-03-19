@@ -1,6 +1,11 @@
 ﻿declare module porcelain {
-    class Signal<Payload> {
-        public connect(handler: (Payload: any) => void): void;
-        public disconnect(handler: (Payload: any) => void): void;
+    interface SignalHandler<T> {
+        (T: any): void;
+    }
+    class Signal<T> {
+        public connect(handler: SignalHandler<T>): void;
+        public disconnect(handler: SignalHandler<T>): void;
+        public emit(arg: T): void;
+        private _handlers;
     }
 }
