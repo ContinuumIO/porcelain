@@ -17,8 +17,8 @@ var porcelain;
     var BODY_CLASS = "porcelain-Window-body";
     var TITLE_BAR_CLASS = "porcelain-Window-titleBar";
 
-    var LEFT_HANDLE_CLASS = "porcelain-Window-leftHandle";
     var TOP_HANDLE_CLASS = "porcelain-Window-topHandle";
+    var LEFT_HANDLE_CLASS = "porcelain-Window-leftHandle";
     var RIGHT_HANDLE_CLASS = "porcelain-Window-rightHandle";
     var BOTTOM_HANDLE_CLASS = "porcelain-Window-bottomHandle";
 
@@ -27,6 +27,7 @@ var porcelain;
     var BOTTOM_LEFT_HANDLE_CLASS = "porcelain-Window-bottomLeftHandle";
     var BOTTOM_RIGHT_HANDLE_CLASS = "porcelain-Window-bottomRightHandle";
 
+    // XXX temporary
     porcelain.topLevelItems = [];
 
     var Window = (function (_super) {
@@ -34,211 +35,309 @@ var porcelain;
         function Window() {
             var _this = this;
             _super.call(this);
-            this.onMouseDown = function (event) {
+            this._onMouseDown = function (event) {
                 _this.raise();
             };
-            this.onLeftHandleDown = function (event) {
-                _this.element.focus();
+            this._onLeftHandleDown = function (event) {
                 if (event.button === 0) {
-                    _this._pressOffsetX = event.pageX - _this.x;
-                    document.addEventListener("mousemove", _this.onLeftHandleMove, true);
-                    document.addEventListener("mouseup", _this.onLeftHandleUp, true);
+                    _this._pressOffsetX = event.pageX - _this.left;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onLeftHandleMove);
+                    doc.on("mouseup", _this._onLeftHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onLeftHandleUp = function (event) {
+            this._onLeftHandleUp = function (event) {
                 if (event.button === 0) {
                     _this._pressOffsetX = 0;
-                    document.removeEventListener("mousemove", _this.onLeftHandleMove, true);
-                    document.removeEventListener("mouseup", _this.onLeftHandleUp, true);
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onLeftHandleMove);
+                    doc.off("mouseup", _this._onLeftHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onLeftHandleMove = function (event) {
-                var rect = new porcelain.Rect(_this.rect);
+            this._onLeftHandleMove = function (event) {
+                var vp = porcelain.viewport;
                 var left = event.pageX - _this._pressOffsetX;
-                var maxLeft = rect.right - _this.minimumSize.width;
-                rect.left = Math.min(Math.max(porcelain.viewport.left, left), maxLeft, porcelain.viewport.windowRight);
-                _this.rect = rect;
+                _this.left = Math.min(Math.max(vp.left, left), vp.windowRight);
                 event.preventDefault();
             };
-            this.onTopHandleDown = function (event) {
+            this._onTopHandleDown = function (event) {
                 if (event.button === 0) {
-                    _this._pressOffsetY = event.pageY - _this.y;
-                    document.addEventListener("mousemove", _this.onTopHandleMove, true);
-                    document.addEventListener("mouseup", _this.onTopHandleUp, true);
+                    _this._pressOffsetY = event.pageY - _this.top;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onTopHandleMove);
+                    doc.on("mouseup", _this._onTopHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onTopHandleUp = function (event) {
+            this._onTopHandleUp = function (event) {
                 if (event.button === 0) {
                     _this._pressOffsetY = 0;
-                    document.removeEventListener("mousemove", _this.onTopHandleMove, true);
-                    document.removeEventListener("mouseup", _this.onTopHandleUp, true);
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onTopHandleMove);
+                    doc.off("mouseup", _this._onTopHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onTopHandleMove = function (event) {
-                var rect = new porcelain.Rect(_this.rect);
+            this._onTopHandleMove = function (event) {
+                var vp = porcelain.viewport;
                 var top = event.pageY - _this._pressOffsetY;
-                var maxTop = rect.bottom - _this.minimumSize.height;
-                rect.top = Math.min(Math.max(porcelain.viewport.top, top), maxTop, porcelain.viewport.windowBottom);
-                _this.rect = rect;
+                _this.top = Math.min(Math.max(vp.top, top), vp.windowBottom);
                 event.preventDefault();
             };
-            this.onRightHandleDown = function (event) {
+            this._onRightHandleDown = function (event) {
                 if (event.button === 0) {
-                    _this._pressOffsetX = event.pageX - (_this.x + _this.width);
-                    document.addEventListener("mousemove", _this.onRightHandleMove, true);
-                    document.addEventListener("mouseup", _this.onRightHandleUp, true);
+                    _this._pressOffsetX = event.pageX - _this.right;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onRightHandleMove);
+                    doc.on("mouseup", _this._onRightHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onRightHandleUp = function (event) {
+            this._onRightHandleUp = function (event) {
                 if (event.button === 0) {
                     _this._pressOffsetX = 0;
-                    document.removeEventListener("mousemove", _this.onRightHandleMove, true);
-                    document.removeEventListener("mouseup", _this.onRightHandleUp, true);
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onRightHandleMove);
+                    doc.off("mouseup", _this._onRightHandleMove);
                     event.preventDefault();
                 }
             };
-            this.onRightHandleMove = function (event) {
-                var rect = new porcelain.Rect(_this.rect);
+            this._onRightHandleMove = function (event) {
+                var vp = porcelain.viewport;
                 var right = event.pageX - _this._pressOffsetX;
-                var minRight = rect.left + _this.minimumSize.width;
-                rect.right = Math.max(Math.min(porcelain.viewport.windowRight, right), minRight, porcelain.viewport.top);
-                _this.rect = rect;
+                _this.right = Math.min(Math.max(vp.left, right), vp.windowRight);
                 event.preventDefault();
             };
-            this.onBottomHandleDown = function (event) {
+            this._onBottomHandleDown = function (event) {
                 if (event.button === 0) {
-                    _this._pressOffsetY = event.pageY - (_this.y + _this.height);
-                    document.addEventListener("mousemove", _this.onBottomHandleMove, true);
-                    document.addEventListener("mouseup", _this.onBottomHandleUp, true);
+                    _this._pressOffsetY = event.pageY - _this.bottom;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onBottomHandleMove);
+                    doc.on("mouseup", _this._onBottomHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onBottomHandleUp = function (event) {
+            this._onBottomHandleUp = function (event) {
                 if (event.button === 0) {
                     _this._pressOffsetY = 0;
-                    document.removeEventListener("mousemove", _this.onBottomHandleMove, true);
-                    document.removeEventListener("mouseup", _this.onBottomHandleUp, true);
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onBottomHandleMove);
+                    doc.off("mouseup", _this._onBottomHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onBottomHandleMove = function (event) {
-                var rect = new porcelain.Rect(_this.rect);
+            this._onBottomHandleMove = function (event) {
+                var vp = porcelain.viewport;
                 var bottom = event.pageY - _this._pressOffsetY;
-                var minBottom = rect.top + _this.minimumSize.height;
-                rect.bottom = Math.max(Math.min(porcelain.viewport.windowBottom, bottom), minBottom, porcelain.viewport.top);
-                _this.rect = rect;
+                _this.bottom = Math.min(Math.max(vp.top, bottom), vp.windowBottom);
                 event.preventDefault();
             };
-            this.onTitleBarDown = function (event) {
+            this._onTopLeftHandleDown = function (event) {
                 if (event.button === 0) {
-                    _this._pressOffsetX = event.pageX - _this.x;
-                    _this._pressOffsetY = event.pageY - _this.y;
-                    document.addEventListener("mousemove", _this.onTitleBarMove, true);
-                    document.addEventListener("mouseup", _this.onTitleBarUp, true);
+                    _this._pressOffsetX = event.pageX - _this.left;
+                    _this._pressOffsetY = event.pageY - _this.top;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onTopLeftHandleMove);
+                    doc.on("mouseup", _this._onTopLeftHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onTitleBarUp = function (event) {
+            this._onTopLeftHandleUp = function (event) {
                 if (event.button === 0) {
                     _this._pressOffsetX = 0;
                     _this._pressOffsetY = 0;
-                    document.removeEventListener("mousemove", _this.onTitleBarMove, true);
-                    document.removeEventListener("mouseup", _this.onTitleBarUp, true);
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onTopLeftHandleMove);
+                    doc.off("mouseup", _this._onTopLeftHandleUp);
                     event.preventDefault();
                 }
             };
-            this.onTitleBarMove = function (event) {
-                var pageX = Math.max(porcelain.viewport.left, Math.min(event.pageX, porcelain.viewport.windowRight));
-                var pageY = Math.max(porcelain.viewport.top, Math.min(event.pageY, porcelain.viewport.windowBottom));
-                var x = pageX - _this._pressOffsetX;
-                var y = pageY - _this._pressOffsetY;
+            this._onTopLeftHandleMove = function (event) {
+                var vp = porcelain.viewport;
+                var x = event.pageX - _this._pressOffsetX;
+                var y = event.pageY - _this._pressOffsetY;
+                x = Math.min(Math.max(vp.left, x), vp.windowRight);
+                y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+                _this.topLeft = { x: x, y: y };
+                event.preventDefault();
+            };
+            this._onTopRightHandleDown = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = event.pageX - _this.right;
+                    _this._pressOffsetY = event.pageY - _this.top;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onTopRightHandleMove);
+                    doc.on("mouseup", _this._onTopRightHandleUp);
+                    event.preventDefault();
+                }
+            };
+            this._onTopRightHandleUp = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = 0;
+                    _this._pressOffsetY = 0;
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onTopRightHandleMove);
+                    doc.off("mouseup", _this._onTopRightHandleUp);
+                    event.preventDefault();
+                }
+            };
+            this._onTopRightHandleMove = function (event) {
+                var vp = porcelain.viewport;
+                var x = event.pageX - _this._pressOffsetX;
+                var y = event.pageY - _this._pressOffsetY;
+                x = Math.min(Math.max(vp.left, x), vp.windowRight);
+                y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+                _this.topRight = { x: x, y: y };
+                event.preventDefault();
+            };
+            this._onBottomLeftHandleDown = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = event.pageX - _this.left;
+                    _this._pressOffsetY = event.pageY - _this.bottom;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onBottomLeftHandleMove);
+                    doc.on("mouseup", _this._onBottomLeftHandleUp);
+                    event.preventDefault();
+                }
+            };
+            this._onBottomLeftHandleUp = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = 0;
+                    _this._pressOffsetY = 0;
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onBottomLeftHandleMove);
+                    doc.off("mouseup", _this._onBottomLeftHandleUp);
+                    event.preventDefault();
+                }
+            };
+            this._onBottomLeftHandleMove = function (event) {
+                var vp = porcelain.viewport;
+                var x = event.pageX - _this._pressOffsetX;
+                var y = event.pageY - _this._pressOffsetY;
+                x = Math.min(Math.max(vp.left, x), vp.windowRight);
+                y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+                _this.bottomLeft = { x: x, y: y };
+                event.preventDefault();
+            };
+            this._onBottomRightHandleDown = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = event.pageX - _this.right;
+                    _this._pressOffsetY = event.pageY - _this.bottom;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onBottomRightHandleMove);
+                    doc.on("mouseup", _this._onBottomRightHandleUp);
+                    event.preventDefault();
+                }
+            };
+            this._onBottomRightHandleUp = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = 0;
+                    _this._pressOffsetY = 0;
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onBottomRightHandleMove);
+                    doc.off("mouseup", _this._onBottomRightHandleUp);
+                    event.preventDefault();
+                }
+            };
+            this._onBottomRightHandleMove = function (event) {
+                var vp = porcelain.viewport;
+                var x = event.pageX - _this._pressOffsetX;
+                var y = event.pageY - _this._pressOffsetY;
+                x = Math.min(Math.max(vp.left, x), vp.windowRight);
+                y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+                _this.bottomRight = { x: x, y: y };
+                event.preventDefault();
+            };
+            this._onTitleBarDown = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = event.pageX - _this.left;
+                    _this._pressOffsetY = event.pageY - _this.top;
+                    var doc = $(document);
+                    doc.on("mousemove", _this._onTitleBarMove);
+                    doc.on("mouseup", _this._onTitleBarUp);
+                    event.preventDefault();
+                }
+            };
+            this._onTitleBarUp = function (event) {
+                if (event.button === 0) {
+                    _this._pressOffsetX = 0;
+                    _this._pressOffsetY = 0;
+                    var doc = $(document);
+                    doc.off("mousemove", _this._onTitleBarMove);
+                    doc.off("mouseup", _this._onTitleBarUp);
+                    event.preventDefault();
+                }
+            };
+            this._onTitleBarMove = function (event) {
+                var vp = porcelain.viewport;
+                var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
+                var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
+                x -= _this._pressOffsetX;
+                y -= _this._pressOffsetY;
                 _this.pos = { x: x, y: y };
                 event.preventDefault();
             };
             this._pressOffsetX = 0;
             this._pressOffsetY = 0;
             this._body = null;
-            this.minimumSize = { width: 50, height: 50 };
+
+            // XXX temporary
             porcelain.topLevelItems.push(this);
+            this.minimumSize = { width: 192, height: 192 };
+            this.maximumSize = { width: 640, height: 480 };
+            this.rect = { x: 50, y: 50, width: 100, height: 100 };
         }
         Window.prototype.show = function () {
-            this.render();
-            var body = document.getElementsByTagName("body")[0];
-            body.appendChild(this.element);
-            this.rect = { x: 50, y: 50, width: 100, height: 100 };
-        };
+            this._create();
 
-        Window.prototype.createElement = function () {
-            var element = document.createElement("div");
-            element.className = WINDOW_CLASS;
-            element.addEventListener("mousedown", this.onMouseDown);
-
-            var body = document.createElement("div");
-            body.className = BODY_CLASS;
-            element.appendChild(body);
-
-            var titleBar = document.createElement("div");
-            titleBar.className = TITLE_BAR_CLASS;
-            element.appendChild(titleBar);
-
-            var leftHandle = document.createElement("div");
-            leftHandle.className = LEFT_HANDLE_CLASS;
-            element.appendChild(leftHandle);
-
-            var topHandle = document.createElement("div");
-            topHandle.className = TOP_HANDLE_CLASS;
-            element.appendChild(topHandle);
-
-            var rightHandle = document.createElement("div");
-            rightHandle.className = RIGHT_HANDLE_CLASS;
-            element.appendChild(rightHandle);
-
-            var bottomHandle = document.createElement("div");
-            bottomHandle.className = BOTTOM_HANDLE_CLASS;
-            element.appendChild(bottomHandle);
-
-            var topLeftHandle = document.createElement("div");
-            topLeftHandle.className = TOP_LEFT_HANDLE_CLASS;
-            element.appendChild(topLeftHandle);
-
-            var topRightHandle = document.createElement("div");
-            topRightHandle.className = TOP_RIGHT_HANDLE_CLASS;
-            element.appendChild(topRightHandle);
-
-            var bottomLeftHandle = document.createElement("div");
-            bottomLeftHandle.className = BOTTOM_LEFT_HANDLE_CLASS;
-            element.appendChild(bottomLeftHandle);
-
-            var bottomRightHandle = document.createElement("div");
-            bottomRightHandle.className = BOTTOM_RIGHT_HANDLE_CLASS;
-            element.appendChild(bottomRightHandle);
-
-            titleBar.addEventListener("mousedown", this.onTitleBarDown);
-            leftHandle.addEventListener("mousedown", this.onLeftHandleDown);
-            topHandle.addEventListener("mousedown", this.onTopHandleDown);
-            rightHandle.addEventListener("mousedown", this.onRightHandleDown);
-            bottomHandle.addEventListener("mousedown", this.onBottomHandleDown);
-
-            this._body = body;
-
-            return element;
+            // XXX temporary
+            $("body").append(this.element);
         };
 
         Window.prototype.raise = function () {
-            console.log("raise");
             var z = 0;
-            porcelain.topLevelItems.forEach(function (item) {
-                var e = item.element;
-                if (e !== null) {
-                    z = Math.max(z, parseInt(e.style.zIndex) || 0);
+            $.each(porcelain.topLevelItems, function (index, item) {
+                var e = $(item.element);
+                if (e.length) {
+                    z = Math.max(z, parseInt(e.css("z-index")) || 0);
                 }
             });
-            this.element.style.zIndex = (z + 1).toString();
+            $(this.element).css("z-index", z + 1);
+        };
+
+        // protected
+        Window.prototype._create = function () {
+            _super.prototype._create.call(this);
+
+            if (this._body !== null) {
+                return;
+            }
+
+            var titleBar = $("<div>").addClass(TITLE_BAR_CLASS).mousedown(this._onTitleBarDown);
+
+            var leftHandle = $("<div>").addClass(LEFT_HANDLE_CLASS).mousedown(this._onLeftHandleDown);
+
+            var topHandle = $("<div>").addClass(TOP_HANDLE_CLASS).mousedown(this._onTopHandleDown);
+
+            var rightHandle = $("<div>").addClass(RIGHT_HANDLE_CLASS).mousedown(this._onRightHandleDown);
+
+            var bottomHandle = $("<div>").addClass(BOTTOM_HANDLE_CLASS).mousedown(this._onBottomHandleDown);
+
+            var topLeftHandle = $("<div>").addClass(TOP_LEFT_HANDLE_CLASS).mousedown(this._onTopLeftHandleDown);
+
+            var topRightHandle = $("<div>").addClass(TOP_RIGHT_HANDLE_CLASS).mousedown(this._onTopRightHandleDown);
+
+            var bottomLeftHandle = $("<div>").addClass(BOTTOM_LEFT_HANDLE_CLASS).mousedown(this._onBottomLeftHandleDown);
+
+            var bottomRightHandle = $("<div>").addClass(BOTTOM_RIGHT_HANDLE_CLASS).mousedown(this._onBottomRightHandleDown);
+
+            var body = $("<div>").addClass(BODY_CLASS);
+
+            var element = $(this.element).addClass(WINDOW_CLASS).mousedown(this._onMouseDown).append(body, titleBar, topHandle, leftHandle, rightHandle, bottomHandle, topLeftHandle, topRightHandle, bottomLeftHandle, bottomRightHandle);
+
+            this._body = body[0];
         };
         return Window;
     })(porcelain.Item);

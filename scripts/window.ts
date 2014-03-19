@@ -11,8 +11,8 @@ module porcelain {
     var BODY_CLASS = "porcelain-Window-body";
     var TITLE_BAR_CLASS = "porcelain-Window-titleBar";
 
-    var LEFT_HANDLE_CLASS = "porcelain-Window-leftHandle";
     var TOP_HANDLE_CLASS = "porcelain-Window-topHandle";
+    var LEFT_HANDLE_CLASS = "porcelain-Window-leftHandle";
     var RIGHT_HANDLE_CLASS = "porcelain-Window-rightHandle";
     var BOTTOM_HANDLE_CLASS = "porcelain-Window-bottomHandle";
     
@@ -20,232 +20,371 @@ module porcelain {
     var TOP_RIGHT_HANDLE_CLASS = "porcelain-Window-topRightHandle";
     var BOTTOM_LEFT_HANDLE_CLASS = "porcelain-Window-bottomLeftHandle";
     var BOTTOM_RIGHT_HANDLE_CLASS = "porcelain-Window-bottomRightHandle";
-    
 
+    // XXX temporary
     export var topLevelItems: Item[] = []
-
 
     export class Window extends Item {
 
         constructor() {
             super();
-            this.minimumSize = { width: 50, height: 50 };
+            // XXX temporary
             topLevelItems.push(this);
-        }
-
-        show(): void {
-            this.render();
-            var body = document.getElementsByTagName("body")[0];
-            body.appendChild(this.element);
+            this.minimumSize = { width: 192, height: 192 };
+            this.maximumSize = { width: 640, height: 480 };
             this.rect = { x: 50, y: 50, width: 100, height: 100 };
         }
 
-        createElement(): HTMLDivElement {
-            var element = document.createElement("div");
-            element.className = WINDOW_CLASS;
-            element.addEventListener("mousedown", this.onMouseDown);
-
-            var body = document.createElement("div");
-            body.className = BODY_CLASS;
-            element.appendChild(body);
-
-            var titleBar = document.createElement("div");
-            titleBar.className = TITLE_BAR_CLASS;
-            element.appendChild(titleBar);
-
-            var leftHandle = document.createElement("div");
-            leftHandle.className = LEFT_HANDLE_CLASS;
-            element.appendChild(leftHandle);
-
-            var topHandle = document.createElement("div");
-            topHandle.className = TOP_HANDLE_CLASS;
-            element.appendChild(topHandle);
-
-            var rightHandle = document.createElement("div");
-            rightHandle.className = RIGHT_HANDLE_CLASS;
-            element.appendChild(rightHandle);
-
-            var bottomHandle = document.createElement("div");
-            bottomHandle.className = BOTTOM_HANDLE_CLASS;
-            element.appendChild(bottomHandle);
-
-            var topLeftHandle = document.createElement("div");
-            topLeftHandle.className = TOP_LEFT_HANDLE_CLASS;
-            element.appendChild(topLeftHandle);
-
-            var topRightHandle = document.createElement("div");
-            topRightHandle.className = TOP_RIGHT_HANDLE_CLASS;
-            element.appendChild(topRightHandle);
-
-            var bottomLeftHandle = document.createElement("div");
-            bottomLeftHandle.className = BOTTOM_LEFT_HANDLE_CLASS;
-            element.appendChild(bottomLeftHandle);
-
-            var bottomRightHandle = document.createElement("div");
-            bottomRightHandle.className = BOTTOM_RIGHT_HANDLE_CLASS;
-            element.appendChild(bottomRightHandle);
-
-            titleBar.addEventListener("mousedown", this.onTitleBarDown);
-            leftHandle.addEventListener("mousedown", this.onLeftHandleDown);
-            topHandle.addEventListener("mousedown", this.onTopHandleDown);
-            rightHandle.addEventListener("mousedown", this.onRightHandleDown);
-            bottomHandle.addEventListener("mousedown", this.onBottomHandleDown);
-
-            this._body = body;
-
-            return element;
+        show(): void {
+            this._create();
+            // XXX temporary
+            $("body").append(this.element);
         }
 
         raise(): void {
-            console.log("raise");
             var z = 0;
-            topLevelItems.forEach(function (item) {
-                var e = item.element;
-                if (e !== null) {
-                    z = Math.max(z, parseInt(e.style.zIndex) || 0);
+            $.each(topLevelItems, function (index, item) {
+                var e = $(item.element);
+                if (e.length) {
+                    z = Math.max(z, parseInt(e.css("z-index")) || 0);
                 }
             });
-            this.element.style.zIndex = (z + 1).toString();
+            $(this.element).css("z-index", z + 1);
         }
 
-        private onMouseDown = (event: MouseEvent) => {
+        // protected
+        _create(): void {
+            super._create();
+
+            if (this._body !== null) {
+                return;
+            }
+
+            var titleBar = $("<div>")
+                .addClass(TITLE_BAR_CLASS)
+                .mousedown(this._onTitleBarDown);
+
+            var leftHandle = $("<div>")
+                .addClass(LEFT_HANDLE_CLASS)
+                .mousedown(this._onLeftHandleDown);
+
+            var topHandle = $("<div>")
+                .addClass(TOP_HANDLE_CLASS)
+                .mousedown(this._onTopHandleDown);
+
+            var rightHandle = $("<div>")
+                .addClass(RIGHT_HANDLE_CLASS)
+                .mousedown(this._onRightHandleDown);
+
+            var bottomHandle = $("<div>")
+                .addClass(BOTTOM_HANDLE_CLASS)
+                .mousedown(this._onBottomHandleDown);
+
+            var topLeftHandle = $("<div>")
+                .addClass(TOP_LEFT_HANDLE_CLASS)
+                .mousedown(this._onTopLeftHandleDown);
+
+            var topRightHandle = $("<div>")
+                .addClass(TOP_RIGHT_HANDLE_CLASS)
+                .mousedown(this._onTopRightHandleDown);
+
+            var bottomLeftHandle = $("<div>")
+                .addClass(BOTTOM_LEFT_HANDLE_CLASS)
+                .mousedown(this._onBottomLeftHandleDown);
+
+            var bottomRightHandle = $("<div>")
+                .addClass(BOTTOM_RIGHT_HANDLE_CLASS)
+                .mousedown(this._onBottomRightHandleDown);
+
+            var body = $("<div>")
+                .addClass(BODY_CLASS);
+
+            var element = $(this.element)
+                .addClass(WINDOW_CLASS)
+                .mousedown(this._onMouseDown)
+                .append(
+                    body,
+                    titleBar,
+                    topHandle,
+                    leftHandle,
+                    rightHandle,
+                    bottomHandle,
+                    topLeftHandle,
+                    topRightHandle,
+                    bottomLeftHandle,
+                    bottomRightHandle);
+
+            this._body = <HTMLDivElement>body[0];
+        }
+
+        private _onMouseDown = (event: JQueryMouseEventObject) => {
             this.raise();
         }
 
-        private onLeftHandleDown = (event: MouseEvent) => {
-            this.element.focus();
+        private _onLeftHandleDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
-                this._pressOffsetX = event.pageX - this.x;
-                document.addEventListener("mousemove", this.onLeftHandleMove, true);
-                document.addEventListener("mouseup", this.onLeftHandleUp, true);
+                this._pressOffsetX = event.pageX - this.left;
+                var doc = $(document);
+                doc.on("mousemove", this._onLeftHandleMove);
+                doc.on("mouseup", this._onLeftHandleUp);
                 event.preventDefault();
             }
         }
-
-        private onLeftHandleUp = (event: MouseEvent) => {
+        
+        private _onLeftHandleUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 this._pressOffsetX = 0;
-                document.removeEventListener("mousemove", this.onLeftHandleMove, true);
-                document.removeEventListener("mouseup", this.onLeftHandleUp, true);
+                var doc = $(document);
+                doc.off("mousemove", this._onLeftHandleMove);
+                doc.off("mouseup", this._onLeftHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onLeftHandleMove = (event: MouseEvent) => {
-            var rect = new Rect(this.rect);
+        private _onLeftHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
             var left = event.pageX - this._pressOffsetX;
-            var maxLeft = rect.right - this.minimumSize.width;
-            rect.left = Math.min(Math.max(viewport.left, left), maxLeft, viewport.windowRight);
-            this.rect = rect;
+            this.left = Math.min(Math.max(vp.left, left), vp.windowRight);
             event.preventDefault();
         }
 
-        private onTopHandleDown = (event: MouseEvent) => {
+        private _onTopHandleDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
-                this._pressOffsetY = event.pageY - this.y;
-                document.addEventListener("mousemove", this.onTopHandleMove, true);
-                document.addEventListener("mouseup", this.onTopHandleUp, true);
+                this._pressOffsetY = event.pageY - this.top;
+                var doc = $(document);
+                doc.on("mousemove", this._onTopHandleMove);
+                doc.on("mouseup", this._onTopHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onTopHandleUp = (event: MouseEvent) => {
+        private _onTopHandleUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 this._pressOffsetY = 0;
-                document.removeEventListener("mousemove", this.onTopHandleMove, true);
-                document.removeEventListener("mouseup", this.onTopHandleUp, true);
+                var doc = $(document);
+                doc.off("mousemove", this._onTopHandleMove);
+                doc.off("mouseup", this._onTopHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onTopHandleMove = (event: MouseEvent) => {
-            var rect = new Rect(this.rect);
+        private _onTopHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
             var top = event.pageY - this._pressOffsetY;
-            var maxTop = rect.bottom - this.minimumSize.height;
-            rect.top = Math.min(Math.max(viewport.top, top), maxTop, viewport.windowBottom);
-            this.rect = rect;
+            this.top = Math.min(Math.max(vp.top, top),vp.windowBottom);
             event.preventDefault();
         }
 
-        private onRightHandleDown = (event: MouseEvent) => {
+        private _onRightHandleDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
-                this._pressOffsetX = event.pageX - (this.x + this.width);
-                document.addEventListener("mousemove", this.onRightHandleMove, true);
-                document.addEventListener("mouseup", this.onRightHandleUp, true);
+                this._pressOffsetX = event.pageX - this.right;
+                var doc = $(document);
+                doc.on("mousemove", this._onRightHandleMove);
+                doc.on("mouseup", this._onRightHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onRightHandleUp = (event: MouseEvent) => {
+        private _onRightHandleUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 this._pressOffsetX = 0;
-                document.removeEventListener("mousemove", this.onRightHandleMove, true);
-                document.removeEventListener("mouseup", this.onRightHandleUp, true);
+                var doc = $(document);
+                doc.off("mousemove", this._onRightHandleMove);
+                doc.off("mouseup", this._onRightHandleMove);
                 event.preventDefault();
             }
         }
 
-        private onRightHandleMove = (event: MouseEvent) => {
-            var rect = new Rect(this.rect);
+        private _onRightHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
             var right = event.pageX - this._pressOffsetX;
-            var minRight = rect.left + this.minimumSize.width;
-            rect.right = Math.max(Math.min(viewport.windowRight, right), minRight, viewport.top);
-            this.rect = rect;
+            this.right = Math.min(Math.max(vp.left, right), vp.windowRight);
             event.preventDefault();
         }
 
-        private onBottomHandleDown = (event: MouseEvent) => {
+        private _onBottomHandleDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
-                this._pressOffsetY = event.pageY - (this.y + this.height);
-                document.addEventListener("mousemove", this.onBottomHandleMove, true);
-                document.addEventListener("mouseup", this.onBottomHandleUp, true);
+                this._pressOffsetY = event.pageY - this.bottom;
+                var doc = $(document);
+                doc.on("mousemove", this._onBottomHandleMove);
+                doc.on("mouseup", this._onBottomHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onBottomHandleUp = (event: MouseEvent) => {
+        private _onBottomHandleUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 this._pressOffsetY = 0;
-                document.removeEventListener("mousemove", this.onBottomHandleMove, true);
-                document.removeEventListener("mouseup", this.onBottomHandleUp, true);
+                var doc = $(document);
+                doc.off("mousemove", this._onBottomHandleMove);
+                doc.off("mouseup", this._onBottomHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onBottomHandleMove = (event: MouseEvent) => {
-            var rect = new Rect(this.rect);
+        private _onBottomHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
             var bottom = event.pageY - this._pressOffsetY;
-            var minBottom = rect.top + this.minimumSize.height;
-            rect.bottom = Math.max(Math.min(viewport.windowBottom, bottom), minBottom, viewport.top);
-            this.rect = rect;
+            this.bottom = Math.min(Math.max(vp.top, bottom), vp.windowBottom);
             event.preventDefault();
         }
 
-        private onTitleBarDown = (event: MouseEvent) => {
+        private _onTopLeftHandleDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
-                this._pressOffsetX = event.pageX - this.x;
-                this._pressOffsetY = event.pageY - this.y;
-                document.addEventListener("mousemove", this.onTitleBarMove, true);
-                document.addEventListener("mouseup", this.onTitleBarUp, true);
+                this._pressOffsetX = event.pageX - this.left;
+                this._pressOffsetY = event.pageY - this.top;
+                var doc = $(document);
+                doc.on("mousemove", this._onTopLeftHandleMove);
+                doc.on("mouseup", this._onTopLeftHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onTitleBarUp = (event: MouseEvent) => {
+        private _onTopLeftHandleUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 this._pressOffsetX = 0;
                 this._pressOffsetY = 0;
-                document.removeEventListener("mousemove", this.onTitleBarMove, true);
-                document.removeEventListener("mouseup", this.onTitleBarUp, true);
+                var doc = $(document);
+                doc.off("mousemove", this._onTopLeftHandleMove);
+                doc.off("mouseup", this._onTopLeftHandleUp);
                 event.preventDefault();
             }
         }
 
-        private onTitleBarMove = (event: MouseEvent) => {
-            var pageX = Math.max(viewport.left, Math.min(event.pageX, viewport.windowRight));
-            var pageY = Math.max(viewport.top, Math.min(event.pageY, viewport.windowBottom));
-            var x = pageX - this._pressOffsetX;
-            var y = pageY - this._pressOffsetY;
+        private _onTopLeftHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
+            var x = event.pageX - this._pressOffsetX;
+            var y = event.pageY - this._pressOffsetY;
+            x = Math.min(Math.max(vp.left, x), vp.windowRight);
+            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+            this.topLeft = { x: x, y: y };
+            event.preventDefault();
+        }
+
+        private _onTopRightHandleDown = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = event.pageX - this.right;
+                this._pressOffsetY = event.pageY - this.top;
+                var doc = $(document);
+                doc.on("mousemove", this._onTopRightHandleMove);
+                doc.on("mouseup", this._onTopRightHandleUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onTopRightHandleUp = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = 0;
+                this._pressOffsetY = 0;
+                var doc = $(document);
+                doc.off("mousemove", this._onTopRightHandleMove);
+                doc.off("mouseup", this._onTopRightHandleUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onTopRightHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
+            var x = event.pageX - this._pressOffsetX;
+            var y = event.pageY - this._pressOffsetY;
+            x = Math.min(Math.max(vp.left, x), vp.windowRight);
+            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+            this.topRight = { x: x, y: y };
+            event.preventDefault();
+        }
+
+        private _onBottomLeftHandleDown = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = event.pageX - this.left;
+                this._pressOffsetY = event.pageY - this.bottom;
+                var doc = $(document);
+                doc.on("mousemove", this._onBottomLeftHandleMove);
+                doc.on("mouseup", this._onBottomLeftHandleUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onBottomLeftHandleUp = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = 0;
+                this._pressOffsetY = 0;
+                var doc = $(document);
+                doc.off("mousemove", this._onBottomLeftHandleMove);
+                doc.off("mouseup", this._onBottomLeftHandleUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onBottomLeftHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
+            var x = event.pageX - this._pressOffsetX;
+            var y = event.pageY - this._pressOffsetY;
+            x = Math.min(Math.max(vp.left, x), vp.windowRight);
+            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+            this.bottomLeft = { x: x, y: y };
+            event.preventDefault();
+        }
+
+        private _onBottomRightHandleDown = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = event.pageX - this.right;
+                this._pressOffsetY = event.pageY - this.bottom;
+                var doc = $(document);
+                doc.on("mousemove", this._onBottomRightHandleMove);
+                doc.on("mouseup", this._onBottomRightHandleUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onBottomRightHandleUp = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = 0;
+                this._pressOffsetY = 0;
+                var doc = $(document);
+                doc.off("mousemove", this._onBottomRightHandleMove);
+                doc.off("mouseup", this._onBottomRightHandleUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onBottomRightHandleMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
+            var x = event.pageX - this._pressOffsetX;
+            var y = event.pageY - this._pressOffsetY;
+            x = Math.min(Math.max(vp.left, x), vp.windowRight);
+            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+            this.bottomRight = { x: x, y: y };
+            event.preventDefault();
+        }
+
+        private _onTitleBarDown = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = event.pageX - this.left;
+                this._pressOffsetY = event.pageY - this.top;
+                var doc = $(document);
+                doc.on("mousemove", this._onTitleBarMove);
+                doc.on("mouseup", this._onTitleBarUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onTitleBarUp = (event: JQueryMouseEventObject) => {
+            if (event.button === 0) {
+                this._pressOffsetX = 0;
+                this._pressOffsetY = 0;
+                var doc = $(document);
+                doc.off("mousemove", this._onTitleBarMove);
+                doc.off("mouseup", this._onTitleBarUp);
+                event.preventDefault();
+            }
+        }
+
+        private _onTitleBarMove = (event: JQueryMouseEventObject) => {
+            var vp = viewport;
+            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
+            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
+            x -= this._pressOffsetX;
+            y -= this._pressOffsetY;
             this.pos = { x: x, y: y };
             event.preventDefault();
         }
