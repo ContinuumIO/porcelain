@@ -52,9 +52,6 @@ module porcelain {
             if (this.contains(item)) {
                 return;
             }
-            if (item.element === null) {
-                throw "null Item element";
-            }
             var z = this._minZ + this._stack.length;
             var pair = { item: item, jq: $(item.element) };
             this._stack.push(pair);
