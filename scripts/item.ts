@@ -18,44 +18,18 @@ module porcelain {
          * An Item is represented by a single <div>. The div 
          * contents and layout are specified by subclasses.
          */
-        constructor() { }
-
-        /**
-         * Get the width of the item in pixels.
-         * @readonly
-         * @type {number}
-         */
-        get width(): number {
-            if (!this._element) {
-                return 0;
-            }
-            return this._element.getBoundingClientRect().width;
+        constructor() {
+            this._element = document.createElement("div");
+            $(this._element).addClass(ITEM_CLASS);
         }
 
         /**
-         * Get the height of the item in pixels.
-         * @readonly
-         * @type {number}
+         * Destroy the item and remove its element from the DOM. 
+         * Interaction with an Item after it is destroyed is undefined.
          */
-        get height(): number {
-            if (!this._element) {
-                return 0;
-            }
-            return this._element.getBoundingClientRect().height;
-        }
-
-        /**
-         * Get the size of the item. This is more efficient than
-         * getting `width` and `height` independently.
-         * @readonly
-         * @type {ISize}
-         */
-        get size(): ISize {
-            if (!this._element) {
-                return { width: 0, height: 0 };
-            }
-            var r = this._element.getBoundingClientRect();
-            return { width: r.width, height: r.height };
+        destroy(): void {
+            $(this._element).remove();
+            this._element = null;
         }
 
         /**
@@ -68,30 +42,35 @@ module porcelain {
         }
 
         /**
-         * Create the item's internal div element. This is a 
-         * no-op if the element has already been created.
+         * Get the width of the item in pixels.
+         * @readonly
+         * @type {number}
          */
-        create(): void {
-            if (this._element) {
-                return;
-            }
-            this._element = document.createElement("div");
-            $(this._element).addClass(ITEM_CLASS);
+        get width(): number {
+            return this._element.getBoundingClientRect().width;
         }
 
         /**
-         * Destroy the item's internal div element. This is a
-         * no-op if the element has already been destroyed.
+         * Get the height of the item in pixels.
+         * @readonly
+         * @type {number}
          */
-        destroy(): void {
-            if (!this._element) {
-                return;
-            }
-            $(this._element).remove();
-            this._element = null;
+        get height(): number {
+            return this._element.getBoundingClientRect().height;
         }
 
-        private _element: HTMLDivElement = null;
+        /**
+         * Get the size of the item. This is more efficient than
+         * getting `width` and `height` independently.
+         * @readonly
+         * @type {ISize}
+         */
+        get size(): ISize {
+            var r = this._element.getBoundingClientRect();
+            return { width: r.width, height: r.height };
+        }
+
+        private _element: HTMLDivElement;
     }
 
 }

@@ -9,6 +9,17 @@
         */
         constructor();
         /**
+        * Destroy the item and remove its element from the DOM.
+        * Interaction with an Item after it is destroyed is undefined.
+        */
+        public destroy(): void;
+        /**
+        * The item's internal div element.
+        * @readonly
+        * @type {HTMLDivElement}
+        */
+        public element : HTMLDivElement;
+        /**
         * Get the width of the item in pixels.
         * @readonly
         * @type {number}
@@ -27,22 +38,6 @@
         * @type {ISize}
         */
         public size : ISize;
-        /**
-        * The item's internal div element.
-        * @readonly
-        * @type {HTMLDivElement}
-        */
-        public element : HTMLDivElement;
-        /**
-        * Create the item's internal div element. This is a
-        * no-op if the element has already been created.
-        */
-        public create(): void;
-        /**
-        * Destroy the item's internal div element. This is a
-        * no-op if the element has already been destroyed.
-        */
-        public destroy(): void;
         private _element;
     }
 }
