@@ -7,13 +7,9 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    export interface SignalHandler<T> {
-        (T): void;
-    }
-
     export class Signal<T> {
 
-        connect(handler: SignalHandler<T>): void {
+        connect(handler: IEventHandler<T>): void {
             if (!this._handlers) {
                 this._handlers = [];
             }
@@ -23,7 +19,7 @@ module porcelain {
             }
         }
 
-        disconnect(handler: SignalHandler<T>): void {
+        disconnect(handler: IEventHandler<T>): void {
             if (!this._handlers) {
                 return;
             }
@@ -42,7 +38,7 @@ module porcelain {
             });
         }
 
-        private _handlers: SignalHandler<T>[] = null;
+        private _handlers: IEventHandler<T>[] = null;
     }
 
 }
