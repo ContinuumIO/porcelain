@@ -30,6 +30,7 @@
     <TypeScriptCompile Include="scripts\signal.ts" />
     <Content Include="css\app.css" />
     <Content Include="css\item.css" />
+    <Content Include="css\widget.css" />
     <Content Include="css\window.css" />
     <TypeScriptCompile Include="scripts\viewport.ts" />
     <TypeScriptCompile Include="scripts\window.ts" />
@@ -37,6 +38,9 @@
     <TypeScriptCompile Include="scripts\utils.ts" />
     <TypeScriptCompile Include="scripts\z_stack.ts" />
     <TypeScriptCompile Include="scripts\widget.ts" />
+    <TypeScriptCompile Include="scripts\enums.ts" />
+    <TypeScriptCompile Include="scripts\i_event_handler.d.ts" />
+    <TypeScriptCompile Include="scripts\drag_helper.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
