@@ -192,10 +192,6 @@
         */
         public maximumSize : ISize;
         /**
-        * Create the DOM contents for the widget.
-        */
-        public create(): void;
-        /**
         * Synchronize the div's geometry with the internal geometry.
         * @private
         */

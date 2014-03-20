@@ -24,7 +24,8 @@ module porcelain {
          * internal div element.
          */
         constructor() {
-            super()
+            super();
+            $(this.element).addClass(WIDGET_CLASS);
         }
         
         /* Get the left edge of the widget. The value is in units of
@@ -405,31 +406,17 @@ module porcelain {
         }
 
         /**
-         * Create the DOM contents for the widget.
-         */
-        create(): void {
-            if (this.element) {
-                return;
-            }
-            super.create();
-            $(this.element).addClass(WIDGET_CLASS);
-            this._syncGeometry();
-        }
-
-        /**
          * Synchronize the div's geometry with the internal geometry.
          * @private
          */
         private _syncGeometry(): void {
-            if (this.element) {
-                var geo = this._geometry;
-                $(this.element).css({
-                    left: geo.left,
-                    top: geo.top,
-                    width: geo.width,
-                    height: geo.height
-                });
-            }
+            var geo = this._geometry;
+            $(this.element).css({
+                left: geo.left,
+                top: geo.top,
+                width: geo.width,
+                height: geo.height
+            });
         }
 
         private _geometry: Rect = new Rect();

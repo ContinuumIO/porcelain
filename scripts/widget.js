@@ -34,6 +34,7 @@ var porcelain;
             this._geometry = new porcelain.Rect();
             this._minSize = new porcelain.Size(MIN_WIDGET_SIZE);
             this._maxSize = new porcelain.Size(MAX_WIDGET_SIZE);
+            $(this.element).addClass(WIDGET_CLASS);
         }
         Object.defineProperty(Widget.prototype, "left", {
             /* Get the left edge of the widget. The value is in units of
@@ -481,31 +482,17 @@ var porcelain;
 
 
         /**
-        * Create the DOM contents for the widget.
-        */
-        Widget.prototype.create = function () {
-            if (this.element) {
-                return;
-            }
-            _super.prototype.create.call(this);
-            $(this.element).addClass(WIDGET_CLASS);
-            this._syncGeometry();
-        };
-
-        /**
         * Synchronize the div's geometry with the internal geometry.
         * @private
         */
         Widget.prototype._syncGeometry = function () {
-            if (this.element) {
-                var geo = this._geometry;
-                $(this.element).css({
-                    left: geo.left,
-                    top: geo.top,
-                    width: geo.width,
-                    height: geo.height
-                });
-            }
+            var geo = this._geometry;
+            $(this.element).css({
+                left: geo.left,
+                top: geo.top,
+                width: geo.width,
+                height: geo.height
+            });
         };
         return Widget;
     })(porcelain.Item);
