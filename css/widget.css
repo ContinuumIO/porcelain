@@ -5,7 +5,6 @@
 |
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
-.porcelain-Item {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
+.porcelain-Widget {
+    position: absolute;
 }

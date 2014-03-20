@@ -7,115 +7,103 @@
 |----------------------------------------------------------------------------*/
 .porcelain-Window {
     border: 1px solid #4C8AC0;
+    background-color: #63B4FB;
     box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.1);
 }
 
 
-.porcelain-Window-leftHandle {
-    position: absolute;
-    left: 0px;
-    top: 6px;
-    bottom: 6px;
-    width: 6px;
-    background-color: #63B4FB;
-    cursor: w-resize;
-}
-
-
-.porcelain-Window-topHandle {
-    position: absolute;
-    top: 0px;
-    left: 6px;
-    right: 6px;
-    height: 6px;
-    background-color: #63B4FB;
-    cursor: n-resize;
-}
-
-
-.porcelain-Window-rightHandle {
-    position: absolute;
-    right: 0px;
-    top: 6px;
-    bottom: 6px;
-    width: 6px;
-    background-color: #63B4FB;
-    cursor: e-resize;
-}
-
-
-.porcelain-Window-bottomHandle {
-    position: absolute;
-    bottom: 0px;
-    left: 15px;
-    right: 15px;
-    height: 6px;
-    background-color: #63B4FB;
-    cursor: s-resize;
-}
-
-
-.porcelain-Window-topLeftHandle {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 6px;
-    height: 6px;
-    background-color: #63B4FB;
-    cursor: nw-resize;
-}
-
-
-.porcelain-Window-topRightHandle {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 6px;
-    height: 6px;
-    background-color: #63B4FB;
-    cursor: ne-resize;
-}
-
-
-.porcelain-Window-bottomLeftHandle {
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-    width: 15px;
-    height: 6px;
-    background-color: #63B4FB;
-    cursor: sw-resize;
-}
-
-
-.porcelain-Window-bottomRightHandle {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    width: 15px;
-    height: 6px;
-    background-color: #63B4FB;
-    cursor: se-resize;
-}
-
-
-.porcelain-Window-titleBar {
+.porcelain-Window-TitleBar {
     position: absolute;
     left: 6px;
     top: 6px;
     right: 6px;
     height: 23px;
-    background-color: #63B4FB;
 }
 
 
-.porcelain-Window-body {
+.porcelain-Window-Body {
     position: absolute;
-    box-sizing: border-box;
     border: 1px solid #5499D6;
     background-color: #F0F0F0;
     left: 6px;
     top: 29px;
     right: 6px;
     bottom: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip {
+    position: absolute;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Left {
+    cursor: w-resize;
+    left: 0px;
+    top: 6px;
+    bottom: 6px;
+    width: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Top {
+    cursor: n-resize;
+    top: 0px;
+    left: 6px;
+    right: 6px;
+    height: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Right {
+    cursor: e-resize;
+    right: 0px;
+    top: 6px;
+    bottom: 6px;
+    width: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Bottom {
+    cursor: s-resize;
+    bottom: 0px;
+    left: 15px;
+    right: 15px;
+    height: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-TopLeft {
+    cursor: nw-resize;
+    left: 0px;
+    top: 0px;
+    width: 6px;
+    height: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-TopRight {
+    cursor: ne-resize;
+    top: 0px;
+    right: 0px;
+    width: 6px;
+    height: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-BottomLeft {
+    cursor: sw-resize;
+    left: 0px;
+    bottom: 0px;
+    width: 15px;
+    height: 6px;
+}
+
+
+.porcelain-Window-ResizeGrip.porcelain-BoxLocation-BottomRight {
+    cursor: se-resize;
+    right: 0px;
+    bottom: 0px;
+    width: 15px;
+    height: 6px;
 }
