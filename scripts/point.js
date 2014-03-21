@@ -7,6 +7,11 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    
+
+    /**
+    * An implementation of the IPoint interface.
+    */
     var Point = (function () {
         function Point(first, second) {
             switch (arguments.length) {
@@ -29,66 +34,86 @@ var porcelain;
                     throw "invalid constructor call";
             }
         }
-        Object.defineProperty(Point.prototype, "point", {
-            get: function () {
-                return { x: this.x, y: this.y };
-            },
-            set: function (point) {
-                this.x = point.x;
-                this.y = point.y;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
+        /**
+        * Whether both X and Y coordinates are zero.
+        */
         Point.prototype.isNull = function () {
             return this.x == 0 && this.y == 0;
         };
 
+        /**
+        * The sum of the absolute X and Y distances to the origin.
+        */
         Point.prototype.manhattanLength = function () {
             return Math.abs(this.x) + Math.abs(this.y);
         };
 
+        /**
+        * Test the point for equality with another.
+        */
         Point.prototype.equals = function (other) {
             return this.x == other.x && this.y == other.y;
         };
 
+        /**
+        * Increment this point by another point.
+        */
         Point.prototype.add = function (other) {
             this.x += other.x;
             this.y += other.y;
         };
 
+        /**
+        * A new point which is the vector sum of the two points.
+        */
         Point.prototype.added = function (other) {
             return new Point(this.x + other.x, this.y + other.y);
         };
 
+        /**
+        * Decrement this point by another point.
+        */
         Point.prototype.subtract = function (other) {
             this.x -= other.x;
             this.y -= other.y;
         };
 
+        /**
+        * A new point which is the vector difference of the two points.
+        */
         Point.prototype.subtracted = function (other) {
             return new Point(this.x - other.x, this.y - other.y);
         };
 
+        /**
+        * Scale this point by the given factor.
+        */
         Point.prototype.multiply = function (factor) {
             this.x *= factor;
             this.y *= factor;
         };
 
+        /**
+        * A new point scaled by the given factor.
+        */
         Point.prototype.multiplied = function (factor) {
             return new Point(this.x * factor, this.y * factor);
         };
 
-        Point.prototype.divide = function (factor) {
-            this.x = Math.floor(this.x / factor);
-            this.y = Math.floor(this.y / factor);
+        /**
+        * Scale this point by the given divisor.
+        */
+        Point.prototype.divide = function (divisor) {
+            this.x /= divisor;
+            this.y /= divisor;
         };
 
-        Point.prototype.divided = function (factor) {
-            var x = Math.floor(this.x / factor);
-            var y = Math.floor(this.y / factor);
+        /**
+        * A new point scaled by the given divisor.
+        */
+        Point.prototype.divided = function (divisor) {
+            var x = Math.floor(this.x / divisor);
+            var y = Math.floor(this.y / divisor);
             return new Point(x, y);
         };
         return Point;
