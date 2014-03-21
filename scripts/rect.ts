@@ -7,13 +7,68 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    export class Rect implements IRect, IBox {
-
+    /**
+     * The interface for a box defined by four edges.
+     */
+    export interface IBox {
         left: number;
         top: number;
         right: number;
         bottom: number;
+    }
 
+
+    /**
+     * The interface for a rect defined by position and size.
+     */
+    export interface IRect {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    }
+    
+    
+    /**
+     * An implementation of IBox and IRect
+     */
+    export class Rect implements IBox, IRect {
+        
+        /**
+         * The left edge of the rect, in pixels.
+         *
+         * This is equivalent to `x`. Modifying this value will
+         * change the width, but will not change the right edge.
+         */
+        left: number;
+
+        /**
+         * The top edge of the rect, in pixel.
+         * 
+         * This is equivalent to `y`. Modifying this value will
+         * change the height, but will not change the bottom edge.
+         */
+        top: number;
+
+        /**
+         * The right edge of the rect, in pixels.
+         *
+         * This is equivalent to `x + width`. Modifying this value 
+         * will change the width, but will not change the left edge.
+         */
+        right: number;
+
+        /**
+         * The bottom edge of the rect, in pixel.
+         * 
+         * This is equivalent to `y + height`. Modifying this value
+         * will change the height, but will not change the bottom edge.
+         */
+        bottom: number;
+
+        /**
+         * Construct a new Rect.
+         */
         constructor();
         constructor(box: IBox);
         constructor(rect: IRect);
@@ -75,6 +130,12 @@ module porcelain {
             }
         }
 
+        /**
+         * The X-coordinate of the rect.
+         *
+         * This is equivalent to `left`. Modifying this value will
+         * change the right edge, but will not change the width.
+         */
         get x(): number {
             return this.left;
         }
@@ -83,6 +144,12 @@ module porcelain {
             this.moveLeft(pos);
         }
 
+        /**
+         * The Y-coordinate of the rect.
+         *
+         * This is equivalent to `top`. Modifying this value will
+         * change the bottom edge, but will not change the height.
+         */
         get y(): number {
             return this.top;
         }
@@ -91,6 +158,12 @@ module porcelain {
             this.moveTop(pos);
         }
 
+        /**
+         * The width of the rect.
+         *
+         * This is equivalent to `right - left`. Modifying this value
+         * will change the right edge.
+         */
         get width(): number {
             return this.right - this.left;
         }
@@ -99,6 +172,12 @@ module porcelain {
             this.right = this.left + width;
         }
 
+        /**
+         * The height of the rect.
+         *
+         * This is equivalent to `bottom - top`. Modifying this value
+         * will change the bottom edge.
+         */
         get height(): number {
             return this.bottom - this.top;
         }
@@ -107,6 +186,12 @@ module porcelain {
             this.bottom = this.top + height;
         }
 
+        /**
+         * The top left corner of the rect.
+         *
+         * Modifying this value will change the width and height but
+         * will not change the right or bottom edge.
+         */
         get topLeft(): IPoint {
             return { x: this.left, y: this.top };
         }
@@ -116,6 +201,12 @@ module porcelain {
             this.top = point.y;
         }
 
+        /**
+         * The top right corner of the rect.
+         *
+         * Modifying this value will change the width and height but
+         * will not change the left or bottom edge.
+         */
         get topRight(): IPoint {
             return { x: this.right, y: this.top };
         }
@@ -125,6 +216,12 @@ module porcelain {
             this.top = point.y;
         }
 
+        /**
+         * The bottom left corner of the rect.
+         *
+         * Modifying this value will change the width and height but
+         * will not change the top or right edge.
+         */
         get bottomLeft(): IPoint {
             return { x: this.left, y: this.bottom };
         }
@@ -134,6 +231,12 @@ module porcelain {
             this.bottom = point.y;
         }
 
+        /**
+         * The bottom right corner of the rect.
+         *
+         * Modifying this value will change the width and height but
+         * will not change the top or left edge.
+         */
         get bottomRight(): IPoint {
             return { x: this.right, y: this.bottom };
         }
@@ -143,12 +246,24 @@ module porcelain {
             this.bottom = point.y;
         }
 
+        /**
+         * The center point of the rect.
+         *
+         * @readonly
+         */
         get center(): IPoint {
             var x = this.left + Math.floor(this.width / 2);
             var y = this.top + Math.floor(this.height / 2);
             return { x: x, y: y };
         }
 
+        /**
+         * The position of the rect.
+         *
+         * This is equivalent to `topLeft`. Modifying this value will
+         * change the right and bottom edges but will not change the 
+         * width or height.
+         */
         get pos(): IPoint {
             return this.topLeft;
         }
@@ -157,6 +272,12 @@ module porcelain {
             this.moveTopLeft(point);
         }
 
+        /**
+         * The size of the rect.
+         *
+         * Modifying this value will change the right and bottom 
+         * edges but will not change the left or top edge.
+         */
         get size(): ISize {
             return { width: this.width, height: this.height };
         }
@@ -166,95 +287,142 @@ module porcelain {
             this.height = size.height;
         }
 
-        get rect(): IRect {
-            return {
-                x: this.left,
-                y: this.top,
-                width: this.right - this.left,
-                height: this.bottom - this.top,
-            };
-        }
-
-        set rect(rect: IRect) {
-            this.left = rect.x;
-            this.top = rect.y;
-            this.right = rect.x + rect.width;
-            this.bottom = rect.y + rect.height;
-        }
-
-        get box(): IBox {
-            return {
-                left: this.left,
-                top: this.top,
-                right: this.right,
-                bottom: this.bottom
-            };
-        }
-
-        set box(box: IBox) {
-            this.left = box.left;
-            this.top = box.top;
-            this.right = box.right;
-            this.bottom = box.bottom;
-        }
-
+        /**
+         * Move the left edge of the rect.
+         *
+         * This will not change the width of the rect.
+         *
+         * @param pos - the new location of the left edge
+         */
         moveLeft(pos: number): void {
             this.right += pos - this.left;
             this.left = pos;
         }
 
+        /**
+         * Move the top edge of the rect.
+         *
+         * This will not change the height of the rect.
+         *
+         * @param pos - the new location of the top edge
+         */
         moveTop(pos: number): void {
             this.bottom += pos - this.top;
             this.top = pos;
         }
 
+        /**
+         * Move the right edge of the rect.
+         *
+         * This will not change the width of the rect.
+         *
+         * @param pos - the new location of the right edge
+         */
         moveRight(pos: number): void {
             this.left += pos - this.right;
             this.right = pos;
         }
 
+        /**
+         * Move the bottom edge of the rect.
+         *
+         * This will not change the height of the rect.
+         *
+         * @param pos - the new location of the bottom edge
+         */
         moveBottom(pos: number): void {
             this.top = pos - this.bottom;
             this.bottom = pos;
         }
 
+        /**
+         * Move the top left corner of the rect.
+         *
+         * This is equivalent to moving the top and left edges
+         * separately.
+         *
+         * @param point - the new location of the corner
+         */
         moveTopLeft(point: IPoint): void {
             this.moveLeft(point.x);
             this.moveTop(point.y);
         }
 
+        /**
+         * Move the top right corner of the rect.
+         *
+         * This is equivalent to moving the top and right edges
+         * separately.
+         *
+         * @param point - the new location of the corner
+         */
         moveTopRight(point: IPoint): void {
             this.moveRight(point.x);
             this.moveTop(point.y);
         }
 
+        /**
+         * Move the bottom left corner of the rect.
+         *
+         * This is equivalent to moving the bottom and left edges
+         * separately.
+         *
+         * @param point - the new location of the corner
+         */
         moveBottomLeft(point: IPoint): void {
             this.moveLeft(point.x);
             this.moveBottom(point.y);
         }
 
+        /**
+         * Move the bottom right corner of the rect.
+         *
+         * This is equivalent to moving the bottom and right edges
+         * separately.
+         *
+         * @param point - the new location of the corner
+         */
         moveBottomRight(point: IPoint): void {
             this.moveRight(point.x);
             this.moveBottom(point.y);
         }
 
+        /**
+         * Move the center point of the rect.
+         *
+         * This will not change the width or height.
+         *
+         * @param point - the new center point of the rect
+         */
         moveCenter(point: IPoint): void {
             this.moveLeft(point.x + Math.floor(this.width / 2));
             this.moveTop(point.y + Math.floor(this.height / 2));
         }
 
+        /**
+         * Whether the width OR height is zero or negative.
+         */
         isEmpty(): boolean {
             return this.left >= this.right || this.top >= this.bottom;
         }
 
+        /**
+         * Whether the width AND height are zero.
+         */
         isNull(): boolean {
             return this.left === this.right && this.top === this.bottom;
         }
-
+          
+        /**
+         * Whether the width AND height are positive non-zero.
+         */
         isValid(): boolean {
             return this.left < this.right && this.top < this.bottom;
         }
-
+        
+        /**
+         * Add the given deltas to the left, top, right and bottom edges.
+         */
         adjust(dx1: number, dy1: number, dx2: number, dy2: number): void {
             this.left += dx1;
             this.top += dy1;
@@ -262,12 +430,18 @@ module porcelain {
             this.bottom += dy2;
         }
 
+        /**
+         * Create a new rect with edges adjusted by the given deltas.
+         */
         adjusted(dx1: number, dy1: number, dx2: number, dy2: number): Rect {
             var rect = new Rect(this);
             rect.adjust(dx1, dy1, dx2, dy2);
             return rect;
         }
 
+        /**
+         * Test whether this rect contains the given point.
+         */
         contains(point: IPoint): boolean {
             if (this.isNull()) {
                 return false;
@@ -298,6 +472,9 @@ module porcelain {
             return true;
         }
 
+        /**
+         * Test whether this rect intersects the given rect.
+         */
         intersects(rect: IRect): boolean {
             if (this.isNull()) {
                 return false;
@@ -343,6 +520,9 @@ module porcelain {
             return true;
         }
 
+        /**
+         * The intersection of this rect with the given rect.
+         */
         intersected(rect: IRect): Rect {
             if (this.isNull()) {
                 return new Rect();
@@ -391,7 +571,10 @@ module porcelain {
             var b = Math.min(b1, b2);
             return new Rect({ left: l, top: t, right: r, bottom: b });
         }
-
+        
+        /**
+         * Normalize the rect so that right >= left and bottom >= top.
+         */
         normalize(): void {
             var temp: number;
             if (this.right < this.left) {
@@ -406,12 +589,18 @@ module porcelain {
             }
         }
 
+        /**
+         * Create a new rect with normalized edges.
+         */
         normalized(): Rect {
             var rect = new Rect(this);
             rect.normalize();
             return rect;
         }
 
+        /**
+         * Translate the rect by the given deltas.
+         */
         translate(dx: number, dy: number): void {
             this.left += dx;
             this.top += dy;
@@ -419,12 +608,18 @@ module porcelain {
             this.bottom += dy;
         }
 
+        /**
+         * Create a new rect translated by the given deltas.
+         */
         translated(dx: number, dy: number): Rect {
             var rect = new Rect(this);
             rect.translate(dx, dy);
             return rect;
         }
-
+       
+        /**
+         * The bounding rect of this rect and the given rect.
+         */
         united(rect: IRect): Rect {
             if (this.isNull()) {
                 return new Rect(rect);

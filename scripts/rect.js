@@ -7,6 +7,13 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    
+
+    
+
+    /**
+    * An implementation of IBox and IRect
+    */
     var Rect = (function () {
         function Rect(first, second, third, fourth) {
             switch (arguments.length) {
@@ -63,6 +70,12 @@ var porcelain;
             }
         }
         Object.defineProperty(Rect.prototype, "x", {
+            /**
+            * The X-coordinate of the rect.
+            *
+            * This is equivalent to `left`. Modifying this value will
+            * change the right edge, but will not change the width.
+            */
             get: function () {
                 return this.left;
             },
@@ -75,6 +88,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "y", {
+            /**
+            * The Y-coordinate of the rect.
+            *
+            * This is equivalent to `top`. Modifying this value will
+            * change the bottom edge, but will not change the height.
+            */
             get: function () {
                 return this.top;
             },
@@ -87,6 +106,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "width", {
+            /**
+            * The width of the rect.
+            *
+            * This is equivalent to `right - left`. Modifying this value
+            * will change the right edge.
+            */
             get: function () {
                 return this.right - this.left;
             },
@@ -99,6 +124,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "height", {
+            /**
+            * The height of the rect.
+            *
+            * This is equivalent to `bottom - top`. Modifying this value
+            * will change the bottom edge.
+            */
             get: function () {
                 return this.bottom - this.top;
             },
@@ -111,6 +142,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "topLeft", {
+            /**
+            * The top left corner of the rect.
+            *
+            * Modifying this value will change the width and height but
+            * will not change the right or bottom edge.
+            */
             get: function () {
                 return { x: this.left, y: this.top };
             },
@@ -124,6 +161,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "topRight", {
+            /**
+            * The top right corner of the rect.
+            *
+            * Modifying this value will change the width and height but
+            * will not change the left or bottom edge.
+            */
             get: function () {
                 return { x: this.right, y: this.top };
             },
@@ -137,6 +180,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "bottomLeft", {
+            /**
+            * The bottom left corner of the rect.
+            *
+            * Modifying this value will change the width and height but
+            * will not change the top or right edge.
+            */
             get: function () {
                 return { x: this.left, y: this.bottom };
             },
@@ -150,6 +199,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "bottomRight", {
+            /**
+            * The bottom right corner of the rect.
+            *
+            * Modifying this value will change the width and height but
+            * will not change the top or left edge.
+            */
             get: function () {
                 return { x: this.right, y: this.bottom };
             },
@@ -163,6 +218,11 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "center", {
+            /**
+            * The center point of the rect.
+            *
+            * @readonly
+            */
             get: function () {
                 var x = this.left + Math.floor(this.width / 2);
                 var y = this.top + Math.floor(this.height / 2);
@@ -173,6 +233,13 @@ var porcelain;
         });
 
         Object.defineProperty(Rect.prototype, "pos", {
+            /**
+            * The position of the rect.
+            *
+            * This is equivalent to `topLeft`. Modifying this value will
+            * change the right and bottom edges but will not change the
+            * width or height.
+            */
             get: function () {
                 return this.topLeft;
             },
@@ -185,6 +252,12 @@ var porcelain;
 
 
         Object.defineProperty(Rect.prototype, "size", {
+            /**
+            * The size of the rect.
+            *
+            * Modifying this value will change the right and bottom
+            * edges but will not change the left or top edge.
+            */
             get: function () {
                 return { width: this.width, height: this.height };
             },
@@ -197,103 +270,142 @@ var porcelain;
         });
 
 
-        Object.defineProperty(Rect.prototype, "rect", {
-            get: function () {
-                return {
-                    x: this.left,
-                    y: this.top,
-                    width: this.right - this.left,
-                    height: this.bottom - this.top
-                };
-            },
-            set: function (rect) {
-                this.left = rect.x;
-                this.top = rect.y;
-                this.right = rect.x + rect.width;
-                this.bottom = rect.y + rect.height;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Rect.prototype, "box", {
-            get: function () {
-                return {
-                    left: this.left,
-                    top: this.top,
-                    right: this.right,
-                    bottom: this.bottom
-                };
-            },
-            set: function (box) {
-                this.left = box.left;
-                this.top = box.top;
-                this.right = box.right;
-                this.bottom = box.bottom;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
+        /**
+        * Move the left edge of the rect.
+        *
+        * This will not change the width of the rect.
+        *
+        * @param pos - the new location of the left edge
+        */
         Rect.prototype.moveLeft = function (pos) {
             this.right += pos - this.left;
             this.left = pos;
         };
 
+        /**
+        * Move the top edge of the rect.
+        *
+        * This will not change the height of the rect.
+        *
+        * @param pos - the new location of the top edge
+        */
         Rect.prototype.moveTop = function (pos) {
             this.bottom += pos - this.top;
             this.top = pos;
         };
 
+        /**
+        * Move the right edge of the rect.
+        *
+        * This will not change the width of the rect.
+        *
+        * @param pos - the new location of the right edge
+        */
         Rect.prototype.moveRight = function (pos) {
             this.left += pos - this.right;
             this.right = pos;
         };
 
+        /**
+        * Move the bottom edge of the rect.
+        *
+        * This will not change the height of the rect.
+        *
+        * @param pos - the new location of the bottom edge
+        */
         Rect.prototype.moveBottom = function (pos) {
             this.top = pos - this.bottom;
             this.bottom = pos;
         };
 
+        /**
+        * Move the top left corner of the rect.
+        *
+        * This is equivalent to moving the top and left edges
+        * separately.
+        *
+        * @param point - the new location of the corner
+        */
         Rect.prototype.moveTopLeft = function (point) {
             this.moveLeft(point.x);
             this.moveTop(point.y);
         };
 
+        /**
+        * Move the top right corner of the rect.
+        *
+        * This is equivalent to moving the top and right edges
+        * separately.
+        *
+        * @param point - the new location of the corner
+        */
         Rect.prototype.moveTopRight = function (point) {
             this.moveRight(point.x);
             this.moveTop(point.y);
         };
 
+        /**
+        * Move the bottom left corner of the rect.
+        *
+        * This is equivalent to moving the bottom and left edges
+        * separately.
+        *
+        * @param point - the new location of the corner
+        */
         Rect.prototype.moveBottomLeft = function (point) {
             this.moveLeft(point.x);
             this.moveBottom(point.y);
         };
 
+        /**
+        * Move the bottom right corner of the rect.
+        *
+        * This is equivalent to moving the bottom and right edges
+        * separately.
+        *
+        * @param point - the new location of the corner
+        */
         Rect.prototype.moveBottomRight = function (point) {
             this.moveRight(point.x);
             this.moveBottom(point.y);
         };
 
+        /**
+        * Move the center point of the rect.
+        *
+        * This will not change the width or height.
+        *
+        * @param point - the new center point of the rect
+        */
         Rect.prototype.moveCenter = function (point) {
             this.moveLeft(point.x + Math.floor(this.width / 2));
             this.moveTop(point.y + Math.floor(this.height / 2));
         };
 
+        /**
+        * Whether the width OR height is zero or negative.
+        */
         Rect.prototype.isEmpty = function () {
             return this.left >= this.right || this.top >= this.bottom;
         };
 
+        /**
+        * Whether the width AND height are zero.
+        */
         Rect.prototype.isNull = function () {
             return this.left === this.right && this.top === this.bottom;
         };
 
+        /**
+        * Whether the width AND height are positive non-zero.
+        */
         Rect.prototype.isValid = function () {
             return this.left < this.right && this.top < this.bottom;
         };
 
+        /**
+        * Add the given deltas to the left, top, right and bottom edges.
+        */
         Rect.prototype.adjust = function (dx1, dy1, dx2, dy2) {
             this.left += dx1;
             this.top += dy1;
@@ -301,12 +413,18 @@ var porcelain;
             this.bottom += dy2;
         };
 
+        /**
+        * Create a new rect with edges adjusted by the given deltas.
+        */
         Rect.prototype.adjusted = function (dx1, dy1, dx2, dy2) {
             var rect = new Rect(this);
             rect.adjust(dx1, dy1, dx2, dy2);
             return rect;
         };
 
+        /**
+        * Test whether this rect contains the given point.
+        */
         Rect.prototype.contains = function (point) {
             if (this.isNull()) {
                 return false;
@@ -337,6 +455,9 @@ var porcelain;
             return true;
         };
 
+        /**
+        * Test whether this rect intersects the given rect.
+        */
         Rect.prototype.intersects = function (rect) {
             if (this.isNull()) {
                 return false;
@@ -382,6 +503,9 @@ var porcelain;
             return true;
         };
 
+        /**
+        * The intersection of this rect with the given rect.
+        */
         Rect.prototype.intersected = function (rect) {
             if (this.isNull()) {
                 return new Rect();
@@ -431,6 +555,9 @@ var porcelain;
             return new Rect({ left: l, top: t, right: r, bottom: b });
         };
 
+        /**
+        * Normalize the rect so that right >= left and bottom >= top.
+        */
         Rect.prototype.normalize = function () {
             var temp;
             if (this.right < this.left) {
@@ -445,12 +572,18 @@ var porcelain;
             }
         };
 
+        /**
+        * Create a new rect with normalized edges.
+        */
         Rect.prototype.normalized = function () {
             var rect = new Rect(this);
             rect.normalize();
             return rect;
         };
 
+        /**
+        * Translate the rect by the given deltas.
+        */
         Rect.prototype.translate = function (dx, dy) {
             this.left += dx;
             this.top += dy;
@@ -458,12 +591,18 @@ var porcelain;
             this.bottom += dy;
         };
 
+        /**
+        * Create a new rect translated by the given deltas.
+        */
         Rect.prototype.translated = function (dx, dy) {
             var rect = new Rect(this);
             rect.translate(dx, dy);
             return rect;
         };
 
+        /**
+        * The bounding rect of this rect and the given rect.
+        */
         Rect.prototype.united = function (rect) {
             if (this.isNull()) {
                 return new Rect(rect);
