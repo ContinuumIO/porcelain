@@ -7,43 +7,49 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
+    /**
+     * The CSS class applied to Widget instances.
+     */
     var WIDGET_CLASS = "porcelain-Widget";
 
+    /**
+     * The absolute minimum allowed widget size.
+     */
     var MIN_WIDGET_SIZE = new Size(0, 0);
-    var MAX_WIDGET_DIM = (1 << 16) - 1;
-    var MAX_WIDGET_SIZE = new Size(MAX_WIDGET_DIM, MAX_WIDGET_DIM);
 
+    /**
+     * The absolute maximimum allowed widget size.
+     */
+    var MAX_WIDGET_SIZE = new Size((1 << 16) - 1, (1 << 16) - 1);
+
+
+    /** The base Widget class.
+     *
+     * A Widget is an absolutely positioned item. The geometry of a 
+     * widget must be manipulated programmatically using the widget 
+     * api. Do not use CSS to position a widget's div element.
+     *
+     * @class
+     */
     export class Widget extends Item {
 
         /**
          * Construct a new Widget.
-         * @class
-         * @classdesc A Widget is an absolutely positioned item. The
-         * geometry of a widget must be manipulated programmatically
-         * using the widget api. Do not use CSS to position a widget's
-         * internal div element.
          */
         constructor() {
             super();
             $(this.element).addClass(WIDGET_CLASS);
         }
         
-        /* Get the left edge of the widget. The value is in units of
-         * pixels relative to the origin of the parent. This is 
-         * equivalent to `x`.
-         * @type {number}
+        /* The left edge of the widget. 
+         * 
+         * This is equivalent to `x`. Modifying this value will change
+         * the width but will not change the right edge.
          */
         get left(): number {
             return this._geometry.left;
         }
 
-        /**
-         * Move the left edge of the widget to the given location. The
-         * value is in units of pixels relative to the origin of the 
-         * parent. This may change the width, but will not change the
-         * right edge.
-         * @type {number}
-         */
         set left(left: number) {
             var min = this._geometry.right - this._maxSize.width;
             var max = this._geometry.right - this._minSize.width;
@@ -52,22 +58,15 @@ module porcelain {
         }
 
         /**
-         * Get the top edge of the widget. The value is in units of
-         * pixels relative to the origin of the parent. This is
-         * equivalent to `y`.
-         * @type {number}
+         * The top edge of the widget.
+         *
+         * This is equivalent to `y`. Modifying this value will change
+         * the height but will not change the bottom edge.
          */
         get top(): number {
             return this._geometry.top;
         }
 
-        /**
-         * Move the top edge of the widget to the given location. The
-         * value is in units of pixels relative to the origin of the 
-         * parent. This may change the height, but will not change the
-         * bottom edge.
-         * @type {number}
-         */
         set top(top: number) {
             var min = this._geometry.bottom - this._maxSize.height;
             var max = this._geometry.bottom - this._minSize.height;
@@ -76,22 +75,15 @@ module porcelain {
         }
 
         /**
-         * Get the right edge of the widget. The value is in units of 
-         * pixels relative to the origin of the parent. This is 
-         * equivalent to `left` + `width`. 
-         * @type {number}
+         * The right edge of the widget. 
+         * 
+         * This is equivalent to `left + width`. Modifying this value
+         * will change the width but will not change the left edge.
          */
         get right(): number {
             return this._geometry.right;
         }
 
-        /**
-         * Move the right edge of the widget to the given location. The
-         * value is in units of pixels relative to the origin of the 
-         * parent. This may change the width, but will not change the
-         * left edge.
-         * @type {number}
-         */
         set right(right: number) {
             var min = this._geometry.left + this._minSize.width;
             var max = this._geometry.left + this._maxSize.width;
@@ -100,21 +92,15 @@ module porcelain {
         }
 
         /**
-         * Get the bottom edge of the widget. The value is in units of
-         * pixels relative to the origin of the parent. This is 
-         * equivalent to `top` + `height`. 
-         * @type {number}
+         * The bottom edge of the widget. 
+         * 
+         * This is equivalent to `top + height`. Modifying this value
+         * will change the height but will not change the bottom edge.
          */
         get bottom(): number {
             return this._geometry.bottom;
         }
         
-        /* Move the bottom edge of the widget to the given location. 
-         * The value is in units of pixels relative to the origin of 
-         * the parent. This may change the height, but will not change 
-         * the top edge.
-         * @type {number}
-         */
         set bottom(bottom: number) {
             var min = this._geometry.top + this._minSize.height;
             var max = this._geometry.top + this._maxSize.height;
@@ -123,59 +109,45 @@ module porcelain {
         }
 
         /**
-         * Get the x-coordinate of the widget origin. The value is in
-         * units of pixels relative to the origin of the parent. This
-         * is equivalent to `left`.
+         * The X-coordinate of the widget. 
+         * 
+         * This is equivalent to `left`. Modifying this value will
+         * move the widget but will not change its size.
          */
         get x(): number {
             return this._geometry.x;
         }
         
-        /**
-         * Move the x-coordinate of the widget origin to the given 
-         * position. This may change the left and right edge, but 
-         * will not change the width.
-         * @type {number}
-         */
         set x(x: number) {
             this._geometry.x = x;
             this._syncGeometry();
         }
 
         /**
-         * Get the y-coordinate of the widget origin. The value is in
-         * units of pixels relative to the origin of the parent. This
-         * is equivalent to `top`.
+         * The Y-coordinate of the widget. 
+         * 
+         * This is equivalent to `top`. Modifying this value will
+         * move the widget but will not change its size.
          */
         get y(): number {
             return this._geometry.y;
         }
        
-        /**
-         * Move the y-coordinate of the widget origin to the given 
-         * position. This may change the top and bottom edge, but 
-         * will not change the height.
-         * @type {number}
-         */
         set y(y: number) {
             this._geometry.y = y;
             this._syncGeometry();
         }
 
         /**
-         * Get the width of the widget in pixels. This is equivalent
-         * `right` - `left`.
-         * @type {number}
+         * The width of the widget. 
+         *
+         * This is equivalent `right - left`. Modifying this value
+         * will change the right edge.
          */
         get width(): number {
             return this._geometry.width;
         }
 
-        /**
-         * Set the width of the widget in pixels. This may change
-         * the right edge, but will not change the left edge.
-         * @type {number}
-         */
         set width(width: number) {
             var min = this._minSize.width;
             var max = this._maxSize.width;
@@ -184,19 +156,15 @@ module porcelain {
         }
        
         /**
-         * Get the height of the widget in pixels. This is equivalent
-         * `bottom` - `top`.
-         * @type {number}
+         * The height of the widget. 
+         *
+         * This is equivalent `bottom - top`. Modifying this value
+         * will change the bottom edge.
          */
         get height(): number {
             return this._geometry.height;
         }
 
-        /**
-         * Set the height of the widget in pixels. This may change
-         * the bottom edge, but will not change the top edge.
-         * @type {number}
-         */
         set height(height: number) {
             var min = this._minSize.height;
             var max = this._maxSize.height;
@@ -205,133 +173,109 @@ module porcelain {
         }
 
         /**
-         * Get the top-left corner position of the widget.
-         * @type {IPoint}
+         * The top left corner of the widget.
+         *
+         * Modifying this value will change the width and height.
          */
         get topLeft(): IPoint {
             return { x: this._geometry.left, y: this._geometry.top };
         }
 
-        /**
-         * Set the top-left corner position of the widget. This is
-         * more efficient than setting `top` and `left` separately.
-         * @type {IPoint}
-         */
         set topLeft(point: IPoint) {
-            var minx = this._geometry.right - this._maxSize.width;
-            var maxx = this._geometry.right - this._minSize.width;
-            var miny = this._geometry.bottom - this._maxSize.height;
-            var maxy = this._geometry.bottom - this._minSize.height;
-            var x = Math.min(Math.max(minx, point.x), maxx);
-            var y = Math.min(Math.max(miny, point.y), maxy);
+            var minX = this._geometry.right - this._maxSize.width;
+            var maxX = this._geometry.right - this._minSize.width;
+            var minY = this._geometry.bottom - this._maxSize.height;
+            var maxY = this._geometry.bottom - this._minSize.height;
+            var x = Math.min(Math.max(minX, point.x), maxX);
+            var y = Math.min(Math.max(minY, point.y), maxY);
             this._geometry.topLeft = { x: x, y: y };
             this._syncGeometry();
         }
 
         /**
-         * Get the top-right corner position of the widget.
-         * @type {IPoint}
+         * The top right corner of the widget.
+         *
+         * Modifying this value will change the width and height.
          */
         get topRight(): IPoint {
             return { x: this._geometry.right, y: this._geometry.top };
         }
        
-        /**
-         * Set the top-righ corner position of the widget. This is
-         * more efficient than setting `top` and `right` separately.
-         * @type {IPoint}
-         */
         set topRight(point: IPoint) {
-            var minx = this._geometry.left + this._minSize.width;
-            var maxx = this._geometry.left + this._maxSize.width;
-            var miny = this._geometry.bottom - this._maxSize.height;
-            var maxy = this._geometry.bottom - this._minSize.height;
-            var x = Math.min(Math.max(minx, point.x), maxx);
-            var y = Math.min(Math.max(miny, point.y), maxy);
+            var minX = this._geometry.left + this._minSize.width;
+            var maxX = this._geometry.left + this._maxSize.width;
+            var minY = this._geometry.bottom - this._maxSize.height;
+            var maxY = this._geometry.bottom - this._minSize.height;
+            var x = Math.min(Math.max(minX, point.x), maxX);
+            var y = Math.min(Math.max(minY, point.y), maxY);
             this._geometry.topRight = { x: x, y: y };
             this._syncGeometry();
         }
 
         /**
-         * Get the bottom-left corner position of the widget.
-         * @type {IPoint}
+         * The bottom left corner of the widget.
+         *
+         * Modifying this value will change the width and height.
          */
         get bottomLeft(): IPoint {
             return { x: this._geometry.left, y: this._geometry.bottom };
         }
 
-        /**
-         * Set the bottom-left corner position of the widget. This is
-         * more efficient than setting `bottom` and `left` separately.
-         * @type {IPoint}
-         */
         set bottomLeft(point: IPoint) {
-            var minx = this._geometry.right - this._maxSize.width;
-            var maxx = this._geometry.right - this._minSize.width;
-            var miny = this._geometry.top + this._minSize.height;
-            var maxy = this._geometry.top + this._maxSize.height;
-            var x = Math.min(Math.max(minx, point.x), maxx);
-            var y = Math.min(Math.max(miny, point.y), maxy);
+            var minX = this._geometry.right - this._maxSize.width;
+            var maxX = this._geometry.right - this._minSize.width;
+            var minY = this._geometry.top + this._minSize.height;
+            var maxY = this._geometry.top + this._maxSize.height;
+            var x = Math.min(Math.max(minX, point.x), maxX);
+            var y = Math.min(Math.max(minY, point.y), maxY);
             this._geometry.bottomLeft = { x: x, y: y };
             this._syncGeometry();
         }
 
         /**
-         * Get the bottom-right corner position of the widget.
-         * @type {IPoint}
+         * The bottom right corner of the widget.
+         *
+         * Modifying this value will change the width and height.
          */
         get bottomRight(): IPoint {
             return { x: this._geometry.right, y: this._geometry.bottom };
         }
 
-        /**
-         * Set the bottom-right corner position of the widget. This is
-         * more efficient than setting `bottom` and `right` separately.
-         * @type {IPoint}
-         */
         set bottomRight(point: IPoint) {
-            var minx = this._geometry.left + this._minSize.width;
-            var maxx = this._geometry.left + this._maxSize.width;
-            var miny = this._geometry.top + this._minSize.height;
-            var maxy = this._geometry.top + this._maxSize.height;
-            var x = Math.min(Math.max(minx, point.x), maxx);
-            var y = Math.min(Math.max(miny, point.y), maxy);
+            var minX = this._geometry.left + this._minSize.width;
+            var maxX = this._geometry.left + this._maxSize.width;
+            var minY = this._geometry.top + this._minSize.height;
+            var maxY = this._geometry.top + this._maxSize.height;
+            var x = Math.min(Math.max(minX, point.x), maxX);
+            var y = Math.min(Math.max(minY, point.y), maxY);
             this._geometry.bottomRight = { x: x, y: y };
             this._syncGeometry();
         }
 
         /**
-         * Get the x-y origin of the widget. This is equivalent to 
-         * `topLeft`.
-         * @type {IPoint}
+         * The X and Y coordinates of the the widget origin. 
+         * 
+         * This is equivalent to `topLeft`. Modifying this value will
+         * move the widget but will not change its size.
          */
         get pos(): IPoint {
             return this._geometry.pos;
         }
 
-        /**
-         * Set the x-y origin of the widget. This is more efficient
-         * than setting 'x' and 'y' independently.
-         * @type {IPoint}
-         */
         set pos(pos: IPoint) {
             this._geometry.pos = pos;
             this._syncGeometry();
         }
 
         /**
-         * Get the size of the widget.
-         * @type {ISize}
+         * The width and height of the widget.
+         *
+         * Modifying this value will change the right and bottom edges.
          */
         get size(): ISize {
             return this._geometry.size;
         }
 
-        /**
-         * Set the size of the widget. This is more efficient than 
-         * setting 'width' and 'height' independently.
-         * @type {ISize}
-         */
         set size(size: ISize) {
             var minw = this._minSize.width;
             var minh = this._minSize.height;
@@ -344,18 +288,12 @@ module porcelain {
         }
 
         /**
-         * Get the geometry rect for the widget.
-         * @type {IRect}
+         * The position and size of the widget.
          */
         get rect(): IRect {
             return this._geometry.rect;
         }
 
-        /**
-         * Set the geometry rect for the widget. This is more efficient
-         * than setting `x`, `y`, `width`, and `height` independently.
-         * @type {IRect}
-         */
         set rect(rect: IRect) {
             var minw = this._minSize.width;
             var minh = this._minSize.height;
@@ -368,38 +306,30 @@ module porcelain {
         }
 
         /**
-         * Get the minimum size of the widget.
-         * @type {ISize}
+         * The minimum allowed size of the widget.
+         *
+         * Modifying this value will cause the widget to resize of its
+         * current size is less than the new minimum.
          */
         get minimumSize(): ISize {
             return this._minSize.size;
         }
 
-        /**
-         * Set the minimum size of the widget. This may cause the
-         * widget to resize if current size is smaller than the 
-         * specified minimum size.
-         * @type {ISize}
-         */
         set minimumSize(size: ISize) {
             // XXX clip and update
             this._minSize = new Size(size);
         }
 
         /**
-         * Get the maximum size of the widget.
-         * @type {ISize}
+         * The maximum allowed size of the widget.
+         *
+         * Modifying this value will cause the widget to resize of its
+         * current size is greater than the new maximum.
          */
         get maximumSize(): ISize {
             return this._maxSize.size;
         }
 
-        /**
-         * Set the maximum size of the widget. This may cause the
-         * widget to resize if current size is larger than the 
-         * specified maximum size.
-         * @type {ISize}
-         */
         set maximumSize(size: ISize) {
             // XXX clip and update
             this._maxSize = new Size(size);
@@ -407,16 +337,16 @@ module porcelain {
 
         /**
          * Synchronize the div's geometry with the internal geometry.
+         *
          * @private
          */
         private _syncGeometry(): void {
             var geo = this._geometry;
-            $(this.element).css({
-                left: geo.left,
-                top: geo.top,
-                width: geo.width,
-                height: geo.height
-            });
+            var style = this.element.style;
+            style.left = geo.left + "px";
+            style.top = geo.top + "px";
+            style.width = geo.width + "px";
+            style.height = geo.height + "px";
         }
 
         private _geometry: Rect = new Rect();

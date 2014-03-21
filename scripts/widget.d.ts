@@ -1,198 +1,125 @@
 ﻿declare module porcelain {
+    /** The base Widget class.
+    *
+    * A Widget is an absolutely positioned item. The geometry of a
+    * widget must be manipulated programmatically using the widget
+    * api. Do not use CSS to position a widget's div element.
+    *
+    * @class
+    */
     class Widget extends Item {
         /**
         * Construct a new Widget.
-        * @class
-        * @classdesc A Widget is an absolutely positioned item. The
-        * geometry of a widget must be manipulated programmatically
-        * using the widget api. Do not use CSS to position a widget's
-        * internal div element.
         */
         constructor();
-        /**
-        * Move the left edge of the widget to the given location. The
-        * value is in units of pixels relative to the origin of the
-        * parent. This may change the width, but will not change the
-        * right edge.
-        * @type {number}
-        */
         public left : number;
         /**
-        * Get the top edge of the widget. The value is in units of
-        * pixels relative to the origin of the parent. This is
-        * equivalent to `y`.
-        * @type {number}
-        */
-        /**
-        * Move the top edge of the widget to the given location. The
-        * value is in units of pixels relative to the origin of the
-        * parent. This may change the height, but will not change the
-        * bottom edge.
-        * @type {number}
+        * The top edge of the widget.
+        *
+        * This is equivalent to `y`. Modifying this value will change
+        * the height but will not change the bottom edge.
         */
         public top : number;
         /**
-        * Get the right edge of the widget. The value is in units of
-        * pixels relative to the origin of the parent. This is
-        * equivalent to `left` + `width`.
-        * @type {number}
-        */
-        /**
-        * Move the right edge of the widget to the given location. The
-        * value is in units of pixels relative to the origin of the
-        * parent. This may change the width, but will not change the
-        * left edge.
-        * @type {number}
+        * The right edge of the widget.
+        *
+        * This is equivalent to `left + width`. Modifying this value
+        * will change the width but will not change the left edge.
         */
         public right : number;
         /**
-        * Get the bottom edge of the widget. The value is in units of
-        * pixels relative to the origin of the parent. This is
-        * equivalent to `top` + `height`.
-        * @type {number}
+        * The bottom edge of the widget.
+        *
+        * This is equivalent to `top + height`. Modifying this value
+        * will change the height but will not change the bottom edge.
         */
         public bottom : number;
         /**
-        * Get the x-coordinate of the widget origin. The value is in
-        * units of pixels relative to the origin of the parent. This
-        * is equivalent to `left`.
-        */
-        /**
-        * Move the x-coordinate of the widget origin to the given
-        * position. This may change the left and right edge, but
-        * will not change the width.
-        * @type {number}
+        * The X-coordinate of the widget.
+        *
+        * This is equivalent to `left`. Modifying this value will
+        * move the widget but will not change its size.
         */
         public x : number;
         /**
-        * Get the y-coordinate of the widget origin. The value is in
-        * units of pixels relative to the origin of the parent. This
-        * is equivalent to `top`.
-        */
-        /**
-        * Move the y-coordinate of the widget origin to the given
-        * position. This may change the top and bottom edge, but
-        * will not change the height.
-        * @type {number}
+        * The Y-coordinate of the widget.
+        *
+        * This is equivalent to `top`. Modifying this value will
+        * move the widget but will not change its size.
         */
         public y : number;
         /**
-        * Get the width of the widget in pixels. This is equivalent
-        * `right` - `left`.
-        * @type {number}
-        */
-        /**
-        * Set the width of the widget in pixels. This may change
-        * the right edge, but will not change the left edge.
-        * @type {number}
+        * The width of the widget.
+        *
+        * This is equivalent `right - left`. Modifying this value
+        * will change the right edge.
         */
         public width : number;
         /**
-        * Get the height of the widget in pixels. This is equivalent
-        * `bottom` - `top`.
-        * @type {number}
-        */
-        /**
-        * Set the height of the widget in pixels. This may change
-        * the bottom edge, but will not change the top edge.
-        * @type {number}
+        * The height of the widget.
+        *
+        * This is equivalent `bottom - top`. Modifying this value
+        * will change the bottom edge.
         */
         public height : number;
         /**
-        * Get the top-left corner position of the widget.
-        * @type {IPoint}
-        */
-        /**
-        * Set the top-left corner position of the widget. This is
-        * more efficient than setting `top` and `left` separately.
-        * @type {IPoint}
+        * The top left corner of the widget.
+        *
+        * Modifying this value will change the width and height.
         */
         public topLeft : IPoint;
         /**
-        * Get the top-right corner position of the widget.
-        * @type {IPoint}
-        */
-        /**
-        * Set the top-righ corner position of the widget. This is
-        * more efficient than setting `top` and `right` separately.
-        * @type {IPoint}
+        * The top right corner of the widget.
+        *
+        * Modifying this value will change the width and height.
         */
         public topRight : IPoint;
         /**
-        * Get the bottom-left corner position of the widget.
-        * @type {IPoint}
-        */
-        /**
-        * Set the bottom-left corner position of the widget. This is
-        * more efficient than setting `bottom` and `left` separately.
-        * @type {IPoint}
+        * The bottom left corner of the widget.
+        *
+        * Modifying this value will change the width and height.
         */
         public bottomLeft : IPoint;
         /**
-        * Get the bottom-right corner position of the widget.
-        * @type {IPoint}
-        */
-        /**
-        * Set the bottom-right corner position of the widget. This is
-        * more efficient than setting `bottom` and `right` separately.
-        * @type {IPoint}
+        * The bottom right corner of the widget.
+        *
+        * Modifying this value will change the width and height.
         */
         public bottomRight : IPoint;
         /**
-        * Get the x-y origin of the widget. This is equivalent to
-        * `topLeft`.
-        * @type {IPoint}
-        */
-        /**
-        * Set the x-y origin of the widget. This is more efficient
-        * than setting 'x' and 'y' independently.
-        * @type {IPoint}
+        * The X and Y coordinates of the the widget origin.
+        *
+        * This is equivalent to `topLeft`. Modifying this value will
+        * move the widget but will not change its size.
         */
         public pos : IPoint;
         /**
-        * Get the size of the widget.
-        * @type {ISize}
-        */
-        /**
-        * Set the size of the widget. This is more efficient than
-        * setting 'width' and 'height' independently.
-        * @type {ISize}
+        * The width and height of the widget.
+        *
+        * Modifying this value will change the right and bottom edges.
         */
         public size : ISize;
         /**
-        * Get the geometry rect for the widget.
-        * @type {IRect}
-        */
-        /**
-        * Set the geometry rect for the widget. This is more efficient
-        * than setting `x`, `y`, `width`, and `height` independently.
-        * @type {IRect}
+        * The position and size of the widget.
         */
         public rect : IRect;
         /**
-        * Get the minimum size of the widget.
-        * @type {ISize}
-        */
-        /**
-        * Set the minimum size of the widget. This may cause the
-        * widget to resize if current size is smaller than the
-        * specified minimum size.
-        * @type {ISize}
+        * The minimum allowed size of the widget.
+        *
+        * Modifying this value will cause the widget to resize of its
+        * current size is less than the new minimum.
         */
         public minimumSize : ISize;
         /**
-        * Get the maximum size of the widget.
-        * @type {ISize}
-        */
-        /**
-        * Set the maximum size of the widget. This may cause the
-        * widget to resize if current size is larger than the
-        * specified maximum size.
-        * @type {ISize}
+        * The maximum allowed size of the widget.
+        *
+        * Modifying this value will cause the widget to resize of its
+        * current size is greater than the new maximum.
         */
         public maximumSize : ISize;
         /**
         * Synchronize the div's geometry with the internal geometry.
+        *
         * @private
         */
         private _syncGeometry();
