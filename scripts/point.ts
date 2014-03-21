@@ -60,6 +60,18 @@ module porcelain {
         }
 
         /**
+         * The X and Y coordinates of the point.
+         */
+        get point(): IPoint {
+            return { x: this.x, y: this.y };
+        }
+
+        set point(point: IPoint) {
+            this.x = point.x;
+            this.y = point.y;
+        }
+
+        /**
          * Whether both X and Y coordinates are zero.
          */
         isNull(): boolean {

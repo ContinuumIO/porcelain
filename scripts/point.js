@@ -34,6 +34,22 @@ var porcelain;
                     throw "invalid constructor call";
             }
         }
+        Object.defineProperty(Point.prototype, "point", {
+            /**
+            * The X and Y coordinates of the point.
+            */
+            get: function () {
+                return { x: this.x, y: this.y };
+            },
+            set: function (point) {
+                this.x = point.x;
+                this.y = point.y;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         /**
         * Whether both X and Y coordinates are zero.
         */

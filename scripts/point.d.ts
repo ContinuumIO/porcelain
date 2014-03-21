@@ -25,6 +25,10 @@
         constructor(point: IPoint);
         constructor(x: number, y: number);
         /**
+        * The X and Y coordinates of the point.
+        */
+        public point : IPoint;
+        /**
         * Whether both X and Y coordinates are zero.
         */
         public isNull(): boolean;
