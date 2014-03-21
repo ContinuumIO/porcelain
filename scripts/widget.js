@@ -13,6 +13,9 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    /**
+    * The CSS class applied to Widget instances.
+    */
     var WIDGET_CLASS = "porcelain-Widget";
 
     var MIN_WIDGET_SIZE = new porcelain.Size(0, 0);

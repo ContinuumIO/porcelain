@@ -7,26 +7,69 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
+    /**
+     * The interface for a drag helper event.
+     */
     export interface DragHelperEvent<T> {
         pageX: number;
         pageY: number;
         context: T;
     }
+    
 
+    /**
+     * The interface for a drag helper handler.
+     */
+    export interface DragHelperHandler<T> {
+        (event: DragHelperEvent<T>): void;
+    }
+
+
+    /**
+     * The DragHelper class.
+     *
+     * A DragHelper can be used to help implement moving/dragging of an
+     * html element. The helper takes care of boiler plate required for
+     * handling the necessary DOM events for proper mouse capture.
+     *
+     * @class
+     */
     export class DragHelper<T> {
 
-        pressed: IEventHandler<DragHelperEvent<T>> = null;
+        /**
+         * An optional handler to react to a left mouse press.
+         */
+        pressed: DragHelperHandler<T> = null;
 
-        released: IEventHandler<DragHelperEvent<T>> = null;
+        /**
+         * An optional handler to react to a left mouse release.
+         */
+        released: DragHelperHandler<T> = null;
 
-        moved: IEventHandler<DragHelperEvent<T>> = null;
+        /**
+         * An optional handler to react to a mouse move. This will
+         * be invoked only while the left mouse button is pressed.
+         */
+        moved: DragHelperHandler<T> = null;
 
+        /**
+         * Construct a new DragHelper.
+         *
+         * @param element - the html element to use as the drag target
+         * @param context - additional context to add the event objects
+         */
         constructor(element: Element, context: T) {
             this._element = element;
             this._context = context;
             $(element).mousedown(this._onMouseDown);
         }
 
+        /**
+         * Destroy the drag helper.
+         *
+         * This will release the internal references to the element,
+         * context, and handlers.
+         */
         destroy(): void {
             $(this._element).off("mousedown", this._onMouseDown);
             this._element = null;
@@ -36,14 +79,27 @@ module porcelain {
             this.moved = null;
         }
 
+        /**
+         * Get the drag target element.
+         *
+         * @readonly
+         */
         get element(): Element {
             return this._element;
         }
 
+        /**
+         * Get the user-provided drag context.
+         * @readonly
+         */
         get context(): T {
             return this._context;
         }
 
+        /** The handler for the element mousedown event.
+         * 
+         * @private
+         */
         private _onMouseDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 event.preventDefault();
@@ -59,7 +115,11 @@ module porcelain {
                 }
             }
         }
-
+        
+        /** The handler for the element mouseup event.
+         * 
+         * @private
+         */
         private _onMouseUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 event.preventDefault();
@@ -76,6 +136,10 @@ module porcelain {
             }
         }
 
+        /** The handler for the element mousemove event.
+         * 
+         * @private
+         */
         private _onMouseMove = (event: JQueryMouseEventObject) => {
             event.preventDefault();
             if (this.moved) {
