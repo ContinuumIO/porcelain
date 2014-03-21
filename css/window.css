@@ -37,7 +37,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Left {
+.porcelain-Window-ResizeGrip.porcelain-Border-Left {
     cursor: w-resize;
     left: 0px;
     top: 6px;
@@ -46,7 +46,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Top {
+.porcelain-Window-ResizeGrip.porcelain-Border-Top {
     cursor: n-resize;
     top: 0px;
     left: 6px;
@@ -55,7 +55,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Right {
+.porcelain-Window-ResizeGrip.porcelain-Border-Right {
     cursor: e-resize;
     right: 0px;
     top: 6px;
@@ -64,7 +64,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-Bottom {
+.porcelain-Window-ResizeGrip.porcelain-Border-Bottom {
     cursor: s-resize;
     bottom: 0px;
     left: 15px;
@@ -73,7 +73,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-TopLeft {
+.porcelain-Window-ResizeGrip.porcelain-Border-TopLeft {
     cursor: nw-resize;
     left: 0px;
     top: 0px;
@@ -82,7 +82,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-TopRight {
+.porcelain-Window-ResizeGrip.porcelain-Border-TopRight {
     cursor: ne-resize;
     top: 0px;
     right: 0px;
@@ -91,7 +91,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-BottomLeft {
+.porcelain-Window-ResizeGrip.porcelain-Border-BottomLeft {
     cursor: sw-resize;
     left: 0px;
     bottom: 0px;
@@ -100,7 +100,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-BoxLocation-BottomRight {
+.porcelain-Window-ResizeGrip.porcelain-Border-BottomRight {
     cursor: se-resize;
     right: 0px;
     bottom: 0px;

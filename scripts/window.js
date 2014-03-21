@@ -17,7 +17,7 @@ var porcelain;
     var BODY_CLASS = "porcelain-Window-Body";
     var TITLE_BAR_CLASS = "porcelain-Window-TitleBar";
     var RESIZE_GRIP_CLASS = "porcelain-Window-ResizeGrip";
-    var LOCATION_PREFIX = "porcelain-BoxLocation-";
+    var BORDER_PREFIX = "porcelain-Border-";
 
     var GRIP_LOCATIONS = [
         1 /* Top */,
@@ -150,7 +150,7 @@ var porcelain;
             this._helper.pressed = this._onPressed;
             this._helper.released = this._onReleased;
             this._helper.moved = this._onMoved;
-            $(this.element).addClass(RESIZE_GRIP_CLASS).addClass(LOCATION_PREFIX + porcelain.BoxLocation[location]);
+            $(this.element).addClass(RESIZE_GRIP_CLASS).addClass(BORDER_PREFIX + porcelain.Border[location]);
         }
         ResizeGrip.prototype.destroy = function () {
             _super.prototype.destroy.call(this);

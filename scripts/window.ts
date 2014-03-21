@@ -11,17 +11,17 @@ module porcelain {
     var BODY_CLASS = "porcelain-Window-Body";
     var TITLE_BAR_CLASS = "porcelain-Window-TitleBar";
     var RESIZE_GRIP_CLASS = "porcelain-Window-ResizeGrip";
-    var LOCATION_PREFIX = "porcelain-BoxLocation-";
+    var BORDER_PREFIX = "porcelain-Border-";
 
     var GRIP_LOCATIONS = [
-        BoxLocation.Top,
-        BoxLocation.Left,
-        BoxLocation.Right,
-        BoxLocation.Bottom,
-        BoxLocation.TopLeft,
-        BoxLocation.TopRight,
-        BoxLocation.BottomLeft,
-        BoxLocation.BottomRight
+        Border.Top,
+        Border.Left,
+        Border.Right,
+        Border.Bottom,
+        Border.TopLeft,
+        Border.TopRight,
+        Border.BottomLeft,
+        Border.BottomRight
     ]
 
     var windowStack = new ZStack(1000);
@@ -72,7 +72,7 @@ module porcelain {
 
     class ResizeGrip extends Item {
 
-        constructor(parent: Window, location: BoxLocation) {
+        constructor(parent: Window, location: Border) {
             super();
             this._parent = parent;
             this._helper = new DragHelper(this.element, location);
@@ -81,7 +81,7 @@ module porcelain {
             this._helper.moved = this._onMoved;
             $(this.element)
                 .addClass(RESIZE_GRIP_CLASS)
-                .addClass(LOCATION_PREFIX + BoxLocation[location]);
+                .addClass(BORDER_PREFIX + Border[location]);
         }
 
         destroy(): void {
@@ -91,30 +91,30 @@ module porcelain {
             this._parent = null;
         }
         
-        private _onPressed = (event: DragHelperEvent<BoxLocation>) => {
+        private _onPressed = (event: DragHelperEvent<Border>) => {
             switch (event.context) {
-                case BoxLocation.Left:
-                case BoxLocation.TopLeft:
-                case BoxLocation.BottomLeft:
+                case Border.Left:
+                case Border.TopLeft:
+                case Border.BottomLeft:
                     this._offsetX = event.pageX - this._parent.left;
                     break;
-                case BoxLocation.Right:
-                case BoxLocation.TopRight:
-                case BoxLocation.BottomRight:
+                case Border.Right:
+                case Border.TopRight:
+                case Border.BottomRight:
                     this._offsetX = event.pageX - this._parent.right;
                     break;
                 default:
                     break;
             }
             switch (event.context) {
-                case BoxLocation.Top:
-                case BoxLocation.TopLeft:
-                case BoxLocation.TopRight:
+                case Border.Top:
+                case Border.TopLeft:
+                case Border.TopRight:
                     this._offsetY = event.pageY - this._parent.top;
                     break;
-                case BoxLocation.Bottom:
-                case BoxLocation.BottomLeft:
-                case BoxLocation.BottomRight:
+                case Border.Bottom:
+                case Border.BottomLeft:
+                case Border.BottomRight:
                     this._offsetY = event.pageY - this._parent.bottom;
                     break;
                 default:
@@ -122,40 +122,40 @@ module porcelain {
             }
         }
 
-        private _onReleased = (event: DragHelperEvent<BoxLocation>) => {
+        private _onReleased = (event: DragHelperEvent<Border>) => {
             this._offsetX = 0;
             this._offsetY = 0;
         }
 
-        private _onMoved = (event: DragHelperEvent<BoxLocation>) => {
+        private _onMoved = (event: DragHelperEvent<Border>) => {
             var vp = viewport;
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
             x = Math.min(Math.max(vp.left, x), vp.windowRight);
             y = Math.min(Math.max(vp.top, y), vp.windowBottom);
             switch (event.context) {
-                case BoxLocation.Left:
+                case Border.Left:
                     this._parent.left = x;
                     break;
-                case BoxLocation.Top:
+                case Border.Top:
                     this._parent.top = y;
                     break;
-                case BoxLocation.Right:
+                case Border.Right:
                     this._parent.right = x;
                     break;
-                case BoxLocation.Bottom:
+                case Border.Bottom:
                     this._parent.bottom = y;
                     break;
-                case BoxLocation.TopLeft:
+                case Border.TopLeft:
                     this._parent.topLeft = { x: x, y: y };
                     break;
-                case BoxLocation.TopRight:
+                case Border.TopRight:
                     this._parent.topRight = { x: x, y: y };
                     break;
-                case BoxLocation.BottomLeft:
+                case Border.BottomLeft:
                     this._parent.bottomLeft = { x: x, y: y };
                     break;
-                case BoxLocation.BottomRight:
+                case Border.BottomRight:
                     this._parent.bottomRight = { x: x, y: y };
                     break;
                 default:
@@ -165,7 +165,7 @@ module porcelain {
 
         private _offsetX: number = 0;
         private _offsetY: number = 0;
-        private _helper: DragHelper<BoxLocation>;
+        private _helper: DragHelper<Border>;
         private _parent: Window;
     }
 
