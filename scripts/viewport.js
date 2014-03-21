@@ -7,6 +7,11 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    
+
+    /**
+    * The internal IViewport implementation.
+    */
     var Viewport = (function () {
         function Viewport() {
         }
@@ -58,22 +63,6 @@ var porcelain;
             configurable: true
         });
 
-        Object.defineProperty(Viewport.prototype, "windowWidth", {
-            get: function () {
-                return window.innerWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Viewport.prototype, "windowHeight", {
-            get: function () {
-                return window.innerHeight;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         Object.defineProperty(Viewport.prototype, "windowRight", {
             get: function () {
                 return this.left + this.windowWidth;
@@ -89,9 +78,28 @@ var porcelain;
             enumerable: true,
             configurable: true
         });
+
+        Object.defineProperty(Viewport.prototype, "windowWidth", {
+            get: function () {
+                return window.innerWidth;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Viewport.prototype, "windowHeight", {
+            get: function () {
+                return window.innerHeight;
+            },
+            enumerable: true,
+            configurable: true
+        });
         return Viewport;
     })();
 
+    /**
+    * The singelton IViewport instance.
+    */
     porcelain.viewport = new Viewport();
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=viewport.js.map
