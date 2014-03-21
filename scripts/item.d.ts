@@ -1,41 +1,49 @@
 ﻿declare module porcelain {
+    /**
+    * The most base class of visible porcelain objects.
+    *
+    * Instances are represented by a single <div>. The internal
+    * div contents and the div layout are provided by subclasses.
+    *
+    * @class
+    */
     class Item {
         /**
         * Construct a new Item.
-        * @class
-        * @classdesc The base class of porcelain visual items.
-        * An Item is represented by a single <div>. The div
-        * contents and layout are specified by subclasses.
         */
         constructor();
         /**
         * Destroy the item and remove its element from the DOM.
-        * Interaction with an Item after it is destroyed is undefined.
+        *
+        * Manipulating an Item after it has been destroyed will
+        * result in undefined behavior.
         */
         public destroy(): void;
         /**
         * The item's internal div element.
+        *
         * @readonly
-        * @type {HTMLDivElement}
         */
         public element : HTMLDivElement;
         /**
-        * Get the width of the item in pixels.
+        * The width of the item in pixels.
+        *
         * @readonly
-        * @type {number}
         */
         public width : number;
         /**
-        * Get the height of the item in pixels.
+        * The height of the item in pixels.
+        *
         * @readonly
-        * @type {number}
         */
         public height : number;
         /**
-        * Get the size of the item. This is more efficient than
-        * getting `width` and `height` independently.
+        * The size of the item, in pixels.
+        *
+        * This is more efficient than accessing `width` and `height`
+        * separately.
+        *
         * @readonly
-        * @type {ISize}
         */
         public size : ISize;
         private _element;

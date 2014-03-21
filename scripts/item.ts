@@ -7,16 +7,24 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
+    /**
+     * The CSS class applied to Item instances.
+     */
     var ITEM_CLASS = "porcelain-Item";
 
+
+    /**
+     * The most base class of visible porcelain objects.
+     *
+     * Instances are represented by a single <div>. The internal 
+     * div contents and the div layout are provided by subclasses.
+     *
+     * @class
+     */
     export class Item {
 
         /**
          * Construct a new Item.
-         * @class
-         * @classdesc The base class of porcelain visual items.
-         * An Item is represented by a single <div>. The div 
-         * contents and layout are specified by subclasses.
          */
         constructor() {
             this._element = document.createElement("div");
@@ -25,7 +33,9 @@ module porcelain {
 
         /**
          * Destroy the item and remove its element from the DOM. 
-         * Interaction with an Item after it is destroyed is undefined.
+         *
+         * Manipulating an Item after it has been destroyed will
+         * result in undefined behavior.
          */
         destroy(): void {
             $(this._element).remove();
@@ -34,36 +44,38 @@ module porcelain {
 
         /**
          * The item's internal div element.
+         *
          * @readonly
-         * @type {HTMLDivElement}
          */
         get element(): HTMLDivElement {
             return this._element;
         }
 
         /**
-         * Get the width of the item in pixels.
+         * The width of the item in pixels.
+         *
          * @readonly
-         * @type {number}
          */
         get width(): number {
             return this._element.getBoundingClientRect().width;
         }
 
         /**
-         * Get the height of the item in pixels.
+         * The height of the item in pixels.
+         *
          * @readonly
-         * @type {number}
          */
         get height(): number {
             return this._element.getBoundingClientRect().height;
         }
 
         /**
-         * Get the size of the item. This is more efficient than
-         * getting `width` and `height` independently.
+         * The size of the item, in pixels.
+         *
+         * This is more efficient than accessing `width` and `height`
+         * separately.
+         *
          * @readonly
-         * @type {ISize}
          */
         get size(): ISize {
             var r = this._element.getBoundingClientRect();

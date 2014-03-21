@@ -7,15 +7,22 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    /**
+    * The CSS class applied to Item instances.
+    */
     var ITEM_CLASS = "porcelain-Item";
 
+    /**
+    * The most base class of visible porcelain objects.
+    *
+    * Instances are represented by a single <div>. The internal
+    * div contents and the div layout are provided by subclasses.
+    *
+    * @class
+    */
     var Item = (function () {
         /**
         * Construct a new Item.
-        * @class
-        * @classdesc The base class of porcelain visual items.
-        * An Item is represented by a single <div>. The div
-        * contents and layout are specified by subclasses.
         */
         function Item() {
             this._element = document.createElement("div");
@@ -23,7 +30,9 @@ var porcelain;
         }
         /**
         * Destroy the item and remove its element from the DOM.
-        * Interaction with an Item after it is destroyed is undefined.
+        *
+        * Manipulating an Item after it has been destroyed will
+        * result in undefined behavior.
         */
         Item.prototype.destroy = function () {
             $(this._element).remove();
@@ -33,8 +42,8 @@ var porcelain;
         Object.defineProperty(Item.prototype, "element", {
             /**
             * The item's internal div element.
+            *
             * @readonly
-            * @type {HTMLDivElement}
             */
             get: function () {
                 return this._element;
@@ -45,9 +54,9 @@ var porcelain;
 
         Object.defineProperty(Item.prototype, "width", {
             /**
-            * Get the width of the item in pixels.
+            * The width of the item in pixels.
+            *
             * @readonly
-            * @type {number}
             */
             get: function () {
                 return this._element.getBoundingClientRect().width;
@@ -58,9 +67,9 @@ var porcelain;
 
         Object.defineProperty(Item.prototype, "height", {
             /**
-            * Get the height of the item in pixels.
+            * The height of the item in pixels.
+            *
             * @readonly
-            * @type {number}
             */
             get: function () {
                 return this._element.getBoundingClientRect().height;
@@ -71,10 +80,12 @@ var porcelain;
 
         Object.defineProperty(Item.prototype, "size", {
             /**
-            * Get the size of the item. This is more efficient than
-            * getting `width` and `height` independently.
+            * The size of the item, in pixels.
+            *
+            * This is more efficient than accessing `width` and `height`
+            * separately.
+            *
             * @readonly
-            * @type {ISize}
             */
             get: function () {
                 var r = this._element.getBoundingClientRect();
