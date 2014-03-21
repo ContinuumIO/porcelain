@@ -7,16 +7,19 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
-    (function (BoxLocation) {
-        BoxLocation[BoxLocation["Left"] = 0] = "Left";
-        BoxLocation[BoxLocation["Top"] = 1] = "Top";
-        BoxLocation[BoxLocation["Right"] = 2] = "Right";
-        BoxLocation[BoxLocation["Bottom"] = 3] = "Bottom";
-        BoxLocation[BoxLocation["TopLeft"] = 4] = "TopLeft";
-        BoxLocation[BoxLocation["TopRight"] = 5] = "TopRight";
-        BoxLocation[BoxLocation["BottomLeft"] = 6] = "BottomLeft";
-        BoxLocation[BoxLocation["BottomRight"] = 7] = "BottomRight";
-    })(porcelain.BoxLocation || (porcelain.BoxLocation = {}));
-    var BoxLocation = porcelain.BoxLocation;
+    /**
+    * An enum of the eight border positions.
+    */
+    (function (Border) {
+        Border[Border["Left"] = 0] = "Left";
+        Border[Border["Top"] = 1] = "Top";
+        Border[Border["Right"] = 2] = "Right";
+        Border[Border["Bottom"] = 3] = "Bottom";
+        Border[Border["TopLeft"] = 4] = "TopLeft";
+        Border[Border["TopRight"] = 5] = "TopRight";
+        Border[Border["BottomLeft"] = 6] = "BottomLeft";
+        Border[Border["BottomRight"] = 7] = "BottomRight";
+    })(porcelain.Border || (porcelain.Border = {}));
+    var Border = porcelain.Border;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=enums.js.map

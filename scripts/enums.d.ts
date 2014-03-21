@@ -1,5 +1,8 @@
 ﻿declare module porcelain {
-    enum BoxLocation {
+    /**
+    * An enum of the eight border positions.
+    */
+    enum Border {
         Left = 0,
         Top = 1,
         Right = 2,

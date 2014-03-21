@@ -7,7 +7,10 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    export enum BoxLocation {
+    /**
+     * An enum of the eight border positions.
+     */
+    export enum Border {
         Left,
         Top,
         Right,
@@ -15,7 +18,7 @@ module porcelain {
         TopLeft,
         TopRight,
         BottomLeft,
-        BottomRight
+        BottomRight,
     }
 
 }
