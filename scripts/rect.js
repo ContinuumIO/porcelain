@@ -270,6 +270,52 @@ var porcelain;
         });
 
 
+        Object.defineProperty(Rect.prototype, "rect", {
+            /**
+            * The position and size of the rect.
+            */
+            get: function () {
+                return {
+                    x: this.left,
+                    y: this.top,
+                    width: this.right - this.left,
+                    height: this.bottom - this.top
+                };
+            },
+            set: function (rect) {
+                this.left = rect.x;
+                this.top = rect.y;
+                this.right = rect.x + rect.width;
+                this.bottom = rect.y + rect.height;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Rect.prototype, "box", {
+            /**
+            * The box edges of the rect.
+            */
+            get: function () {
+                return {
+                    left: this.left,
+                    top: this.top,
+                    right: this.right,
+                    bottom: this.bottom
+                };
+            },
+            set: function (box) {
+                this.left = box.left;
+                this.top = box.top;
+                this.right = box.right;
+                this.bottom = box.bottom;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         /**
         * Move the left edge of the rect.
         *

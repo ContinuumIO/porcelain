@@ -136,6 +136,14 @@
         */
         public size : ISize;
         /**
+        * The position and size of the rect.
+        */
+        public rect : IRect;
+        /**
+        * The box edges of the rect.
+        */
+        public box : IBox;
+        /**
         * Move the left edge of the rect.
         *
         * This will not change the width of the rect.

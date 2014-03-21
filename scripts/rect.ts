@@ -288,6 +288,44 @@ module porcelain {
         }
 
         /**
+         * The position and size of the rect.
+         */
+        get rect(): IRect {
+            return {
+                x: this.left,
+                y: this.top,
+                width: this.right - this.left,
+                height: this.bottom - this.top,
+            };
+        }
+
+        set rect(rect: IRect) {
+            this.left = rect.x;
+            this.top = rect.y;
+            this.right = rect.x + rect.width;
+            this.bottom = rect.y + rect.height;
+        }
+
+        /**
+         * The box edges of the rect.
+         */
+        get box(): IBox {
+            return {
+                left: this.left,
+                top: this.top,
+                right: this.right,
+                bottom: this.bottom,
+            };
+        }
+
+        set box(box: IBox) {
+            this.left = box.left;
+            this.top = box.top;
+            this.right = box.right;
+            this.bottom = box.bottom;
+        }
+
+        /**
          * Move the left edge of the rect.
          *
          * This will not change the width of the rect.
