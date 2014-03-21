@@ -34,6 +34,22 @@ var porcelain;
                     throw "invalid constructor call";
             }
         }
+        Object.defineProperty(Size.prototype, "size", {
+            /**
+            * The width and height of the size.
+            */
+            get: function () {
+                return { width: this.width, height: this.height };
+            },
+            set: function (size) {
+                this.width = size.width;
+                this.height = size.height;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         /**
         * Whether the width OR height is zero.
         */

@@ -60,6 +60,18 @@ module porcelain {
         }
 
         /**
+         * The width and height of the size.
+         */
+        get size(): ISize {
+            return { width: this.width, height: this.height };
+        }
+
+        set size(size: ISize) {
+            this.width = size.width;
+            this.height = size.height;
+        }
+
+        /**
          * Whether the width OR height is zero.
          */
         isEmpty(): boolean {

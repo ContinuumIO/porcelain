@@ -25,6 +25,10 @@
         constructor(size: ISize);
         constructor(width: number, height: number);
         /**
+        * The width and height of the size.
+        */
+        public size : ISize;
+        /**
         * Whether the width OR height is zero.
         */
         public isEmpty(): boolean;
