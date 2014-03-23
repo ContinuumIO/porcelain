@@ -24,11 +24,7 @@
         /**
         * Construct a new Button instance.
         */
-        constructor();
-        /**
-        * Destroy the Button insance.
-        */
-        public destroy(): void;
+        constructor(parent?: Item);
         /**
         * The internal mouse enter handler.
         *

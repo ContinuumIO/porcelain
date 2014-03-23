@@ -32,37 +32,27 @@ module porcelain {
         /**
          * A signal emitted when the button is clicked.
          */
-        clicked = new Signal<void>();
+        clicked = this.createSignal<void>();
 
         /**
          * A signal emitted when the button is pressed.
          */
-        pressed = new Signal<void>();
+        pressed = this.createSignal<void>();
 
         /**
          * A signal emitted when the button is released.
          */
-        released = new Signal<void>();
+        released = this.createSignal<void>();
 
         /**
          * Construct a new Button instance.
          */
-        constructor() {
-            super();
+        constructor(parent: Item = null) {
+            super(parent);
             $(this.element)
                 .mouseenter(this._onMouseEnter)
                 .mouseleave(this._onMouseLeave)
                 .mousedown(this._onMouseDown);
-        }
-
-        /**
-         * Destroy the Button insance.
-         */
-        destroy(): void {
-            super.destroy();
-            this.clicked.disconnect();
-            this.pressed.disconnect();
-            this.released.disconnect();
         }
 
         /**

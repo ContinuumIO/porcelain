@@ -37,21 +37,22 @@ var porcelain;
         /**
         * Construct a new Button instance.
         */
-        function Button() {
+        function Button(parent) {
+            if (typeof parent === "undefined") { parent = null; }
             var _this = this;
-            _super.call(this);
+            _super.call(this, parent);
             /**
             * A signal emitted when the button is clicked.
             */
-            this.clicked = new porcelain.Signal();
+            this.clicked = this.createSignal();
             /**
             * A signal emitted when the button is pressed.
             */
-            this.pressed = new porcelain.Signal();
+            this.pressed = this.createSignal();
             /**
             * A signal emitted when the button is released.
             */
-            this.released = new porcelain.Signal();
+            this.released = this.createSignal();
             /**
             * The internal mouse enter handler.
             *
@@ -101,15 +102,6 @@ var porcelain;
             };
             $(this.element).mouseenter(this._onMouseEnter).mouseleave(this._onMouseLeave).mousedown(this._onMouseDown);
         }
-        /**
-        * Destroy the Button insance.
-        */
-        Button.prototype.destroy = function () {
-            _super.prototype.destroy.call(this);
-            this.clicked.disconnect();
-            this.pressed.disconnect();
-            this.released.disconnect();
-        };
         return Button;
     })(porcelain.Item);
     porcelain.Button = Button;
