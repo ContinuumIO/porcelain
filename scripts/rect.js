@@ -13,6 +13,8 @@ var porcelain;
 
     /**
     * An implementation of IBox and IRect
+    *
+    * @class
     */
     var Rect = (function () {
         function Rect(first, second, third, fourth) {

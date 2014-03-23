@@ -8,6 +8,8 @@
     }
     /**
     * An implementation of the ISize interface.
+    *
+    * @class
     */
     class Size implements ISize {
         /**

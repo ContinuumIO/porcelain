@@ -8,6 +8,8 @@
     }
     /**
     * An implementation of the IPoint interface.
+    *
+    * @class
     */
     class Point implements IPoint {
         /**

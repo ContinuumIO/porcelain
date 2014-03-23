@@ -11,6 +11,8 @@ var porcelain;
 
     /**
     * An implementation of the ISize interface.
+    *
+    * @class
     */
     var Size = (function () {
         function Size(first, second) {

@@ -11,6 +11,8 @@ var porcelain;
 
     /**
     * The internal IViewport implementation.
+    *
+    * @class
     */
     var Viewport = (function () {
         function Viewport() {

@@ -18,6 +18,8 @@ module porcelain {
 
     /**
      * An implementation of the ISize interface.
+     *
+     * @class
      */
     export class Size implements ISize {
 

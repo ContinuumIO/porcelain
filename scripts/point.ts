@@ -18,6 +18,8 @@ module porcelain {
 
     /**
      * An implementation of the IPoint interface.
+     *
+     * @class
      */
     export class Point implements IPoint {
 

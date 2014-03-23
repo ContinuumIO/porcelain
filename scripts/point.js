@@ -11,6 +11,8 @@ var porcelain;
 
     /**
     * An implementation of the IPoint interface.
+    *
+    * @class
     */
     var Point = (function () {
         function Point(first, second) {

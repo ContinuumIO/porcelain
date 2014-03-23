@@ -19,6 +19,8 @@
     }
     /**
     * An implementation of IBox and IRect
+    *
+    * @class
     */
     class Rect implements IBox, IRect {
         /**

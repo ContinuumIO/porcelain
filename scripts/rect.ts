@@ -31,6 +31,8 @@ module porcelain {
     
     /**
      * An implementation of IBox and IRect
+     *
+     * @class
      */
     export class Rect implements IBox, IRect {
         

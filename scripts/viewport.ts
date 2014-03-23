@@ -108,6 +108,8 @@ module porcelain {
 
     /**
      * The internal IViewport implementation.
+     *
+     * @class
      */
     class Viewport implements IViewport {
 
