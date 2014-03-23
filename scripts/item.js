@@ -15,8 +15,7 @@ var porcelain;
     /**
     * The most base class of visible porcelain objects.
     *
-    * Instances are represented by a single <div>. The internal
-    * div contents and the div layout are provided by subclasses.
+    * Instances are represented by a single <div>.
     *
     * @class
     */
@@ -47,49 +46,6 @@ var porcelain;
             */
             get: function () {
                 return this._element;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Item.prototype, "width", {
-            /**
-            * The width of the item in pixels.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._element.getBoundingClientRect().width;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Item.prototype, "height", {
-            /**
-            * The height of the item in pixels.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._element.getBoundingClientRect().height;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Item.prototype, "size", {
-            /**
-            * The size of the item, in pixels.
-            *
-            * This is more efficient than accessing `width` and `height`
-            * separately.
-            *
-            * @readonly
-            */
-            get: function () {
-                var r = this._element.getBoundingClientRect();
-                return { width: r.width, height: r.height };
             },
             enumerable: true,
             configurable: true

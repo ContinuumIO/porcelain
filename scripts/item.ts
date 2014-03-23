@@ -16,8 +16,7 @@ module porcelain {
     /**
      * The most base class of visible porcelain objects.
      *
-     * Instances are represented by a single <div>. The internal 
-     * div contents and the div layout are provided by subclasses.
+     * Instances are represented by a single <div>.
      *
      * @class
      */
@@ -49,37 +48,6 @@ module porcelain {
          */
         get element(): HTMLDivElement {
             return this._element;
-        }
-
-        /**
-         * The width of the item in pixels.
-         *
-         * @readonly
-         */
-        get width(): number {
-            return this._element.getBoundingClientRect().width;
-        }
-
-        /**
-         * The height of the item in pixels.
-         *
-         * @readonly
-         */
-        get height(): number {
-            return this._element.getBoundingClientRect().height;
-        }
-
-        /**
-         * The size of the item, in pixels.
-         *
-         * This is more efficient than accessing `width` and `height`
-         * separately.
-         *
-         * @readonly
-         */
-        get size(): ISize {
-            var r = this._element.getBoundingClientRect();
-            return { width: r.width, height: r.height };
         }
 
         private _element: HTMLDivElement;
