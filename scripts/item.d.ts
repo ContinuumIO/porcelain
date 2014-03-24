@@ -22,9 +22,29 @@
         */
         public element : HTMLDivElement;
         /**
+        * A JQuery wrapper around the internal div element.
+        *
+        * Creates a *new* wrapper each time it is accessed.
+        *
+        * @readonly
+        */
+        public $ : JQuery;
+        /**
         * The parent Item of this item.
+        *
+        * @readonly
         */
         public parent : Item;
+        /**
+        * The child Items of this item.
+        *
+        * @readonly
+        */
+        public children : Item[];
+        /**
+        * Set the parent of the item.
+        */
+        public setParent(parent: Item): void;
         /**
         * Create a new Signal owned by the item.
         *
@@ -32,15 +52,9 @@
         */
         public createSignal<T>(): Signal<T>;
         /**
-        * Invoked when a child is removed from the item.
-        */
-        public childRemoved(child: Item): void;
-        /**
-        * Invoked when a child is added to the item.
-        */
-        public childAdded(child: Item): void;
-        /**
         * An internal helper method for adding a child item.
+        *
+        * @private
         */
         private _addChild(child);
         /**

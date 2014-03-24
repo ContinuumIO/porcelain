@@ -14,21 +14,27 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * The class added to the button when pressed.
+    * The class added to a Button instance.
     */
-    var PRESSED_CLASS = "porcelain-Button-pressed";
+    var BUTTON_CLASS = "p-Button";
 
     /**
-    * The class added to the button when hovered.
+    * The class added to a Button when it is pressed.
     */
-    var HOVERED_CLASS = "porcelain-Button-hovered";
+    var PRESSED_CLASS = "p-Button-pressed";
+
+    /**
+    * The class added to a Button when it is hovered.
+    */
+    var HOVERED_CLASS = "p-Button-hovered";
 
     /**
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
-    * It is sufficient for standalone use as an image button when
-    * the button backgroun image is provided by CSS.
+    * This class is intented to be subclassed to provide features
+    * such as button text and default visual styling, but it is
+    * useful on its own with CSS background images.
     *
     * @class
     */
@@ -59,7 +65,7 @@ var porcelain;
             * @private
             */
             this._onMouseEnter = function () {
-                $(_this.element).addClass(HOVERED_CLASS);
+                _this.$.addClass(HOVERED_CLASS);
             };
             /**
             * The internal mouse leave handler.
@@ -67,7 +73,7 @@ var porcelain;
             * @private
             */
             this._onMouseLeave = function () {
-                $(_this.element).removeClass(HOVERED_CLASS);
+                _this.$.removeClass(HOVERED_CLASS);
             };
             /**
             * The internal mouse down handler.
@@ -77,9 +83,8 @@ var porcelain;
             this._onMouseDown = function (event) {
                 if (event.button === 0) {
                     event.preventDefault();
-                    event.stopPropagation();
                     $(document).mouseup(_this._onMouseUp);
-                    $(_this.element).addClass(PRESSED_CLASS);
+                    _this.$.addClass(PRESSED_CLASS);
                     _this.pressed.emit(null);
                 }
             };
@@ -91,16 +96,15 @@ var porcelain;
             this._onMouseUp = function (event) {
                 if (event.button === 0) {
                     $(document).off("mouseup", _this._onMouseUp);
-                    $(_this.element).removeClass(PRESSED_CLASS);
+                    _this.$.removeClass(PRESSED_CLASS);
                     _this.released.emit(null);
                     if (event.target === _this.element) {
                         event.preventDefault();
-                        event.stopPropagation();
                         _this.clicked.emit(null);
                     }
                 }
             };
-            $(this.element).mouseenter(this._onMouseEnter).mouseleave(this._onMouseLeave).mousedown(this._onMouseDown);
+            this.$.addClass(BUTTON_CLASS).mouseenter(this._onMouseEnter).mouseleave(this._onMouseLeave).mousedown(this._onMouseDown);
         }
         return Button;
     })(porcelain.Item);

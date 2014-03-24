@@ -5,15 +5,18 @@
 |
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
-.porcelain-Window {
+.p-Window {
+    position: absolute;
     border: 1px solid #4C8AC0;
     background-color: #63B4FB;
     box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.1);
 }
 
 
-.porcelain-Window-TitleBar {
+.p-Window-titleBar {
     position: absolute;
+    display: inline-flex;
+    justify-content: space-between;
     left: 6px;
     top: 6px;
     right: 6px;
@@ -21,7 +24,7 @@
 }
 
 
-.porcelain-Window-Body {
+.p-Window-body {
     position: absolute;
     border: 1px solid #5499D6;
     background-color: #F0F0F0;
@@ -32,12 +35,12 @@
 }
 
 
-.porcelain-Window-ResizeGrip {
+.p-Window-sizeGrip {
     position: absolute;
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-Left {
+.p-Window-sizeGrip.p-Border-Left {
     cursor: w-resize;
     left: 0px;
     top: 6px;
@@ -46,7 +49,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-Top {
+.p-Window-sizeGrip.p-Border-Top {
     cursor: n-resize;
     top: 0px;
     left: 6px;
@@ -55,7 +58,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-Right {
+.p-Window-sizeGrip.p-Border-Right {
     cursor: e-resize;
     right: 0px;
     top: 6px;
@@ -64,7 +67,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-Bottom {
+.p-Window-sizeGrip.p-Border-Bottom {
     cursor: s-resize;
     bottom: 0px;
     left: 15px;
@@ -73,7 +76,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-TopLeft {
+.p-Window-sizeGrip.p-Border-TopLeft {
     cursor: nw-resize;
     left: 0px;
     top: 0px;
@@ -82,7 +85,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-TopRight {
+.p-Window-sizeGrip.p-Border-TopRight {
     cursor: ne-resize;
     top: 0px;
     right: 0px;
@@ -91,7 +94,7 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-BottomLeft {
+.p-Window-sizeGrip.p-Border-BottomLeft {
     cursor: sw-resize;
     left: 0px;
     bottom: 0px;
@@ -100,10 +103,69 @@
 }
 
 
-.porcelain-Window-ResizeGrip.porcelain-Border-BottomRight {
+.p-Window-sizeGrip.p-Border-BottomRight {
     cursor: se-resize;
     right: 0px;
     bottom: 0px;
     width: 15px;
     height: 6px;
+}
+
+
+.p-Window-titleBar > .p-TitleBar-text {
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.p-Window-titleBar > .p-TitleBar-buttonBox {
+    position: relative;
+    top: -6px;
+    height: 20px;
+    white-space: nowrap;
+}
+
+
+.p-Window-titleBar .p-TitleBar-closeButton {
+    display: inline-block;
+    margin-left: 1px;
+    height: 20px;
+    width: 45px;
+    background-image: url("/media/close.png");
+    background-color: #C75050;
+}
+
+.p-Window-titleBar  .p-TitleBar-closeButton.p-Button-hovered {
+    background-color: #E04343;
+}
+
+.p-Window-titleBar  .p-TitleBar-closeButton.p-Button-pressed.p-Button-hovered {
+    background-color: #993D3D;
+}
+
+
+.p-Window-titleBar .p-TitleBar-restoreButton {
+    display: inline-block;
+    margin-left: 1px;
+    height: 20px;
+    width: 26px;
+    background-image: url("/media/restore.png");
+}
+
+.p-Window-titleBar .p-TitleBar-maximizeButton {
+    display: inline-block;
+    margin-left: 1px;
+    height: 20px;
+    width: 26px;
+    background-image: url("/media/maximize.png");
+}
+
+.p-Window-titleBar .p-TitleBar-minimizeButton {
+    display: inline-block;
+    margin-left: 1px;
+    height: 20px;
+    width: 26px;
+    background-image: url("/media/minimize.png");
 }

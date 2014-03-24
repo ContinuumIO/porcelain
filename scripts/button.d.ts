@@ -3,8 +3,9 @@
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
-    * It is sufficient for standalone use as an image button when
-    * the button backgroun image is provided by CSS.
+    * This class is intented to be subclassed to provide features
+    * such as button text and default visual styling, but it is
+    * useful on its own with CSS background images.
     *
     * @class
     */

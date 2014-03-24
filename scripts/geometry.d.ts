@@ -14,7 +14,7 @@
         */
         constructor(element: HTMLElement);
         /**
-        * Destroy the geometry and release the element reference.
+        * Release the element reference.
         */
         public destroy(): void;
         /**

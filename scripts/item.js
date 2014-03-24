@@ -10,7 +10,7 @@ var porcelain;
     /**
     * The CSS class applied to Item instances.
     */
-    var ITEM_CLASS = "porcelain-Item";
+    var ITEM_CLASS = "p-Item";
 
     /**
     * The most base class of visible porcelain objects.
@@ -29,17 +29,17 @@ var porcelain;
             this._children = null;
             this._signals = null;
             this._element = document.createElement("div");
-            $(this._element).addClass(ITEM_CLASS);
-            this.parent = parent;
+            this.$.addClass(ITEM_CLASS);
+            this.setParent(parent);
         }
         /**
         * Destroy the item and its children.
         */
         Item.prototype.destroy = function () {
-            $(this._element).remove();
+            this.$.remove();
             this._destroyChildren();
             this._destroySignals();
-            this.parent = null;
+            this.setParent(null);
             this._element = null;
         };
 
@@ -56,31 +56,65 @@ var porcelain;
             configurable: true
         });
 
-        Object.defineProperty(Item.prototype, "parent", {
+        Object.defineProperty(Item.prototype, "$", {
             /**
-            * The parent Item of this item.
+            * A JQuery wrapper around the internal div element.
+            *
+            * Creates a *new* wrapper each time it is accessed.
+            *
+            * @readonly
             */
             get: function () {
-                return this._parent;
-            },
-            set: function (parent) {
-                if (parent === this._parent) {
-                    return;
-                }
-                if (this._parent) {
-                    this._parent._removeChild(this);
-                }
-                this._parent = parent;
-                if (parent) {
-                    parent._addChild(this);
-                } else {
-                    $(this._element).detach();
-                }
+                return $(this._element);
             },
             enumerable: true,
             configurable: true
         });
 
+        Object.defineProperty(Item.prototype, "parent", {
+            /**
+            * The parent Item of this item.
+            *
+            * @readonly
+            */
+            get: function () {
+                return this._parent;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Item.prototype, "children", {
+            /**
+            * The child Items of this item.
+            *
+            * @readonly
+            */
+            get: function () {
+                if (!this._children) {
+                    return [];
+                }
+                return this._children.slice();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        /**
+        * Set the parent of the item.
+        */
+        Item.prototype.setParent = function (parent) {
+            if (parent === this._parent) {
+                return;
+            }
+            if (this._parent) {
+                this._parent._removeChild(this);
+            }
+            this._parent = parent;
+            if (parent) {
+                parent._addChild(this);
+            }
+        };
 
         /**
         * Create a new Signal owned by the item.
@@ -97,27 +131,15 @@ var porcelain;
         };
 
         /**
-        * Invoked when a child is removed from the item.
-        */
-        Item.prototype.childRemoved = function (child) {
-        };
-
-        /**
-        * Invoked when a child is added to the item.
-        */
-        Item.prototype.childAdded = function (child) {
-        };
-
-        /**
         * An internal helper method for adding a child item.
+        *
+        * @private
         */
         Item.prototype._addChild = function (child) {
             if (!this._children) {
                 this._children = [];
             }
             this._children.push(child);
-            $(this._element).append(child._element);
-            this.childAdded(child);
         };
 
         /**
@@ -129,7 +151,6 @@ var porcelain;
             }
             var index = this._children.indexOf(child);
             this._children.splice(index, 1);
-            this.childRemoved(child);
         };
 
         /**

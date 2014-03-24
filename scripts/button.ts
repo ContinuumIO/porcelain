@@ -8,22 +8,28 @@
 module porcelain {
 
     /**
-     * The class added to the button when pressed.
+     * The class added to a Button instance.
      */
-    var PRESSED_CLASS = "porcelain-Button-pressed";
+    var BUTTON_CLASS = "p-Button";
 
     /**
-     * The class added to the button when hovered.
+     * The class added to a Button when it is pressed.
      */
-    var HOVERED_CLASS = "porcelain-Button-hovered";
+    var PRESSED_CLASS = "p-Button-pressed";
+
+    /**
+     * The class added to a Button when it is hovered.
+     */
+    var HOVERED_CLASS = "p-Button-hovered";
 
 
     /**
      * A basic button class.
      *
      * A Button provides the basic behavior of a simple push button. 
-     * It is sufficient for standalone use as an image button when 
-     * the button backgroun image is provided by CSS.
+     * This class is intented to be subclassed to provide features
+     * such as button text and default visual styling, but it is 
+     * useful on its own with CSS background images.
      *
      * @class
      */
@@ -49,7 +55,7 @@ module porcelain {
          */
         constructor(parent: Item = null) {
             super(parent);
-            $(this.element)
+            this.$.addClass(BUTTON_CLASS)
                 .mouseenter(this._onMouseEnter)
                 .mouseleave(this._onMouseLeave)
                 .mousedown(this._onMouseDown);
@@ -61,7 +67,7 @@ module porcelain {
          * @private
          */
         private _onMouseEnter = () => {
-            $(this.element).addClass(HOVERED_CLASS);
+            this.$.addClass(HOVERED_CLASS);
         }
 
         /**
@@ -70,7 +76,7 @@ module porcelain {
          * @private
          */
         private _onMouseLeave = () => {
-            $(this.element).removeClass(HOVERED_CLASS);
+            this.$.removeClass(HOVERED_CLASS);
         }
 
         /**
@@ -81,9 +87,8 @@ module porcelain {
         private _onMouseDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 event.preventDefault();
-                event.stopPropagation();
                 $(document).mouseup(this._onMouseUp);
-                $(this.element).addClass(PRESSED_CLASS);
+                this.$.addClass(PRESSED_CLASS);
                 this.pressed.emit(null);
             }
         }
@@ -96,11 +101,10 @@ module porcelain {
         private _onMouseUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 $(document).off("mouseup", this._onMouseUp);
-                $(this.element).removeClass(PRESSED_CLASS);
+                this.$.removeClass(PRESSED_CLASS);
                 this.released.emit(null);
                 if (event.target === this.element) {
                     event.preventDefault();
-                    event.stopPropagation();
                     this.clicked.emit(null);
                 }
             }

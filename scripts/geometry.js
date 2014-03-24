@@ -38,7 +38,7 @@ var porcelain;
             this._syncGeometry();
         }
         /**
-        * Destroy the geometry and release the element reference.
+        * Release the element reference.
         */
         Geometry.prototype.destroy = function () {
             this._element = null;

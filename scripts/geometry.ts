@@ -17,6 +17,7 @@ module porcelain {
      */
     var MAX_ELEMENT_SIZE = new Size((1 << 16) - 1, (1 << 16) - 1);
 
+
     /**
      * The layout geometry class.
      *
@@ -37,7 +38,7 @@ module porcelain {
         }
 
         /**
-         * Destroy the geometry and release the element reference.
+         * Release the element reference.
          */
         destroy(): void {
             this._element = null;

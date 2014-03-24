@@ -14,24 +14,29 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * A resize grip for use with a top-level window.
-    *
-    * A ResizeGrip updates the geometry of a window in response to a
-    * left mouse button drag.
+    * The class added to a SizeGrip instance.
+    */
+    var SIZE_GRIP_CLASS = "p-SizeGrip";
+
+    /**
+    * The prefix for the border class added to a size grip.
+    */
+    var BORDER_PREFIX = "p-Border-";
+
+    /**
+    * An item which enables drag-sizing of an element's geometry.
     *
     * @class
     */
-    var ResizeGrip = (function (_super) {
-        __extends(ResizeGrip, _super);
+    var SizeGrip = (function (_super) {
+        __extends(SizeGrip, _super);
         /**
-        * Construct a new ResizeGrip.
-        *
-        * @param border - the border position of the grip
-        * @param windowGeometry - the geometry handler for the window
+        * Construct a new SizeGrip.
         */
-        function ResizeGrip(border, windowGeometry) {
+        function SizeGrip(border, target, parent) {
+            if (typeof parent === "undefined") { parent = null; }
             var _this = this;
-            _super.call(this);
+            _super.call(this, parent);
             /**
             * The internal mousedown handler.
             *
@@ -40,18 +45,17 @@ var porcelain;
             this._onMouseDown = function (event) {
                 if (event.button === 0) {
                     event.preventDefault();
-                    event.stopPropagation();
                     $(document).mouseup(_this._onMouseUp).mousemove(_this._onMouseMove);
                     switch (_this._border) {
                         case 0 /* Left */:
                         case 4 /* TopLeft */:
                         case 6 /* BottomLeft */:
-                            _this._offsetX = event.pageX - _this._windowGeometry.left;
+                            _this._offsetX = event.pageX - _this._target.left;
                             break;
                         case 2 /* Right */:
                         case 5 /* TopRight */:
                         case 7 /* BottomRight */:
-                            _this._offsetX = event.pageX - _this._windowGeometry.right;
+                            _this._offsetX = event.pageX - _this._target.right;
                             break;
                         default:
                             break;
@@ -60,12 +64,12 @@ var porcelain;
                         case 1 /* Top */:
                         case 4 /* TopLeft */:
                         case 5 /* TopRight */:
-                            _this._offsetY = event.pageY - _this._windowGeometry.top;
+                            _this._offsetY = event.pageY - _this._target.top;
                             break;
                         case 3 /* Bottom */:
                         case 6 /* BottomLeft */:
                         case 7 /* BottomRight */:
-                            _this._offsetY = event.pageY - _this._windowGeometry.bottom;
+                            _this._offsetY = event.pageY - _this._target.bottom;
                             break;
                         default:
                             break;
@@ -80,7 +84,6 @@ var porcelain;
             this._onMouseUp = function (event) {
                 if (event.button === 0) {
                     event.preventDefault();
-                    event.stopPropagation();
                     _this._offsetX = 0;
                     _this._offsetY = 0;
                     $(document).off("mouseup", _this._onMouseUp).off("mousemove", _this._onMouseMove);
@@ -93,7 +96,6 @@ var porcelain;
             */
             this._onMouseMove = function (event) {
                 event.preventDefault();
-                event.stopPropagation();
                 var vp = porcelain.viewport;
                 var x = event.pageX - _this._offsetX;
                 var y = event.pageY - _this._offsetY;
@@ -101,28 +103,28 @@ var porcelain;
                 y = Math.min(Math.max(vp.top, y), vp.windowBottom);
                 switch (_this._border) {
                     case 0 /* Left */:
-                        _this._windowGeometry.left = x;
+                        _this._target.left = x;
                         break;
                     case 1 /* Top */:
-                        _this._windowGeometry.top = y;
+                        _this._target.top = y;
                         break;
                     case 2 /* Right */:
-                        _this._windowGeometry.right = x;
+                        _this._target.right = x;
                         break;
                     case 3 /* Bottom */:
-                        _this._windowGeometry.bottom = y;
+                        _this._target.bottom = y;
                         break;
                     case 4 /* TopLeft */:
-                        _this._windowGeometry.topLeft = { x: x, y: y };
+                        _this._target.topLeft = { x: x, y: y };
                         break;
                     case 5 /* TopRight */:
-                        _this._windowGeometry.topRight = { x: x, y: y };
+                        _this._target.topRight = { x: x, y: y };
                         break;
                     case 6 /* BottomLeft */:
-                        _this._windowGeometry.bottomLeft = { x: x, y: y };
+                        _this._target.bottomLeft = { x: x, y: y };
                         break;
                     case 7 /* BottomRight */:
-                        _this._windowGeometry.bottomRight = { x: x, y: y };
+                        _this._target.bottomRight = { x: x, y: y };
                         break;
                     default:
                         break;
@@ -131,18 +133,18 @@ var porcelain;
             this._offsetX = 0;
             this._offsetY = 0;
             this._border = border;
-            this._windowGeometry = windowGeometry;
-            $(this.element).mousedown(this._onMouseDown);
+            this._target = target;
+            this.$.addClass(SIZE_GRIP_CLASS).addClass(BORDER_PREFIX + porcelain.Border[border]).mousedown(this._onMouseDown);
         }
         /**
-        * Destroy the ResizeGrip.
+        * Destroy the size grip.
         */
-        ResizeGrip.prototype.destroy = function () {
+        SizeGrip.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._windowGeometry = null;
+            this._target = null;
         };
-        return ResizeGrip;
+        return SizeGrip;
     })(porcelain.Item);
-    porcelain.ResizeGrip = ResizeGrip;
+    porcelain.SizeGrip = SizeGrip;
 })(porcelain || (porcelain = {}));
-//# sourceMappingURL=resize_grip.js.map
+//# sourceMappingURL=size_grip.js.map

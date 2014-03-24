@@ -10,7 +10,7 @@ module porcelain {
     /**
      * The CSS class applied to Item instances.
      */
-    var ITEM_CLASS = "porcelain-Item";
+    var ITEM_CLASS = "p-Item";
 
 
     /**
@@ -27,18 +27,18 @@ module porcelain {
          */
         constructor(parent: Item = null) {
             this._element = document.createElement("div");
-            $(this._element).addClass(ITEM_CLASS);
-            this.parent = parent;
+            this.$.addClass(ITEM_CLASS);
+            this.setParent(parent);
         }
 
         /**
          * Destroy the item and its children.
          */
         destroy(): void {
-            $(this._element).remove();
+            this.$.remove();
             this._destroyChildren();
             this._destroySignals();
-            this.parent = null;
+            this.setParent(null);
             this._element = null;
         }
 
@@ -52,13 +52,41 @@ module porcelain {
         }
 
         /**
+         * A JQuery wrapper around the internal div element.
+         *
+         * Creates a *new* wrapper each time it is accessed.
+         *
+         * @readonly
+         */
+        get $(): JQuery {
+            return $(this._element);
+        }
+
+        /**
          * The parent Item of this item.
+         *
+         * @readonly
          */
         get parent(): Item {
             return this._parent;
         }
 
-        set parent(parent: Item) {
+        /**
+         * The child Items of this item.
+         *
+         * @readonly
+         */
+        get children(): Item[] {
+            if (!this._children) {
+                return [];
+            }
+            return this._children.slice();
+        }
+
+        /**
+         * Set the parent of the item.
+         */
+        setParent(parent: Item): void {
             if (parent === this._parent) {
                 return;
             }
@@ -68,8 +96,6 @@ module porcelain {
             this._parent = parent;
             if (parent) {
                 parent._addChild(this);
-            } else {
-                $(this._element).detach();
             }
         }
 
@@ -88,25 +114,15 @@ module porcelain {
         }
 
         /**
-         * Invoked when a child is removed from the item.
-         */
-        childRemoved(child: Item): void { }
-
-        /**
-         * Invoked when a child is added to the item.
-         */
-        childAdded(child: Item): void { }
-
-        /**
          * An internal helper method for adding a child item.
+         *
+         * @private
          */
         private _addChild(child: Item): void {
             if (!this._children) {
                 this._children = [];
             }
             this._children.push(child);
-            $(this._element).append(child._element);
-            this.childAdded(child);
         }
 
         /**
@@ -118,7 +134,6 @@ module porcelain {
             }
             var index = this._children.indexOf(child);
             this._children.splice(index, 1);
-            this.childRemoved(child);
         }
 
         /**

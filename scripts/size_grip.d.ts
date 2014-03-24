@@ -1,22 +1,16 @@
 ﻿declare module porcelain {
     /**
-    * A resize grip for use with a top-level window.
-    *
-    * A ResizeGrip updates the geometry of a window in response to a
-    * left mouse button drag.
+    * An item which enables drag-sizing of an element's geometry.
     *
     * @class
     */
-    class ResizeGrip extends Item {
+    class SizeGrip extends Item {
         /**
-        * Construct a new ResizeGrip.
-        *
-        * @param border - the border position of the grip
-        * @param windowGeometry - the geometry handler for the window
+        * Construct a new SizeGrip.
         */
-        constructor(border: Border, windowGeometry: Geometry);
+        constructor(border: Border, target: Geometry, parent?: Item);
         /**
-        * Destroy the ResizeGrip.
+        * Destroy the size grip.
         */
         public destroy(): void;
         /**
@@ -37,9 +31,9 @@
         * @private
         */
         private _onMouseMove;
+        private _border;
+        private _target;
         private _offsetX;
         private _offsetY;
-        private _windowGeometry;
-        private _border;
     }
 }

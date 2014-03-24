@@ -7,216 +7,83 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    var WINDOW_CLASS = "porcelain-Window";
-    var BODY_CLASS = "porcelain-Window-Body";
-    var TITLE_BAR_CLASS = "porcelain-Window-TitleBar";
-    var RESIZE_GRIP_CLASS = "porcelain-Window-ResizeGrip";
-    var BORDER_PREFIX = "porcelain-Border-";
+    var WINDOW_CLASS = "p-Window";
 
-    var GRIP_LOCATIONS = [
-        Border.Top,
-        Border.Left,
-        Border.Right,
-        Border.Bottom,
-        Border.TopLeft,
-        Border.TopRight,
-        Border.BottomLeft,
-        Border.BottomRight
-    ]
+    var BODY_CLASS = "p-Window-body";
 
+    var SIZE_GRIP_CLASS = "p-Window-sizeGrip";
+
+    var TITLE_BAR_CLASS = "p-Window-titleBar";
+
+    
     var windowStack = new ZStack(1000);
 
 
-    class TitleBar extends Item {
+    export class Window extends Item {
 
-        constructor(parent: Window) {
-            super();
-            this._parent = parent;
-            this._helper = new DragHelper(this.element, null);
-            this._helper.pressed = this._onPressed;
-            this._helper.released = this._onReleased;
-            this._helper.moved = this._onMoved;
-            $(this.element).addClass(TITLE_BAR_CLASS);
-        }
+        constructor(parent: Item = null) {
+            super(parent);
 
-        destroy(): void {
-            super.destroy();
-            this._helper.destroy();
-            this._helper = null;
-            this._parent = null;
-        }
+            var geo = this._geometry = new Geometry(this.element);
 
-        private _onPressed = (event: DragHelperEvent<void>) => {
-            this._offsetX = event.pageX - this._parent.left;
-            this._offsetY = event.pageY - this._parent.top;
-        }
+            var body = this._body = new Item(this);
+            $(body.element).addClass(BODY_CLASS);
 
-        private _onReleased = (event: DragHelperEvent<void>) => {
-            this._offsetX = 0;
-            this._offsetY = 0;
-        }
+            var titleBar = this._titleBar = new TitleBar(geo, this);
+            $(titleBar.element).addClass(TITLE_BAR_CLASS);
 
-        private _onMoved = (event: DragHelperEvent<void>) => {
-            var vp = viewport;
-            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
-            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
-            this._parent.pos = { x: x - this._offsetX, y: y - this._offsetY };
-        }
+            var tgrip = new SizeGrip(Border.Top, geo, this);
+            tgrip.$.addClass(SIZE_GRIP_CLASS);
 
-        private _offsetX: number = 0;
-        private _offsetY: number = 0;
-        private _helper: DragHelper<void>;
-        private _parent: Window;
-    }
+            var lgrip = new SizeGrip(Border.Left, geo, this);
+            lgrip.$.addClass(SIZE_GRIP_CLASS);
 
+            var rgrip = new SizeGrip(Border.Right, geo, this);
+            rgrip.$.addClass(SIZE_GRIP_CLASS);
+            
+            var bgrip = new SizeGrip(Border.Bottom, geo, this);
+            bgrip.$.addClass(SIZE_GRIP_CLASS);
 
-    class ResizeGrip extends Item {
+            var tlgrip = new SizeGrip(Border.TopLeft, geo, this);
+            tlgrip.$.addClass(SIZE_GRIP_CLASS);
 
-        constructor(parent: Window, location: Border) {
-            super();
-            this._parent = parent;
-            this._helper = new DragHelper(this.element, location);
-            this._helper.pressed = this._onPressed;
-            this._helper.released = this._onReleased;
-            this._helper.moved = this._onMoved;
-            $(this.element)
-                .addClass(RESIZE_GRIP_CLASS)
-                .addClass(BORDER_PREFIX + Border[location]);
-        }
+            var trgrip = new SizeGrip(Border.TopRight, geo, this);
+            trgrip.$.addClass(SIZE_GRIP_CLASS);
 
-        destroy(): void {
-            super.destroy();
-            this._helper.destroy();
-            this._helper = null;
-            this._parent = null;
-        }
-        
-        private _onPressed = (event: DragHelperEvent<Border>) => {
-            switch (event.context) {
-                case Border.Left:
-                case Border.TopLeft:
-                case Border.BottomLeft:
-                    this._offsetX = event.pageX - this._parent.left;
-                    break;
-                case Border.Right:
-                case Border.TopRight:
-                case Border.BottomRight:
-                    this._offsetX = event.pageX - this._parent.right;
-                    break;
-                default:
-                    break;
-            }
-            switch (event.context) {
-                case Border.Top:
-                case Border.TopLeft:
-                case Border.TopRight:
-                    this._offsetY = event.pageY - this._parent.top;
-                    break;
-                case Border.Bottom:
-                case Border.BottomLeft:
-                case Border.BottomRight:
-                    this._offsetY = event.pageY - this._parent.bottom;
-                    break;
-                default:
-                    break;
-            }
-        }
+            var blgrip = new SizeGrip(Border.BottomLeft, geo, this);
+            blgrip.$.addClass(SIZE_GRIP_CLASS);
+            
+            var brgrip = new SizeGrip(Border.BottomRight, geo, this);
+            brgrip.$.addClass(SIZE_GRIP_CLASS);
 
-        private _onReleased = (event: DragHelperEvent<Border>) => {
-            this._offsetX = 0;
-            this._offsetY = 0;
-        }
-
-        private _onMoved = (event: DragHelperEvent<Border>) => {
-            var vp = viewport;
-            var x = event.pageX - this._offsetX;
-            var y = event.pageY - this._offsetY;
-            x = Math.min(Math.max(vp.left, x), vp.windowRight);
-            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
-            switch (event.context) {
-                case Border.Left:
-                    this._parent.left = x;
-                    break;
-                case Border.Top:
-                    this._parent.top = y;
-                    break;
-                case Border.Right:
-                    this._parent.right = x;
-                    break;
-                case Border.Bottom:
-                    this._parent.bottom = y;
-                    break;
-                case Border.TopLeft:
-                    this._parent.topLeft = { x: x, y: y };
-                    break;
-                case Border.TopRight:
-                    this._parent.topRight = { x: x, y: y };
-                    break;
-                case Border.BottomLeft:
-                    this._parent.bottomLeft = { x: x, y: y };
-                    break;
-                case Border.BottomRight:
-                    this._parent.bottomRight = { x: x, y: y };
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private _offsetX: number = 0;
-        private _offsetY: number = 0;
-        private _helper: DragHelper<Border>;
-        private _parent: Window;
-    }
-
-
-    class Body extends Item {
-
-        constructor() {
-            super();
-            $(this.element).addClass(BODY_CLASS);
-        }
-    }
-
-
-    export class Window extends Widget {
-
-        constructor() {
-            super();
-            var element = $(this.element);
-            element.addClass(WINDOW_CLASS);
-            element.mousedown(this._onMouseDown);
-
-            var body = this._body = new Body();
-            element.append(body.element);
-
-            var self = this;
-            var grips = this._resizeGrips = [];
-            $.each(GRIP_LOCATIONS, function (index, location) {
-                var grip = new ResizeGrip(self, location);
-                element.append(grip.element);
-                grips.push(grip);
-            });
-
-            var titleBar = this._titleBar = new TitleBar(this);
-            element.append(titleBar.element);
+            $(this.element).addClass(WINDOW_CLASS)
+                .mousedown(this._onMouseDown)
+                .append(
+                    body.element,
+                    tgrip.element,
+                    lgrip.element,
+                    rgrip.element,
+                    bgrip.element,
+                    tlgrip.element,
+                    trgrip.element,
+                    blgrip.element,
+                    brgrip.element,
+                    titleBar.element
+                );
 
             // XXX temporary
-            this.minimumSize = { width: 192, height: 192 };
-            this.maximumSize = { width: 640, height: 480 };
-            this.rect = { x: 50, y: 50, width: 100, height: 100 };
+            // Setup a default min, max, and initial size.
+            this.geometry.minimumSize = { width: 192, height: 192 };
+            this.geometry.maximumSize = { width: 640, height: 480 };
+            this.geometry.rect = { x: 50, y: 50, width: 100, height: 100 };
         }
 
         destroy(): void {
             super.destroy()
-            this._body.destroy();
-            this._titleBar.destroy();
-            $.each(this._resizeGrips, function (index, grip) {
-                grip.destroy();
-            });
-            this._body = null;
+            this._geometry.destroy();
+            this._geometry = null;
             this._titleBar = null;
-            this._resizeGrips = null;
+            this._body = null;
         }
 
         show(): void {
@@ -232,13 +99,17 @@ module porcelain {
             windowStack.lower(this);
         }
 
+        get geometry(): Geometry {
+            return this._geometry;
+        }
+
         private _onMouseDown = (event: JQueryMouseEventObject) => {
             this.raise();
         }
 
-        private _body: Body;
-        private _titleBar: TitleBar;
-        private _resizeGrips: ResizeGrip[];
+        private _body: Item;
+        private _titleBar: Item;
+        private _geometry: Geometry;
     }
 
 }
