@@ -85,8 +85,8 @@ module porcelain {
             this.$.addClass(TITLE_BAR_CLASS)
                 .append(
                     iconItem.element,
-                    textItem.element,
-                    btnBox.element
+                    btnBox.element,
+                    textItem.element
                 );
         }
 

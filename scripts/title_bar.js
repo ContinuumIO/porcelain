@@ -82,7 +82,7 @@ var porcelain;
             textItem.$.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
-            this.$.addClass(TITLE_BAR_CLASS).append(iconItem.element, textItem.element, btnBox.element);
+            this.$.addClass(TITLE_BAR_CLASS).append(iconItem.element, btnBox.element, textItem.element);
         }
         TitleBar.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
