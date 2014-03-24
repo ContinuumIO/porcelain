@@ -19,16 +19,6 @@ var porcelain;
     var BUTTON_CLASS = "p-Button";
 
     /**
-    * The class added to a Button when it is pressed.
-    */
-    var PRESSED_CLASS = "p-Button-pressed";
-
-    /**
-    * The class added to a Button when it is hovered.
-    */
-    var HOVERED_CLASS = "p-Button-hovered";
-
-    /**
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
@@ -60,22 +50,6 @@ var porcelain;
             */
             this.released = this.createSignal();
             /**
-            * The internal mouse enter handler.
-            *
-            * @private
-            */
-            this._onMouseEnter = function () {
-                _this.$.addClass(HOVERED_CLASS);
-            };
-            /**
-            * The internal mouse leave handler.
-            *
-            * @private
-            */
-            this._onMouseLeave = function () {
-                _this.$.removeClass(HOVERED_CLASS);
-            };
-            /**
             * The internal mouse down handler.
             *
             * @private
@@ -84,7 +58,6 @@ var porcelain;
                 if (event.button === 0) {
                     event.preventDefault();
                     $(document).mouseup(_this._onMouseUp);
-                    _this.$.addClass(PRESSED_CLASS);
                     _this.pressed.emit(null);
                 }
             };
@@ -96,7 +69,6 @@ var porcelain;
             this._onMouseUp = function (event) {
                 if (event.button === 0) {
                     $(document).off("mouseup", _this._onMouseUp);
-                    _this.$.removeClass(PRESSED_CLASS);
                     _this.released.emit(null);
                     if (event.target === _this.element) {
                         event.preventDefault();
@@ -104,7 +76,7 @@ var porcelain;
                     }
                 }
             };
-            this.$.addClass(BUTTON_CLASS).mouseenter(this._onMouseEnter).mouseleave(this._onMouseLeave).mousedown(this._onMouseDown);
+            this.$.addClass(BUTTON_CLASS).mousedown(this._onMouseDown);
         }
         return Button;
     })(porcelain.Item);

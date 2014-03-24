@@ -12,16 +12,6 @@ module porcelain {
      */
     var BUTTON_CLASS = "p-Button";
 
-    /**
-     * The class added to a Button when it is pressed.
-     */
-    var PRESSED_CLASS = "p-Button-pressed";
-
-    /**
-     * The class added to a Button when it is hovered.
-     */
-    var HOVERED_CLASS = "p-Button-hovered";
-
 
     /**
      * A basic button class.
@@ -56,27 +46,7 @@ module porcelain {
         constructor(parent: Item = null) {
             super(parent);
             this.$.addClass(BUTTON_CLASS)
-                .mouseenter(this._onMouseEnter)
-                .mouseleave(this._onMouseLeave)
                 .mousedown(this._onMouseDown);
-        }
-
-        /**
-         * The internal mouse enter handler.
-         *
-         * @private
-         */
-        private _onMouseEnter = () => {
-            this.$.addClass(HOVERED_CLASS);
-        }
-
-        /**
-         * The internal mouse leave handler.
-         *
-         * @private
-         */
-        private _onMouseLeave = () => {
-            this.$.removeClass(HOVERED_CLASS);
         }
 
         /**
@@ -88,7 +58,6 @@ module porcelain {
             if (event.button === 0) {
                 event.preventDefault();
                 $(document).mouseup(this._onMouseUp);
-                this.$.addClass(PRESSED_CLASS);
                 this.pressed.emit(null);
             }
         }
@@ -101,7 +70,6 @@ module porcelain {
         private _onMouseUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 $(document).off("mouseup", this._onMouseUp);
-                this.$.removeClass(PRESSED_CLASS);
                 this.released.emit(null);
                 if (event.target === this.element) {
                     event.preventDefault();

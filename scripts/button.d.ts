@@ -27,18 +27,6 @@
         */
         constructor(parent?: Item);
         /**
-        * The internal mouse enter handler.
-        *
-        * @private
-        */
-        private _onMouseEnter;
-        /**
-        * The internal mouse leave handler.
-        *
-        * @private
-        */
-        private _onMouseLeave;
-        /**
         * The internal mouse down handler.
         *
         * @private
