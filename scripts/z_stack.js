@@ -15,7 +15,7 @@ var porcelain;
         Object.defineProperty(ZStack.prototype, "top", {
             get: function () {
                 if (this._stack.length) {
-                    return this._stack[this._stack.length - 1].item;
+                    return this._stack[this._stack.length - 1];
                 }
                 return null;
             },
@@ -26,7 +26,7 @@ var porcelain;
         Object.defineProperty(ZStack.prototype, "bottom", {
             get: function () {
                 if (this._stack.length) {
-                    return this._stack[0].item;
+                    return this._stack[0];
                 }
                 return null;
             },
@@ -35,36 +35,22 @@ var porcelain;
         });
 
         ZStack.prototype.contains = function (item) {
-            var found = false;
-            $.each(this._stack, function (index, pair) {
-                if (pair.item === item) {
-                    found = true;
-                    return false;
-                }
-            });
-            return found;
+            return this._stack.indexOf(item) !== -1;
         };
 
         ZStack.prototype.add = function (item) {
-            if (this.contains(item)) {
+            if (!item || this.contains(item)) {
                 return;
             }
             var z = this._minZ + this._stack.length;
-            var pair = { item: item, jq: $(item.element) };
-            this._stack.push(pair);
-            pair.jq.css("z-index", z);
+            this._stack.push(item);
+            item.$.css("z-index", z);
         };
 
         ZStack.prototype.remove = function (item) {
-            var i = -1;
-            $.each(this._stack, function (index, pair) {
-                if (pair.item === item) {
-                    i = index;
-                    return false;
-                }
-            });
-            if (i >= 0) {
-                this._stack.splice(i, 1);
+            var index = this._stack.indexOf(item);
+            if (index >= 0) {
+                this._stack.splice(index, 1);
                 this._updateIndices();
             }
         };
@@ -78,7 +64,7 @@ var porcelain;
                 return;
             }
             var cr = this._classify(items);
-            this._stack = cr.oldPairs.concat(cr.newPairs);
+            this._stack = cr.oldItems.concat(cr.newItems);
             this._updateIndices();
         };
 
@@ -91,32 +77,32 @@ var porcelain;
                 return;
             }
             var cr = this._classify(items);
-            this._stack = cr.newPairs.concat(cr.oldPairs);
+            this._stack = cr.newItems.concat(cr.oldItems);
             this._updateIndices();
         };
 
         ZStack.prototype._classify = function (items) {
-            var oldPairs = [];
-            var newPairs = [];
-            $.each(this._stack, function (index, pair) {
-                if (items.indexOf(pair.item) === -1) {
-                    oldPairs.push(pair);
+            var oldItems = [];
+            var newItems = [];
+            $.each(this._stack, function (index, item) {
+                if (items.indexOf(item) === -1) {
+                    oldItems.push(item);
                 } else {
-                    newPairs.push(pair);
+                    newItems.push(item);
                 }
             });
-            newPairs.sort(function (a, b) {
-                var z1 = parseInt(a.jq.css("z-index")) || 0;
-                var z2 = parseInt(b.jq.css("z-index")) || 0;
+            newItems.sort(function (a, b) {
+                var z1 = parseInt(a.$.css("z-index")) || 0;
+                var z2 = parseInt(b.$.css("z-index")) || 0;
                 return z1 - z2;
             });
-            return { oldPairs: oldPairs, newPairs: newPairs };
+            return { oldItems: oldItems, newItems: newItems };
         };
 
         ZStack.prototype._updateIndices = function () {
             var minZ = this._minZ;
-            $.each(this._stack, function (index, pair) {
-                pair.jq.css("z-index", index + minZ);
+            $.each(this._stack, function (index, item) {
+                item.$.css("z-index", index + minZ);
             });
         };
         return ZStack;
