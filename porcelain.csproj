@@ -28,6 +28,7 @@
     <TypeScriptCompile Include="scripts\signal.ts" />
     <Content Include="css\app.css" />
     <Content Include="css\item.css" />
+    <Content Include="css\title_bar.css" />
     <Content Include="css\window.css" />
     <TypeScriptCompile Include="scripts\title_bar.ts" />
     <TypeScriptCompile Include="scripts\viewport.ts" />
