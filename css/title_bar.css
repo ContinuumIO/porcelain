@@ -1,0 +1,90 @@
+﻿/*-----------------------------------------------------------------------------
+| Copyright (c) 2014, Nucleic Development Team.
+|
+| Distributed under the terms of the Modified BSD License.
+|
+| The full license is in the file COPYING.txt, distributed with this software.
+|----------------------------------------------------------------------------*/
+.p-TitleBar-icon {
+    float: left;
+}
+
+.p-TitleBar-text {
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: "Segoe UI", "Lucida Grande", "Dejavu Sans", Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1em;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.p-TitleBar-buttonBox {
+    position: relative;
+    top: -6px;
+    height: 20px;
+    float: right;
+    white-space: nowrap;
+}
+
+.p-TitleBar-closeButton {
+    width: 45px;
+    height: 20px;
+    display: inline-block;
+    margin-left: 1px;
+    background-image: url("/media/close.png");
+    background-color: #C75050;
+}
+
+.p-TitleBar-restoreButton,
+.p-TitleBar-minimizeButton,
+.p-TitleBar-maximizeButton {
+    width: 26px;
+    height: 20px;
+    display: inline-block;
+    margin-left: 1px;
+}
+
+.p-TitleBar-restoreButton {
+    background-image: url("/media/restore.png");
+}
+
+.p-TitleBar-minimizeButton {
+    background-image: url("/media/minimize.png");
+}
+
+.p-TitleBar-maximizeButton {
+    background-image: url("/media/maximize.png");
+}
+
+.p-TitleBar-closeButton:hover {
+    background-color: #E04343;
+}
+
+.p-TitleBar-closeButton:hover:active {
+    background-color: #993D3D;
+}
+
+.p-TitleBar-restoreButton:hover,
+.p-TitleBar-minimizeButton:hover,
+.p-TitleBar-maximizeButton:hover {
+    background-color: #3665B3;
+}
+
+.p-TitleBar-restoreButton:hover {
+    background-image: url("/media/restorehover.png");
+}
+
+.p-TitleBar-minimizeButton:hover {
+    background-image: url("/media/minimizehover.png");
+}
+
+.p-TitleBar-maximizeButton:hover {
+    background-image: url("/media/maximizehover.png");
+}
+
+.p-TitleBar-restoreButton:hover:active,
+.p-TitleBar-minimizeButton:hover:active,
+.p-TitleBar-maximizeButton:hover:active {
+    background-color: #3D6099;
+}
