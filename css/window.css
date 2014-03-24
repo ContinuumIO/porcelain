@@ -13,17 +13,6 @@
 }
 
 
-.p-Window-titleBar {
-    position: absolute;
-    display: inline-flex;
-    justify-content: space-between;
-    left: 6px;
-    top: 6px;
-    right: 6px;
-    height: 23px;
-}
-
-
 .p-Window-body {
     position: absolute;
     border: 1px solid #5499D6;
@@ -112,8 +101,24 @@
 }
 
 
+.p-Window-titleBar {
+    position: absolute;
+    display: flex;
+    left: 6px;
+    top: 6px;
+    right: 6px;
+    height: 23px;
+}
+
+
 .p-Window-titleBar > .p-TitleBar-text {
-    height: 100%;
+    position: relative;
+    font: 12pt "Segoe UI";
+    text-align: center;
+    line-height: 1em;
+    height: 1em;
+    flex-grow: 1;
+    flex-shrink: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -122,6 +127,8 @@
 
 .p-Window-titleBar > .p-TitleBar-buttonBox {
     position: relative;
+    flex-grow: 0;
+    flex-shrink: 0;
     top: -6px;
     height: 20px;
     white-space: nowrap;
@@ -154,6 +161,7 @@
     background-image: url("/media/restore.png");
 }
 
+
 .p-Window-titleBar .p-TitleBar-maximizeButton {
     display: inline-block;
     margin-left: 1px;
@@ -162,10 +170,48 @@
     background-image: url("/media/maximize.png");
 }
 
+
 .p-Window-titleBar .p-TitleBar-minimizeButton {
     display: inline-block;
     margin-left: 1px;
     height: 20px;
     width: 26px;
     background-image: url("/media/minimize.png");
+}
+
+
+.p-Window-titleBar .p-TitleBar-minimizeButton.p-Button-hovered {
+    background-image: url("/media/minimizehover.png");
+    background-color: #3665B3;
+
+}
+
+
+.p-Window-titleBar .p-TitleBar-restoreButton.p-Button-hovered
+.p-Window-titleBar .p-TitleBar-minimizeButton.p-Button-hovered,
+.p-Window-titleBar .p-TitleBar-maximizeButton.p-Button-hovered {
+    background-color: #3665B3;
+}
+
+
+.p-Window-titleBar .p-TitleBar-restoreButton.p-Button-hovered {
+    background-image: url("/media/restorehover.png");
+}
+
+
+
+.p-Window-titleBar .p-TitleBar-minimizeButton.p-Button-hovered {
+    background-image: url("/media/minimizehover.png");
+}
+
+
+.p-Window-titleBar .p-TitleBar-maximizeButton.p-Button-hovered {
+    background-image: url("/media/maximizehover.png");
+}
+
+
+.p-Window-titleBar .p-TitleBar-restoreButton.p-Button-pressed.p-Button-hovered,
+.p-Window-titleBar .p-TitleBar-minimizeButton.p-Button-pressed.p-Button-hovered,
+.p-Window-titleBar .p-TitleBar-maximizeButton.p-Button-pressed.p-Button-hovered {
+    background-color: #3D6099;
 }

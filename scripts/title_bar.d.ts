@@ -12,6 +12,7 @@
         public minimizeButton : Button;
         public maximizeButton : Button;
         private _target;
+        private _iconItem;
         private _textItem;
         private _buttonBox;
         private _closeButton;

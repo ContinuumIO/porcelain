@@ -31,6 +31,7 @@ module porcelain {
 
             var titleBar = this._titleBar = new TitleBar(geo, this);
             $(titleBar.element).addClass(TITLE_BAR_CLASS);
+            titleBar.restoreButton.$.css("display", "none");
 
             var tgrip = new SizeGrip(Border.Top, geo, this);
             tgrip.$.addClass(SIZE_GRIP_CLASS);

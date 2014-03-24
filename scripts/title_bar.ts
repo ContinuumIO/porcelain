@@ -75,12 +75,16 @@ module porcelain {
                     clsBtn.element
                 );
 
+            var iconItem = this._iconItem = new Item(this);
+            iconItem.$.addClass("p-TitleBar-icon");
+
             var textItem = this._textItem = new Item(this);
             textItem.$.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
             this.$.addClass(TITLE_BAR_CLASS)
                 .append(
+                    iconItem.element,
                     textItem.element,
                     btnBox.element
                 );
@@ -89,6 +93,8 @@ module porcelain {
         destroy(): void {
             super.destroy();
             this._target = null;
+            this._iconItem = null;
+            this._textItem = null;
             this._buttonBox = null;
             this._closeButton = null;
             this._restoreButton = null;
@@ -113,6 +119,7 @@ module porcelain {
         }
 
         private _target: Geometry;
+        private _iconItem: Item;
         private _textItem: Item;
         private _buttonBox: Item;
         private _closeButton: Button;

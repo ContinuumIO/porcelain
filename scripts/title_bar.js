@@ -75,15 +75,20 @@ var porcelain;
             var btnBox = this._buttonBox = new porcelain.Item(this);
             btnBox.$.addClass(BUTTON_BOX_CLASS).append(minBtn.element, maxBtn.element, rstBtn.element, clsBtn.element);
 
+            var iconItem = this._iconItem = new porcelain.Item(this);
+            iconItem.$.addClass("p-TitleBar-icon");
+
             var textItem = this._textItem = new porcelain.Item(this);
             textItem.$.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
-            this.$.addClass(TITLE_BAR_CLASS).append(textItem.element, btnBox.element);
+            this.$.addClass(TITLE_BAR_CLASS).append(iconItem.element, textItem.element, btnBox.element);
         }
         TitleBar.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
             this._target = null;
+            this._iconItem = null;
+            this._textItem = null;
             this._buttonBox = null;
             this._closeButton = null;
             this._restoreButton = null;
