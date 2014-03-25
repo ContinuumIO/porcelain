@@ -7,11 +7,25 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /** 
+    /**
      * The Slot interface.
+     *
+     * This interface should be extended to create custom strongly typed slots.
      */
-    export interface ISlot<T> {
-        (param: T): void;
+    export interface ISlot {
+        (): void;
+    }
+
+
+    /**
+     * The Signal interface.
+     * 
+     * This interface should be extended to create custom strongly typed signals. 
+     */
+    export interface ISignal {
+        connect(slot: ISlot): void;
+        disconnect(slot: ISlot): void;
+        emit(...args: any[]): void;
     }
 
 
@@ -24,23 +38,21 @@ module porcelain {
      *
      * @class
      */
-    export class Signal<T> {
+    export class Signal implements ISignal {
 
         /**
          * Connect a slot to the signal.
          *
          * The slot will be invoked when the signal is emitted. The 
-         * parameter emitted by the signal will be passed to the slot.
-         * If the slot is already connect, this is a no-op.
+         * arguments emitted by the signal will be passed to the slot.
+         * If the slot is already connected, this is a no-op.
          *
-         * @param slot - the function to connect to the signal
+         * @param slot - the function to connect to the signal.
          */
-        connect(slot: ISlot<T>): void {
+        connect(slot: ISlot): void {
             if (!this._slots) {
-                this._slots = [];
-            }
-            var i = this._slots.indexOf(slot);
-            if (i === -1) {
+                this._slots = [slot];
+            } else if (this._slots.indexOf(slot) === -1) {
                 this._slots.push(slot);
             }
         }
@@ -51,9 +63,9 @@ module porcelain {
          * If the slot is not connected to the signal, this is a no-op.
          * If no slot is provided, all slots will be disconnected.
          * 
-         * @param slot - the function to disconnect from the signal
+         * @param slot - the function to disconnect from the signal.
          */
-        disconnect(slot?: ISlot<T>): void {
+        disconnect(slot: ISlot = null): void {
             if (!this._slots) {
                 return;
             }
@@ -61,10 +73,10 @@ module porcelain {
                 this._slots = null;
                 return;
             }
-            var i = this._slots.indexOf(slot);
-            if (i !== -1) {
-                this._slots.splice(i, 1);
-                if (!this._slots.length) {
+            var index = this._slots.indexOf(slot);
+            if (index !== -1) {
+                this._slots.splice(index, 1);
+                if (this._slots.length === 0) {
                     this._slots = null;
                 }
             }
@@ -79,16 +91,19 @@ module porcelain {
          * 
          * @param param - the parameter to pass to the slots
          */
-        emit(param: T): void {
+        emit(...args: any[]): void;
+        emit(): void {
             if (!this._slots) {
                 return;
             }
-            $.each(this._slots.slice(), function (index, slot) {
-                slot(param);
-            });
+            var context = {};
+            var slots = this._slots.slice();
+            for (var i = 0, n = slots.length; i < n; ++i) {
+                slots[i].apply(context, arguments);
+            }
         }
 
-        private _slots: ISlot<T>[] = null;
+        private _slots: ISlot[] = null;
     }
 
 }

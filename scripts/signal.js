@@ -9,6 +9,8 @@ var porcelain;
 (function (porcelain) {
     
 
+    
+
     /**
     * The Signal class.
     *
@@ -26,17 +28,15 @@ var porcelain;
         * Connect a slot to the signal.
         *
         * The slot will be invoked when the signal is emitted. The
-        * parameter emitted by the signal will be passed to the slot.
-        * If the slot is already connect, this is a no-op.
+        * arguments emitted by the signal will be passed to the slot.
+        * If the slot is already connected, this is a no-op.
         *
-        * @param slot - the function to connect to the signal
+        * @param slot - the function to connect to the signal.
         */
         Signal.prototype.connect = function (slot) {
             if (!this._slots) {
-                this._slots = [];
-            }
-            var i = this._slots.indexOf(slot);
-            if (i === -1) {
+                this._slots = [slot];
+            } else if (this._slots.indexOf(slot) === -1) {
                 this._slots.push(slot);
             }
         };
@@ -47,9 +47,10 @@ var porcelain;
         * If the slot is not connected to the signal, this is a no-op.
         * If no slot is provided, all slots will be disconnected.
         *
-        * @param slot - the function to disconnect from the signal
+        * @param slot - the function to disconnect from the signal.
         */
         Signal.prototype.disconnect = function (slot) {
+            if (typeof slot === "undefined") { slot = null; }
             if (!this._slots) {
                 return;
             }
@@ -57,31 +58,24 @@ var porcelain;
                 this._slots = null;
                 return;
             }
-            var i = this._slots.indexOf(slot);
-            if (i !== -1) {
-                this._slots.splice(i, 1);
-                if (!this._slots.length) {
+            var index = this._slots.indexOf(slot);
+            if (index !== -1) {
+                this._slots.splice(index, 1);
+                if (this._slots.length === 0) {
                     this._slots = null;
                 }
             }
         };
 
-        /**
-        * Emit the signal with the given parameter.
-        *
-        * This will invoke all slots with the provided parameter in
-        * the order in which they were connected. It is safe to
-        * connect and disconnect slots while the signal is emitting.
-        *
-        * @param param - the parameter to pass to the slots
-        */
-        Signal.prototype.emit = function (param) {
+        Signal.prototype.emit = function () {
             if (!this._slots) {
                 return;
             }
-            $.each(this._slots.slice(), function (index, slot) {
-                slot(param);
-            });
+            var context = {};
+            var slots = this._slots.slice();
+            for (var i = 0, n = slots.length; i < n; ++i) {
+                slots[i].apply(context, arguments);
+            }
         };
         return Signal;
     })();

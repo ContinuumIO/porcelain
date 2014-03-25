@@ -1,9 +1,21 @@
 ﻿declare module porcelain {
     /**
     * The Slot interface.
+    *
+    * This interface should be extended to create custom strongly typed slots.
     */
-    interface ISlot<T> {
-        (param: T): void;
+    interface ISlot {
+        (): void;
+    }
+    /**
+    * The Signal interface.
+    *
+    * This interface should be extended to create custom strongly typed signals.
+    */
+    interface ISignal {
+        connect(slot: ISlot): void;
+        disconnect(slot: ISlot): void;
+        emit(...args: any[]): void;
     }
     /**
     * The Signal class.
@@ -14,26 +26,26 @@
     *
     * @class
     */
-    class Signal<T> {
+    class Signal implements ISignal {
         /**
         * Connect a slot to the signal.
         *
         * The slot will be invoked when the signal is emitted. The
-        * parameter emitted by the signal will be passed to the slot.
-        * If the slot is already connect, this is a no-op.
+        * arguments emitted by the signal will be passed to the slot.
+        * If the slot is already connected, this is a no-op.
         *
-        * @param slot - the function to connect to the signal
+        * @param slot - the function to connect to the signal.
         */
-        public connect(slot: ISlot<T>): void;
+        public connect(slot: ISlot): void;
         /**
         * Disconnect a slot from the signal.
         *
         * If the slot is not connected to the signal, this is a no-op.
         * If no slot is provided, all slots will be disconnected.
         *
-        * @param slot - the function to disconnect from the signal
+        * @param slot - the function to disconnect from the signal.
         */
-        public disconnect(slot?: ISlot<T>): void;
+        public disconnect(slot?: ISlot): void;
         /**
         * Emit the signal with the given parameter.
         *
@@ -43,7 +55,7 @@
         *
         * @param param - the parameter to pass to the slots
         */
-        public emit(param: T): void;
+        public emit(...args: any[]): void;
         private _slots;
     }
 }
