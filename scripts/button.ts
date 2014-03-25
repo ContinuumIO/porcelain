@@ -28,25 +28,26 @@ module porcelain {
         /**
          * A signal emitted when the button is clicked.
          */
-        clicked = this.createSignal<void>();
+        clicked = this.createSignal();
 
         /**
          * A signal emitted when the button is pressed.
          */
-        pressed = this.createSignal<void>();
+        pressed = this.createSignal();
 
         /**
          * A signal emitted when the button is released.
          */
-        released = this.createSignal<void>();
+        released = this.createSignal();
 
         /**
          * Construct a new Button instance.
          */
-        constructor(parent: Item = null) {
-            super(parent);
-            this.$.addClass(BUTTON_CLASS)
-                .mousedown(this._onMouseDown);
+        constructor() {
+            super();
+            this.addClass(BUTTON_CLASS);
+
+            //mousedown(this._onMouseDown);
         }
 
         /**
@@ -58,7 +59,7 @@ module porcelain {
             if (event.button === 0) {
                 event.preventDefault();
                 $(document).mouseup(this._onMouseUp);
-                this.pressed.emit(null);
+                this.pressed.emit();
             }
         }
 
@@ -70,10 +71,10 @@ module porcelain {
         private _onMouseUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 $(document).off("mouseup", this._onMouseUp);
-                this.released.emit(null);
+                this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();
-                    this.clicked.emit(null);
+                    this.clicked.emit();
                 }
             }
         }

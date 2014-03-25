@@ -13,19 +13,19 @@
         /**
         * A signal emitted when the button is clicked.
         */
-        public clicked: Signal<void>;
+        public clicked: Signal;
         /**
         * A signal emitted when the button is pressed.
         */
-        public pressed: Signal<void>;
+        public pressed: Signal;
         /**
         * A signal emitted when the button is released.
         */
-        public released: Signal<void>;
+        public released: Signal;
         /**
         * Construct a new Button instance.
         */
-        constructor(parent?: Item);
+        constructor();
         /**
         * The internal mouse down handler.
         *

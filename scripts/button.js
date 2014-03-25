@@ -33,10 +33,9 @@ var porcelain;
         /**
         * Construct a new Button instance.
         */
-        function Button(parent) {
-            if (typeof parent === "undefined") { parent = null; }
+        function Button() {
             var _this = this;
-            _super.call(this, parent);
+            _super.call(this);
             /**
             * A signal emitted when the button is clicked.
             */
@@ -58,7 +57,7 @@ var porcelain;
                 if (event.button === 0) {
                     event.preventDefault();
                     $(document).mouseup(_this._onMouseUp);
-                    _this.pressed.emit(null);
+                    _this.pressed.emit();
                 }
             };
             /**
@@ -69,14 +68,15 @@ var porcelain;
             this._onMouseUp = function (event) {
                 if (event.button === 0) {
                     $(document).off("mouseup", _this._onMouseUp);
-                    _this.released.emit(null);
+                    _this.released.emit();
                     if (event.target === _this.element) {
                         event.preventDefault();
-                        _this.clicked.emit(null);
+                        _this.clicked.emit();
                     }
                 }
             };
-            this.$.addClass(BUTTON_CLASS).mousedown(this._onMouseDown);
+            this.addClass(BUTTON_CLASS);
+            //mousedown(this._onMouseDown);
         }
         return Button;
     })(porcelain.Item);
