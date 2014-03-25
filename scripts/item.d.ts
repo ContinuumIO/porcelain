@@ -10,25 +10,17 @@
         /**
         * Construct a new Item.
         */
-        constructor(parent?: Item);
+        constructor();
         /**
         * Destroy the item and its children.
         */
         public destroy(): void;
         /**
-        * The item's internal div element.
+        * The item's div element.
         *
         * @readonly
         */
         public element : HTMLDivElement;
-        /**
-        * A JQuery wrapper around the internal div element.
-        *
-        * Creates a *new* wrapper each time it is accessed.
-        *
-        * @readonly
-        */
-        public $ : JQuery;
         /**
         * The parent Item of this item.
         *
@@ -36,15 +28,16 @@
         */
         public parent : Item;
         /**
-        * The child Items of this item.
+        * The array child items for this item.
         *
         * @readonly
         */
         public children : Item[];
-        /**
-        * Set the parent of the item.
-        */
-        public setParent(parent: Item): void;
+        public append(...children: Item[]): void;
+        public prepend(...children: Item[]): void;
+        public insertBefore(before: Item, ...children: Item[]): void;
+        public insertAfter(after: Item, ...children: Item[]): void;
+        public remove(...children: Item[]): void;
         /**
         * Create a new Signal owned by the item.
         *
@@ -52,23 +45,57 @@
         */
         public createSignal<T>(): Signal<T>;
         /**
-        * An internal helper method for adding a child item.
+        * A helper method for appending an item.
         *
         * @private
         */
-        private _addChild(child);
+        private _append(child);
         /**
-        * An internal helper method for removing a child item.
+        * A helper method for prepending an item.
+        *
+        * @private
         */
-        private _removeChild(child);
+        private _prepend(child);
         /**
-        * An internal helper method for destroying the children.
+        * A helper method for inserting an item.
+        *
+        */
+        private _insertBefore(before, child);
+        /**
+        * A helper method for inserting an item.
+        *
+        */
+        private _insertAfter(after, child);
+        /**
+        * A helper method for removing a child item.
+        *
+        * @private
+        */
+        private _remove(child);
+        /**
+        * A helper method to detach the div element.
+        *
+        * @private
+        */
+        private _detach();
+        /**
+        * A helper method for destroying the item children.
+        *
+        * @private
         */
         private _destroyChildren();
         /**
-        * An internal helper method for destroying the signals.
+        * A helper method for destroying the item signals.
+        *
+        * @private
         */
         private _destroySignals();
+        /**
+        * A helper method for de-parenting the object.
+        *
+        * @private
+        */
+        private _deparent();
         private _element;
         private _parent;
         private _children;
