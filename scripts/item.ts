@@ -16,7 +16,7 @@ module porcelain {
     /**
      * The most base class of visible porcelain objects.
      *
-     * Instances are represented by a single <div>.
+     * Instances are represented by a single <div> element.
      *
      * @class
      */
@@ -27,19 +27,19 @@ module porcelain {
          */
         constructor() {
             this._element = document.createElement("div");
-            this._element.className = ITEM_CLASS;
+            this.addClass(ITEM_CLASS);
         }
 
         /**
-         * Destroy the item and its children.
+         * Destroy the item and its children, and cleanup the dom.
          */
         destroy(): void {
-            this._detach();
+            this._detachElement();
             this._destroyChildren();
             this._destroySignals();
             this._deparent();
             this._element = null;
-        } 
+        }
 
         /**
          * The item's div element.
@@ -60,7 +60,7 @@ module porcelain {
         }
 
         /**
-         * The array child items for this item.
+         * The array child Items for this item.
          *
          * @readonly
          */
@@ -71,139 +71,129 @@ module porcelain {
             return this._children.slice();
         }
 
-        append(...children: Item[]): void;
-        append(): void {
-            for (var i = 0, n = arguments.length; i < n; ++i) {
-                this._append(<Item>arguments[i]);
+        /**
+         * Append children to the end of this item.
+         *
+         * If an item is already a child, it will be moved to the
+         * end of the child array. The children *must* be unique.
+         *
+         * @param [...] - the child Items to append to the item.
+         */
+        append(...children: Item[]): void {
+            var fragment = this._prepInsert(children);
+            var current = this._children || [];
+            this._children = current.concat(children);
+            this._element.appendChild(fragment);
+        }
+
+        /**
+         * Prepend children to the beginning of this item.
+         *
+         * If an item is already a child, it will be moved to the 
+         * beginning of the child array. The children *must* be unique.
+         *
+         * @param [...] - the child Items to prepend to the item.
+         */
+        prepend(...children: Item[]): void {
+            var fragment = this._prepInsert(children);
+            var current = this._children || [];
+            this._children = children.concat(current);
+            this._element.insertBefore(fragment, this._element.firstChild);
+        }
+
+        /**
+         * Insert children before the given child.
+         *
+         * If an item is already a child, it will be moved to the new
+         * location in the child array. The before child *must* be a 
+         * current child. The children *must* be unique.
+         *
+         * @param before - the child item marking the insert location.
+         * @param [...] - the child Items to insert into the item.
+         */
+        insertBefore(before: Item, ...children: Item[]): void {
+            if (before._parent !== this) {
+                throw Error("The 'before' item is not a child of this item.");
             }
-        }
-
-        prepend(...children: Item[]): void;
-        prepend(): void {
-            for (var i = 0, n = arguments.length; i < n; ++i) {
-                this._prepend(<Item>arguments[i]);
+            var fragment = this._prepInsert(children);
+            var current = this._children || [];
+            var index = current.indexOf(before);
+            if (index === -1) {
+                this._children = current.concat(children);
+                this._element.appendChild(fragment);
+            } else {
+                var leading = current.slice(0, index);
+                var trailing = current.slice(index);
+                this._children = leading.concat(children, trailing);
+                this._element.insertBefore(fragment, before._element);
             }
-        }
+        }    
 
-        insertBefore(before: Item, ...children: Item[]): void;
-        insertBefore(): void {
-            var target: Item = arguments[0];
-            for (var i = 1, n = arguments.length; i < n; ++i) {
-                this._insertBefore(target, <Item>arguments[i]);
-            } 
-        }
-
-        insertAfter(after: Item, ...children: Item[]): void;
-        insertAfter(): void {
-            var target: Item = arguments[0];
-            for (var i = 1, n = arguments.length; i < n; ++i) {
-                this._insertBefore(target, <Item>arguments[i]);
-            } 
-        }
-
-        remove(...children: Item[]): void;
-        remove(): void {
-            for (var i = 0, n = arguments.length; i < n; ++i) {
-                this._remove(<Item>arguments[i]);
-            }
+        /**
+         * Detach the element from the dom and unparent the item.
+         */
+        detach(): void {
+            this._detachElement();
+            this._deparent();
         }
 
         /**
          * Create a new Signal owned by the item.
          *
-         * The signal will be destroyed automatically by the item.
+         * All handlers are disconnected when the item is destroyed.
          */
-        createSignal<T>(): Signal<T> {
+        createSignal(): Signal {
             if (!this._signals) {
                 this._signals = [];
             }
-            var signal = new Signal<T>();
+            var signal = new Signal();
             this._signals.push(signal);
             return signal;
         }
 
         /**
-         * A helper method for appending an item.
+         * Add a name or names to the element's CSS class name.
          *
-         * @private
-         */
-        private _append(child: Item): void {
-            if (!this._children) {
-                this._children = [];
-            }
-            child._deparent();
-            child._parent = this;
-            this._children.push(child);
-            this._element.appendChild(child._element);
-        }
-
-        /**
-         * A helper method for prepending an item.
+         * Multiple names should be separated by whitespace.
          *
-         * @private
+         * @param className - the class name(s) to add to the element.
          */
-        private _prepend(child: Item): void {
-            if (!this._children) {
-                this._children = [];
+        addClass(className: string): void {
+            var names = className.match(/\S+/g) || [];
+            var current = this._element.className;
+            var parts = current.match(/\S+/g) || [];
+            for (var i = 0, n = names.length; i < n; ++i) {
+                var name = names[i];
+                if (parts.indexOf(name) === -1) {
+                    parts.push(name);
+                }
             }
-            child._deparent();
-            child._parent = this;
-            this._children.unshift(child);
-            var elem = this._element;
-            elem.insertBefore(child._element, elem.firstChild);
-        }
-
-        /**
-         * A helper method for inserting an item.
-         *
-         */
-        private _insertBefore(before: Item, child: Item): void {
-            if (!this._children) {
-                this._children = [];
-            }
-            child._deparent();
-            child._parent = this;
-            var elem = this._element;
-            var index = this._children.indexOf(before);
-            if (index === -1) {
-                this._children.unshift(child);
-                elem.insertBefore(child._element, elem.firstChild);
-            } else {
-                this._children.splice(index, 0, child);
-                elem.insertBefore(child._element, before._element);
+            var final = parts.join(" ");
+            if (final !== current) {
+                this._element.className = final;
             }
         }
-
+                
         /**
-         * A helper method for inserting an item.
+         * Remove a name or names from the element's CSS class name.
          *
-         */
-        private _insertAfter(after: Item, child: Item): void {
-            if (!this._children) {
-                this._children = [];
-            }
-            child._deparent();
-            child._parent = this;
-            var elem = this._element;
-            var index = this._children.indexOf(after);
-            if (index === -1) {
-                this._children.push(child);
-                elem.appendChild(child._element);
-            } else {
-                this._children.splice(index + 1, 0, child);
-                elem.insertBefore(child._element, after._element.nextSibling);
-            }
-        }
-
-        /**
-         * A helper method for removing a child item.
+         * Multiple names should be separated by whitespace.
          *
-         * @private
+         * @param className - the class name(s) to remove from the element.
          */
-        private _remove(child: Item) {
-            if (child._parent === this) {
-                child._deparent();
-                child._detach();
+        removeClass(className: string): void {
+            var names = className.match(/\S+/g) || [];
+            var current = this._element.className;
+            var parts = current.match(/\S+/g) || [];
+            for (var i = 0, n = names.length; i < n; ++i) {
+                var index = parts.indexOf(names[i]);
+                if (index !== -1) {
+                    parts.splice(index, 1);
+                }
+            }
+            var final = parts.join(" ");
+            if (final !== current) {
+                this._element.className = final;
             }
         }
 
@@ -212,7 +202,7 @@ module porcelain {
          * 
          * @private
          */
-        private _detach(): void {
+        private _detachElement(): void {
             var elem = this._element;
             if (elem.parentNode) {
                 elem.parentNode.removeChild(elem);
@@ -272,10 +262,26 @@ module porcelain {
             }
         }
 
+        /**
+         * A helper method for preparing children to be inserted.
+         *
+         * @private 
+         */
+        private  _prepInsert(children: Item[]): DocumentFragment {
+            var fragment = document.createDocumentFragment();
+            for (var i = 0, n = children.length; i < n; ++i) {
+                var child = children[i];
+                child._deparent();
+                child._parent = this;
+                fragment.appendChild(child._element);
+            }
+            return fragment;
+        }
+
         private _element: HTMLDivElement;
         private _parent: Item = null;
         private _children: Item[] = null;
-        private _signals: Signal<any>[] = null;
+        private _signals: Signal[] = null;
     }
 
 }
