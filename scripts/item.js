@@ -38,7 +38,7 @@ var porcelain;
         Item.prototype.destroy = function () {
             this._detachElement();
             this._destroyChildren();
-            this._destroyItemExtras();
+            this._destroyExtra();
             this._deparent();
             this._element = null;
         };

@@ -16,10 +16,10 @@ module porcelain {
     /**
      * The extra data that may be needed by an Item at runtime.
      *
-     * This is created on-demand to keep the items which don't 
-     * use any of the features as small as possible.
+     * This interface can be extended by subclasses, but should
+     * not be used by external code.
      */
-    export interface ItemExtras {
+    export interface ItemExtra {
         signals?: Signal[];
         elementEvents?: EventTracker;
         documentEvents?: EventTracker;
@@ -50,7 +50,7 @@ module porcelain {
         destroy(): void {
             this._detachElement();
             this._destroyChildren();
-            this._destroyItemExtras();
+            this._destroyExtra();
             this._deparent();
             this._element = null;
         }
