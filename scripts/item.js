@@ -12,6 +12,8 @@ var porcelain;
     */
     var ITEM_CLASS = "p-Item";
 
+    
+
     /**
     * The most base class of visible porcelain objects.
     *
@@ -26,7 +28,7 @@ var porcelain;
         function Item() {
             this._parent = null;
             this._children = null;
-            this._signals = null;
+            this._itemExtras = null;
             this._element = document.createElement("div");
             this.addClass(ITEM_CLASS);
         }
@@ -36,7 +38,7 @@ var porcelain;
         Item.prototype.destroy = function () {
             this._detachElement();
             this._destroyChildren();
-            this._destroySignals();
+            this._destroyItemExtras();
             this._deparent();
             this._element = null;
         };
@@ -89,7 +91,7 @@ var porcelain;
         * If an item is already a child, it will be moved to the
         * end of the child array. The children *must* be unique.
         *
-        * @param [...] - the child Items to append to the item.
+        * @param [...] The child Items to append to the item.
         */
         Item.prototype.append = function () {
             var children = [];
@@ -108,7 +110,7 @@ var porcelain;
         * If an item is already a child, it will be moved to the
         * beginning of the child array. The children *must* be unique.
         *
-        * @param [...] - the child Items to prepend to the item.
+        * @param [...] The child Items to prepend to the item.
         */
         Item.prototype.prepend = function () {
             var children = [];
@@ -128,8 +130,8 @@ var porcelain;
         * location in the child array. The before child *must* be a
         * current child. The children *must* be unique.
         *
-        * @param before - the child item marking the insert location.
-        * @param [...] - the child Items to insert into the item.
+        * @param before The child item marking the insert location.
+        * @param [...] The child Items to insert into the item.
         */
         Item.prototype.insertBefore = function (before) {
             var children = [];
@@ -154,7 +156,8 @@ var porcelain;
         };
 
         /**
-        * Detach the element from the dom and unparent the item.
+        * Unparent the Item and detach its element from the DOM.
+        *
         */
         Item.prototype.detach = function () {
             this._detachElement();
@@ -183,18 +186,12 @@ var porcelain;
         * @param className - the class name(s) to add to the element.
         */
         Item.prototype.addClass = function (className) {
-            var names = className.match(/\S+/g) || [];
-            var current = this._element.className;
-            var parts = current.match(/\S+/g) || [];
-            for (var i = 0, n = names.length; i < n; ++i) {
-                var name = names[i];
-                if (parts.indexOf(name) === -1) {
-                    parts.push(name);
-                }
-            }
-            var final = parts.join(" ");
-            if (final !== current) {
-                this._element.className = final;
+            var currName = this._element.className;
+            var currParts = currName.match(/\S+/g) || [];
+            var newParts = className.match(/\S+/g) || [];
+            var newName = _.union(currParts, newParts).join(" ");
+            if (newName !== currName) {
+                this._element.className = newName;
             }
         };
 
@@ -206,21 +203,18 @@ var porcelain;
         * @param className - the class name(s) to remove from the element.
         */
         Item.prototype.removeClass = function (className) {
-            var names = className.match(/\S+/g) || [];
-            var current = this._element.className;
-            var parts = current.match(/\S+/g) || [];
-            for (var i = 0, n = names.length; i < n; ++i) {
-                var index = parts.indexOf(names[i]);
-                if (index !== -1) {
-                    parts.splice(index, 1);
-                }
-            }
-            var final = parts.join(" ");
-            if (final !== current) {
-                this._element.className = final;
+            var currName = this._element.className;
+            var currParts = currName.match(/\S+/g) || [];
+            var oldParts = className.match(/\S+/g) || [];
+            var newName = _.difference(currParts, oldParts).join(" ");
+            if (newName !== currName) {
+                this._element.className = newName;
             }
         };
 
+        /**
+        *
+        * A
         /**
         * A helper method to detach the div element.
         *
@@ -266,6 +260,26 @@ var porcelain;
         };
 
         /**
+        * A helper method for destroying the item event trackers.
+        *
+        * @private
+        */
+        Item.prototype._destroyEventTrackers = function () {
+            if (this._windowEvents) {
+                this._windowEvents.destroy();
+                this._windowEvents = null;
+            }
+            if (this._documentEvents) {
+                this._documentEvents.destroy();
+                this._documentEvents = null;
+            }
+            if (this._elementEvents) {
+                this._elementEvents.destroy();
+                this._elementEvents = null;
+            }
+        };
+
+        /**
         * A helper method for de-parenting the object.
         *
         * @private
@@ -280,10 +294,7 @@ var porcelain;
             if (!siblings) {
                 return;
             }
-            var index = siblings.indexOf(this);
-            if (index !== -1) {
-                siblings.splice(index, 1);
-            }
+            _.pull(siblings, this);
         };
 
         /**

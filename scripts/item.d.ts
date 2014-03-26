@@ -39,7 +39,7 @@
         * If an item is already a child, it will be moved to the
         * end of the child array. The children *must* be unique.
         *
-        * @param [...] - the child Items to append to the item.
+        * @param [...] The child Items to append to the item.
         */
         public append(...children: Item[]): void;
         /**
@@ -48,7 +48,7 @@
         * If an item is already a child, it will be moved to the
         * beginning of the child array. The children *must* be unique.
         *
-        * @param [...] - the child Items to prepend to the item.
+        * @param [...] The child Items to prepend to the item.
         */
         public prepend(...children: Item[]): void;
         /**
@@ -58,12 +58,13 @@
         * location in the child array. The before child *must* be a
         * current child. The children *must* be unique.
         *
-        * @param before - the child item marking the insert location.
-        * @param [...] - the child Items to insert into the item.
+        * @param before The child item marking the insert location.
+        * @param [...] The child Items to insert into the item.
         */
         public insertBefore(before: Item, ...children: Item[]): void;
         /**
-        * Detach the element from the dom and unparent the item.
+        * Unparent the Item and detach its element from the DOM.
+        *
         */
         public detach(): void;
         /**
@@ -107,6 +108,12 @@
         */
         private _destroySignals();
         /**
+        * A helper method for destroying the item event trackers.
+        *
+        * @private
+        */
+        private _destroyEventTrackers();
+        /**
         * A helper method for de-parenting the object.
         *
         * @private
@@ -122,5 +129,8 @@
         private _parent;
         private _children;
         private _signals;
+        private _elementEvents;
+        private _documentEvents;
+        private _windowEvents;
     }
 }

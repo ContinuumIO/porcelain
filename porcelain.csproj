@@ -19,7 +19,6 @@
   <ItemGroup>
     <TypeScriptCompile Include="scripts\button.ts" />
     <TypeScriptCompile Include="scripts\geometry.ts" />
-    <TypeScriptCompile Include="scripts\jquery.d.ts" />
     <TypeScriptCompile Include="scripts\point.ts" />
     <TypeScriptCompile Include="scripts\size_grip.ts" />
     <TypeScriptCompile Include="scripts\size.ts" />
@@ -36,6 +35,8 @@
     <Content Include="index.html" />
     <TypeScriptCompile Include="scripts\z_stack.ts" />
     <TypeScriptCompile Include="scripts\enums.ts" />
+    <TypeScriptCompile Include="scripts\lodash.d.ts" />
+    <TypeScriptCompile Include="scripts\event_tracker.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

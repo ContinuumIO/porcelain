@@ -46,7 +46,6 @@ module porcelain {
         constructor() {
             super();
             this.addClass(BUTTON_CLASS);
-
             //mousedown(this._onMouseDown);
         }
 

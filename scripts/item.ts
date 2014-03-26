@@ -14,6 +14,20 @@ module porcelain {
 
 
     /**
+     * The extra data that may be needed by an Item at runtime.
+     *
+     * This is created on-demand to keep the items which don't 
+     * use any of the features as small as possible.
+     */
+    export interface ItemExtras {
+        signals?: Signal[];
+        elementEvents?: EventTracker;
+        documentEvents?: EventTracker;
+        windowEvents?: EventTracker;
+    }
+
+
+    /**
      * The most base class of visible porcelain objects.
      *
      * Instances are represented by a single <div> element.
@@ -36,7 +50,7 @@ module porcelain {
         destroy(): void {
             this._detachElement();
             this._destroyChildren();
-            this._destroySignals();
+            this._destroyItemExtras();
             this._deparent();
             this._element = null;
         }
@@ -77,7 +91,7 @@ module porcelain {
          * If an item is already a child, it will be moved to the
          * end of the child array. The children *must* be unique.
          *
-         * @param [...] - the child Items to append to the item.
+         * @param [...] The child Items to append to the item.
          */
         append(...children: Item[]): void {
             var fragment = this._prepInsert(children);
@@ -92,7 +106,7 @@ module porcelain {
          * If an item is already a child, it will be moved to the 
          * beginning of the child array. The children *must* be unique.
          *
-         * @param [...] - the child Items to prepend to the item.
+         * @param [...] The child Items to prepend to the item.
          */
         prepend(...children: Item[]): void {
             var fragment = this._prepInsert(children);
@@ -108,8 +122,8 @@ module porcelain {
          * location in the child array. The before child *must* be a 
          * current child. The children *must* be unique.
          *
-         * @param before - the child item marking the insert location.
-         * @param [...] - the child Items to insert into the item.
+         * @param before The child item marking the insert location.
+         * @param [...] The child Items to insert into the item.
          */
         insertBefore(before: Item, ...children: Item[]): void {
             if (before._parent !== this) {
@@ -127,10 +141,11 @@ module porcelain {
                 this._children = leading.concat(children, trailing);
                 this._element.insertBefore(fragment, before._element);
             }
-        }    
+        }   
 
         /**
-         * Detach the element from the dom and unparent the item.
+         * Unparent the Item and detach its element from the DOM.
+         *
          */
         detach(): void {
             this._detachElement();
@@ -159,18 +174,12 @@ module porcelain {
          * @param className - the class name(s) to add to the element.
          */
         addClass(className: string): void {
-            var names = className.match(/\S+/g) || [];
-            var current = this._element.className;
-            var parts = current.match(/\S+/g) || [];
-            for (var i = 0, n = names.length; i < n; ++i) {
-                var name = names[i];
-                if (parts.indexOf(name) === -1) {
-                    parts.push(name);
-                }
-            }
-            var final = parts.join(" ");
-            if (final !== current) {
-                this._element.className = final;
+            var currName = this._element.className;
+            var currParts = currName.match(/\S+/g) || [];
+            var newParts = className.match(/\S+/g) || [];
+            var newName = _.union(currParts, newParts).join(" ");
+            if (newName !== currName) {
+                this._element.className = newName;
             }
         }
                 
@@ -182,21 +191,18 @@ module porcelain {
          * @param className - the class name(s) to remove from the element.
          */
         removeClass(className: string): void {
-            var names = className.match(/\S+/g) || [];
-            var current = this._element.className;
-            var parts = current.match(/\S+/g) || [];
-            for (var i = 0, n = names.length; i < n; ++i) {
-                var index = parts.indexOf(names[i]);
-                if (index !== -1) {
-                    parts.splice(index, 1);
-                }
-            }
-            var final = parts.join(" ");
-            if (final !== current) {
-                this._element.className = final;
+            var currName = this._element.className;
+            var currParts = currName.match(/\S+/g) || [];
+            var oldParts = className.match(/\S+/g) || [];
+            var newName = _.difference(currParts, oldParts).join(" ");
+            if (newName !== currName) {
+                this._element.className = newName;
             }
         }
 
+        /**
+         *
+         * A 
         /**
          * A helper method to detach the div element.
          * 
@@ -242,6 +248,26 @@ module porcelain {
         }
 
         /**
+         * A helper method for destroying the item event trackers.
+         *
+         * @private
+         */
+        private _destroyEventTrackers(): void {
+            if (this._windowEvents) {
+                this._windowEvents.destroy();
+                this._windowEvents = null;
+            }
+            if (this._documentEvents) {
+                this._documentEvents.destroy();
+                this._documentEvents = null;
+            }
+            if (this._elementEvents) {
+                this._elementEvents.destroy();
+                this._elementEvents = null;
+            }
+        }
+
+        /**
          * A helper method for de-parenting the object.
          *
          * @private
@@ -256,10 +282,7 @@ module porcelain {
             if (!siblings) {
                 return;
             }
-            var index = siblings.indexOf(this);
-            if (index !== -1) {
-                siblings.splice(index, 1);
-            }
+            _.pull(siblings, this);
         }
 
         /**
@@ -281,7 +304,8 @@ module porcelain {
         private _element: HTMLDivElement;
         private _parent: Item = null;
         private _children: Item[] = null;
-        private _signals: Signal[] = null;
+        private _itemExtras: ItemExtras = null;
+
     }
 
 }
