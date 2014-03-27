@@ -12,8 +12,6 @@ var porcelain;
     */
     var ITEM_CLASS = "p-Item";
 
-    
-
     /**
     * The most base class of visible porcelain objects.
     *
@@ -28,17 +26,15 @@ var porcelain;
         function Item() {
             this._parent = null;
             this._children = null;
-            this._itemExtras = null;
             this._element = document.createElement("div");
             this.addClass(ITEM_CLASS);
         }
         /**
-        * Destroy the item and its children, and cleanup the dom.
+        * Destroy the item and its children, and cleanup the DOM.
         */
         Item.prototype.destroy = function () {
             this._detachElement();
             this._destroyChildren();
-            this._destroyExtra();
             this._deparent();
             this._element = null;
         };
@@ -76,14 +72,24 @@ var porcelain;
             * @readonly
             */
             get: function () {
-                if (!this._children) {
+                var children = this._children;
+                if (!children) {
                     return [];
                 }
-                return this._children.slice();
+                return children.slice();
             },
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * Unparent the Item and detach its element from the DOM.
+        *
+        */
+        Item.prototype.detach = function () {
+            this._detachElement();
+            this._deparent();
+        };
 
         /**
         * Append children to the end of this item.
@@ -98,7 +104,7 @@ var porcelain;
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
                 children[_i] = arguments[_i + 0];
             }
-            var fragment = this._prepInsert(children);
+            var fragment = this._prepareChildren(children);
             var current = this._children || [];
             this._children = current.concat(children);
             this._element.appendChild(fragment);
@@ -117,10 +123,11 @@ var porcelain;
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
                 children[_i] = arguments[_i + 0];
             }
-            var fragment = this._prepInsert(children);
+            var fragment = this._prepareChildren(children);
             var current = this._children || [];
             this._children = children.concat(current);
-            this._element.insertBefore(fragment, this._element.firstChild);
+            var element = this._element;
+            element.insertBefore(fragment, element.firstChild);
         };
 
         /**
@@ -141,7 +148,7 @@ var porcelain;
             if (before._parent !== this) {
                 throw Error("The 'before' item is not a child of this item.");
             }
-            var fragment = this._prepInsert(children);
+            var fragment = this._prepareChildren(children);
             var current = this._children || [];
             var index = current.indexOf(before);
             if (index === -1) {
@@ -153,29 +160,6 @@ var porcelain;
                 this._children = leading.concat(children, trailing);
                 this._element.insertBefore(fragment, before._element);
             }
-        };
-
-        /**
-        * Unparent the Item and detach its element from the DOM.
-        *
-        */
-        Item.prototype.detach = function () {
-            this._detachElement();
-            this._deparent();
-        };
-
-        /**
-        * Create a new Signal owned by the item.
-        *
-        * All handlers are disconnected when the item is destroyed.
-        */
-        Item.prototype.createSignal = function () {
-            if (!this._signals) {
-                this._signals = [];
-            }
-            var signal = new porcelain.Signal();
-            this._signals.push(signal);
-            return signal;
         };
 
         /**
@@ -213,17 +197,15 @@ var porcelain;
         };
 
         /**
-        *
-        * A
-        /**
         * A helper method to detach the div element.
         *
         * @private
         */
         Item.prototype._detachElement = function () {
-            var elem = this._element;
-            if (elem.parentNode) {
-                elem.parentNode.removeChild(elem);
+            var element = this._element;
+            var parentNode = element.parentNode;
+            if (parentNode) {
+                parentNode.removeChild(element);
             }
         };
 
@@ -233,49 +215,13 @@ var porcelain;
         * @private
         */
         Item.prototype._destroyChildren = function () {
-            if (!this._children) {
+            var children = this._children;
+            if (!children) {
                 return;
             }
-            var children = this._children;
             this._children = null;
             for (var i = 0, n = children.length; i < n; ++i) {
                 children[i].destroy();
-            }
-        };
-
-        /**
-        * A helper method for destroying the item signals.
-        *
-        * @private
-        */
-        Item.prototype._destroySignals = function () {
-            if (this._signals) {
-                return;
-            }
-            var signals = this._signals;
-            this._signals = null;
-            for (var i = 0, n = signals.length; i < n; ++i) {
-                signals[i].disconnect();
-            }
-        };
-
-        /**
-        * A helper method for destroying the item event trackers.
-        *
-        * @private
-        */
-        Item.prototype._destroyEventTrackers = function () {
-            if (this._windowEvents) {
-                this._windowEvents.destroy();
-                this._windowEvents = null;
-            }
-            if (this._documentEvents) {
-                this._documentEvents.destroy();
-                this._documentEvents = null;
-            }
-            if (this._elementEvents) {
-                this._elementEvents.destroy();
-                this._elementEvents = null;
             }
         };
 
@@ -302,7 +248,7 @@ var porcelain;
         *
         * @private
         */
-        Item.prototype._prepInsert = function (children) {
+        Item.prototype._prepareChildren = function (children) {
             var fragment = document.createDocumentFragment();
             for (var i = 0, n = children.length; i < n; ++i) {
                 var child = children[i];

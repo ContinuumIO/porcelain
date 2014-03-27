@@ -12,7 +12,7 @@
         */
         constructor();
         /**
-        * Destroy the item and its children, and cleanup the dom.
+        * Destroy the item and its children, and cleanup the DOM.
         */
         public destroy(): void;
         /**
@@ -33,6 +33,11 @@
         * @readonly
         */
         public children : Item[];
+        /**
+        * Unparent the Item and detach its element from the DOM.
+        *
+        */
+        public detach(): void;
         /**
         * Append children to the end of this item.
         *
@@ -63,17 +68,6 @@
         */
         public insertBefore(before: Item, ...children: Item[]): void;
         /**
-        * Unparent the Item and detach its element from the DOM.
-        *
-        */
-        public detach(): void;
-        /**
-        * Create a new Signal owned by the item.
-        *
-        * All handlers are disconnected when the item is destroyed.
-        */
-        public createSignal(): Signal;
-        /**
         * Add a name or names to the element's CSS class name.
         *
         * Multiple names should be separated by whitespace.
@@ -102,18 +96,6 @@
         */
         private _destroyChildren();
         /**
-        * A helper method for destroying the item signals.
-        *
-        * @private
-        */
-        private _destroySignals();
-        /**
-        * A helper method for destroying the item event trackers.
-        *
-        * @private
-        */
-        private _destroyEventTrackers();
-        /**
         * A helper method for de-parenting the object.
         *
         * @private
@@ -124,13 +106,9 @@
         *
         * @private
         */
-        private _prepInsert(children);
+        private _prepareChildren(children);
         private _element;
         private _parent;
         private _children;
-        private _signals;
-        private _elementEvents;
-        private _documentEvents;
-        private _windowEvents;
     }
 }
