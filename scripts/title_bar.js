@@ -49,44 +49,49 @@ var porcelain;
     var RESTORE_BUTTON_CLASS = "p-TitleBar-restoreButton";
 
     /**
-    * A title bar for use in a top level window.
+    * A title bar widget for use in a top level window.
     *
     * @class
     */
     var TitleBar = (function (_super) {
         __extends(TitleBar, _super);
-        function TitleBar(target, parent) {
-            if (typeof parent === "undefined") { parent = null; }
-            _super.call(this, parent);
-            this._target = target;
+        /**
+        * Construct a new TitleBar
+        */
+        function TitleBar() {
+            _super.call(this);
+            this.addClass(TITLE_BAR_CLASS);
 
-            var minBtn = this._minimizeButton = new porcelain.Button(this);
-            minBtn.$.addClass(MINIMIZE_BUTTON_CLASS);
+            var minBtn = this._minimizeButton = new porcelain.Button();
+            minBtn.addClass(MINIMIZE_BUTTON_CLASS);
 
-            var maxBtn = this._maximizeButton = new porcelain.Button(this);
-            maxBtn.$.addClass(MAXIMIZE_BUTTON_CLASS);
+            var maxBtn = this._maximizeButton = new porcelain.Button();
+            maxBtn.addClass(MAXIMIZE_BUTTON_CLASS);
 
-            var rstBtn = this._restoreButton = new porcelain.Button(this);
-            rstBtn.$.addClass(RESTORE_BUTTON_CLASS);
+            var rstBtn = this._restoreButton = new porcelain.Button();
+            rstBtn.addClass(RESTORE_BUTTON_CLASS);
 
-            var clsBtn = this._closeButton = new porcelain.Button(this);
-            clsBtn.$.addClass(CLOSE_BUTTON_CLASS);
+            var clsBtn = this._closeButton = new porcelain.Button();
+            clsBtn.addClass(CLOSE_BUTTON_CLASS);
 
-            var btnBox = this._buttonBox = new porcelain.Item(this);
-            btnBox.$.addClass(BUTTON_BOX_CLASS).append(minBtn.element, maxBtn.element, rstBtn.element, clsBtn.element);
+            var btnBox = this._buttonBox = new porcelain.Item();
+            btnBox.addClass(BUTTON_BOX_CLASS);
+            btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 
-            var iconItem = this._iconItem = new porcelain.Item(this);
-            iconItem.$.addClass("p-TitleBar-icon");
+            var iconItem = this._iconItem = new porcelain.Item();
+            iconItem.addClass("p-TitleBar-icon");
 
-            var textItem = this._textItem = new porcelain.Item(this);
-            textItem.$.addClass(TEXT_CLASS);
+            var textItem = this._textItem = new porcelain.Item();
+            textItem.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
-            this.$.addClass(TITLE_BAR_CLASS).append(iconItem.element, btnBox.element, textItem.element);
+            this.append(iconItem, btnBox, textItem);
         }
+        /**
+        * Destroy the title bar.
+        */
         TitleBar.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._target = null;
             this._iconItem = null;
             this._textItem = null;
             this._buttonBox = null;
@@ -128,7 +133,7 @@ var porcelain;
             configurable: true
         });
         return TitleBar;
-    })(porcelain.Item);
+    })(porcelain.Widget);
     porcelain.TitleBar = TitleBar;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=title_bar.js.map

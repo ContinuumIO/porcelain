@@ -19,59 +19,50 @@ module porcelain {
     var windowStack = new ZStack(1000);
 
 
-    export class Window extends Item {
+    export class Window extends Widget {
 
-        constructor(parent: Item = null) {
-            super(parent);
+        constructor() {
+            super();
+            this.addClass(WINDOW_CLASS);
 
             var geo = this._geometry = new Geometry(this.element);
 
-            var body = this._body = new Item(this);
-            $(body.element).addClass(BODY_CLASS);
+            var body = this._body = new Item();
+            body.addClass(BODY_CLASS);
 
-            var titleBar = this._titleBar = new TitleBar(geo, this);
-            $(titleBar.element).addClass(TITLE_BAR_CLASS);
-            titleBar.restoreButton.$.css("display", "none");
+            var titleBar = this._titleBar = new TitleBar();
+            titleBar.addClass(TITLE_BAR_CLASS);
+            titleBar.restoreButton.element.style.display = "none";
 
-            var tgrip = new SizeGrip(Border.Top, geo, this);
-            tgrip.$.addClass(SIZE_GRIP_CLASS);
+            var tgrip = new SizeGrip(Border.Top);
+            tgrip.addClass(SIZE_GRIP_CLASS);
 
-            var lgrip = new SizeGrip(Border.Left, geo, this);
-            lgrip.$.addClass(SIZE_GRIP_CLASS);
+            var lgrip = new SizeGrip(Border.Left);
+            lgrip.addClass(SIZE_GRIP_CLASS);
 
-            var rgrip = new SizeGrip(Border.Right, geo, this);
-            rgrip.$.addClass(SIZE_GRIP_CLASS);
+            var rgrip = new SizeGrip(Border.Right);
+            rgrip.addClass(SIZE_GRIP_CLASS);
             
-            var bgrip = new SizeGrip(Border.Bottom, geo, this);
-            bgrip.$.addClass(SIZE_GRIP_CLASS);
+            var bgrip = new SizeGrip(Border.Bottom);
+            bgrip.addClass(SIZE_GRIP_CLASS);
 
-            var tlgrip = new SizeGrip(Border.TopLeft, geo, this);
-            tlgrip.$.addClass(SIZE_GRIP_CLASS);
+            var tlgrip = new SizeGrip(Border.TopLeft);
+            tlgrip.addClass(SIZE_GRIP_CLASS);
 
-            var trgrip = new SizeGrip(Border.TopRight, geo, this);
-            trgrip.$.addClass(SIZE_GRIP_CLASS);
+            var trgrip = new SizeGrip(Border.TopRight);
+            trgrip.addClass(SIZE_GRIP_CLASS);
 
-            var blgrip = new SizeGrip(Border.BottomLeft, geo, this);
-            blgrip.$.addClass(SIZE_GRIP_CLASS);
+            var blgrip = new SizeGrip(Border.BottomLeft);
+            blgrip.addClass(SIZE_GRIP_CLASS);
             
-            var brgrip = new SizeGrip(Border.BottomRight, geo, this);
-            brgrip.$.addClass(SIZE_GRIP_CLASS);
+            var brgrip = new SizeGrip(Border.BottomRight);
+            brgrip.addClass(SIZE_GRIP_CLASS);
 
-            $(this.element).addClass(WINDOW_CLASS)
-                .mousedown(this._onMouseDown)
-                .append(
-                    body.element,
-                    tgrip.element,
-                    lgrip.element,
-                    rgrip.element,
-                    bgrip.element,
-                    tlgrip.element,
-                    trgrip.element,
-                    blgrip.element,
-                    brgrip.element,
-                    titleBar.element
-                );
+            this.append(body, tgrip, lgrip, rgrip, bgrip,
+                        tlgrip, trgrip, blgrip, brgrip, titleBar);
 
+            //this.elementEvents.enable("mousedown");
+            
             // XXX temporary
             // Setup a default min, max, and initial size.
             this.geometry.minimumSize = { width: 192, height: 192 };
@@ -89,7 +80,8 @@ module porcelain {
 
         show(): void {
             windowStack.add(this);
-            $("body").append(this.element);
+            var body = document.getElementsByTagName("body")[0];
+            body.appendChild(this.element);
         }
 
         raise(): void {
@@ -103,10 +95,11 @@ module porcelain {
         get geometry(): Geometry {
             return this._geometry;
         }
-
+        /*
         private _onMouseDown = (event: JQueryMouseEventObject) => {
             this.raise();
         }
+        */
 
         private _body: Item;
         private _titleBar: Item;

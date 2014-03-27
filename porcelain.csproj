@@ -35,8 +35,9 @@
     <Content Include="index.html" />
     <TypeScriptCompile Include="scripts\z_stack.ts" />
     <TypeScriptCompile Include="scripts\enums.ts" />
-    <TypeScriptCompile Include="scripts\lodash.d.ts" />
     <TypeScriptCompile Include="scripts\event_tracker.ts" />
+    <TypeScriptCompile Include="scripts\widget.ts" />
+    <TypeScriptCompile Include="scripts\definitions\lodash.d.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +48,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

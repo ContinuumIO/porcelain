@@ -25,49 +25,46 @@ var porcelain;
 
     var Window = (function (_super) {
         __extends(Window, _super);
-        function Window(parent) {
-            if (typeof parent === "undefined") { parent = null; }
-            var _this = this;
-            _super.call(this, parent);
-            this._onMouseDown = function (event) {
-                _this.raise();
-            };
+        function Window() {
+            _super.call(this);
+            this.addClass(WINDOW_CLASS);
 
             var geo = this._geometry = new porcelain.Geometry(this.element);
 
-            var body = this._body = new porcelain.Item(this);
-            $(body.element).addClass(BODY_CLASS);
+            var body = this._body = new porcelain.Item();
+            body.addClass(BODY_CLASS);
 
-            var titleBar = this._titleBar = new porcelain.TitleBar(geo, this);
-            $(titleBar.element).addClass(TITLE_BAR_CLASS);
-            titleBar.restoreButton.$.css("display", "none");
+            var titleBar = this._titleBar = new porcelain.TitleBar();
+            titleBar.addClass(TITLE_BAR_CLASS);
+            titleBar.restoreButton.element.style.display = "none";
 
-            var tgrip = new porcelain.SizeGrip(1 /* Top */, geo, this);
-            tgrip.$.addClass(SIZE_GRIP_CLASS);
+            var tgrip = new porcelain.SizeGrip(1 /* Top */);
+            tgrip.addClass(SIZE_GRIP_CLASS);
 
-            var lgrip = new porcelain.SizeGrip(0 /* Left */, geo, this);
-            lgrip.$.addClass(SIZE_GRIP_CLASS);
+            var lgrip = new porcelain.SizeGrip(0 /* Left */);
+            lgrip.addClass(SIZE_GRIP_CLASS);
 
-            var rgrip = new porcelain.SizeGrip(2 /* Right */, geo, this);
-            rgrip.$.addClass(SIZE_GRIP_CLASS);
+            var rgrip = new porcelain.SizeGrip(2 /* Right */);
+            rgrip.addClass(SIZE_GRIP_CLASS);
 
-            var bgrip = new porcelain.SizeGrip(3 /* Bottom */, geo, this);
-            bgrip.$.addClass(SIZE_GRIP_CLASS);
+            var bgrip = new porcelain.SizeGrip(3 /* Bottom */);
+            bgrip.addClass(SIZE_GRIP_CLASS);
 
-            var tlgrip = new porcelain.SizeGrip(4 /* TopLeft */, geo, this);
-            tlgrip.$.addClass(SIZE_GRIP_CLASS);
+            var tlgrip = new porcelain.SizeGrip(4 /* TopLeft */);
+            tlgrip.addClass(SIZE_GRIP_CLASS);
 
-            var trgrip = new porcelain.SizeGrip(5 /* TopRight */, geo, this);
-            trgrip.$.addClass(SIZE_GRIP_CLASS);
+            var trgrip = new porcelain.SizeGrip(5 /* TopRight */);
+            trgrip.addClass(SIZE_GRIP_CLASS);
 
-            var blgrip = new porcelain.SizeGrip(6 /* BottomLeft */, geo, this);
-            blgrip.$.addClass(SIZE_GRIP_CLASS);
+            var blgrip = new porcelain.SizeGrip(6 /* BottomLeft */);
+            blgrip.addClass(SIZE_GRIP_CLASS);
 
-            var brgrip = new porcelain.SizeGrip(7 /* BottomRight */, geo, this);
-            brgrip.$.addClass(SIZE_GRIP_CLASS);
+            var brgrip = new porcelain.SizeGrip(7 /* BottomRight */);
+            brgrip.addClass(SIZE_GRIP_CLASS);
 
-            $(this.element).addClass(WINDOW_CLASS).mousedown(this._onMouseDown).append(body.element, tgrip.element, lgrip.element, rgrip.element, bgrip.element, tlgrip.element, trgrip.element, blgrip.element, brgrip.element, titleBar.element);
+            this.append(body, tgrip, lgrip, rgrip, bgrip, tlgrip, trgrip, blgrip, brgrip, titleBar);
 
+            //this.elementEvents.enable("mousedown");
             // XXX temporary
             // Setup a default min, max, and initial size.
             this.geometry.minimumSize = { width: 192, height: 192 };
@@ -84,7 +81,8 @@ var porcelain;
 
         Window.prototype.show = function () {
             windowStack.add(this);
-            $("body").append(this.element);
+            var body = document.getElementsByTagName("body")[0];
+            body.appendChild(this.element);
         };
 
         Window.prototype.raise = function () {
@@ -103,7 +101,7 @@ var porcelain;
             configurable: true
         });
         return Window;
-    })(porcelain.Item);
+    })(porcelain.Widget);
     porcelain.Window = Window;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=window.js.map

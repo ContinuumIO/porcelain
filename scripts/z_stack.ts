@@ -43,7 +43,7 @@ module porcelain {
             }
             var z = this._minZ + this._stack.length;
             this._stack.push(item);
-            item.$.css("z-index", z);
+            item.element.style.zIndex = z.toString();
         }
 
         remove(item: Item): void {
@@ -75,16 +75,18 @@ module porcelain {
         private _classify(items: Item[]): ClassifyResult {
             var oldItems: Item[] = [];
             var newItems: Item[] = [];
-            $.each(this._stack, function (index, item) {
+            var stack = this._stack;
+            for (var i = 0, n = stack.length; i < n; ++i) {
+                var item = stack[i];
                 if (items.indexOf(item) === -1) {
                     oldItems.push(item);
                 } else {
                     newItems.push(item);
                 }
-            });
+            }
             newItems.sort(function (a, b) {
-                var z1 = parseInt(a.$.css("z-index")) || 0;
-                var z2 = parseInt(b.$.css("z-index")) || 0;
+                var z1 = parseInt(a.element.style.zIndex) || 0;
+                var z2 = parseInt(a.element.style.zIndex) || 0;
                 return z1 - z2;
             });
             return { oldItems: oldItems, newItems: newItems };
@@ -92,9 +94,10 @@ module porcelain {
 
         private _updateIndices(): void {
             var minZ = this._minZ;
-            $.each(this._stack, function (index, item) {
-                item.$.css("z-index", index + minZ);
-            });
+            var stack = this._stack;
+            for (var i = 0, n = stack.length; i < n; ++i) {
+                stack[i].element.style.zIndex = (i + minZ).toString();
+            }
         }
 
         private _stack: Item[] = [];

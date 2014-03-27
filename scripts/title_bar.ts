@@ -44,55 +44,50 @@ module porcelain {
 
 
     /**
-     * A title bar for use in a top level window.
+     * A title bar widget for use in a top level window.
      *
      * @class
      */
-    export class TitleBar extends Item {
+    export class TitleBar extends Widget {
 
-        constructor(target: Geometry, parent: Item = null) {
-            super(parent);
-            this._target = target;
+        /** 
+         * Construct a new TitleBar
+         */
+        constructor() {
+            super();
+            this.addClass(TITLE_BAR_CLASS);
 
-            var minBtn = this._minimizeButton = new Button(this);
-            minBtn.$.addClass(MINIMIZE_BUTTON_CLASS);
+            var minBtn = this._minimizeButton = new Button();
+            minBtn.addClass(MINIMIZE_BUTTON_CLASS);
 
-            var maxBtn = this._maximizeButton = new Button(this);
-            maxBtn.$.addClass(MAXIMIZE_BUTTON_CLASS)
+            var maxBtn = this._maximizeButton = new Button();
+            maxBtn.addClass(MAXIMIZE_BUTTON_CLASS)
 
-            var rstBtn = this._restoreButton = new Button(this);
-            rstBtn.$.addClass(RESTORE_BUTTON_CLASS);
+            var rstBtn = this._restoreButton = new Button();
+            rstBtn.addClass(RESTORE_BUTTON_CLASS);
 
-            var clsBtn = this._closeButton = new Button(this);
-            clsBtn.$.addClass(CLOSE_BUTTON_CLASS);
+            var clsBtn = this._closeButton = new Button();
+            clsBtn.addClass(CLOSE_BUTTON_CLASS);
 
-            var btnBox = this._buttonBox = new Item(this);
-            btnBox.$.addClass(BUTTON_BOX_CLASS)
-                .append(
-                    minBtn.element,
-                    maxBtn.element,
-                    rstBtn.element,
-                    clsBtn.element
-                );
+            var btnBox = this._buttonBox = new Item();
+            btnBox.addClass(BUTTON_BOX_CLASS);
+            btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 
-            var iconItem = this._iconItem = new Item(this);
-            iconItem.$.addClass("p-TitleBar-icon");
+            var iconItem = this._iconItem = new Item();
+            iconItem.addClass("p-TitleBar-icon");
 
-            var textItem = this._textItem = new Item(this);
-            textItem.$.addClass(TEXT_CLASS);
+            var textItem = this._textItem = new Item();
+            textItem.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
-            this.$.addClass(TITLE_BAR_CLASS)
-                .append(
-                    iconItem.element,
-                    btnBox.element,
-                    textItem.element
-                );
+            this.append(iconItem, btnBox, textItem);
         }
 
+        /**
+         * Destroy the title bar.
+         */
         destroy(): void {
             super.destroy();
-            this._target = null;
             this._iconItem = null;
             this._textItem = null;
             this._buttonBox = null;
@@ -118,7 +113,6 @@ module porcelain {
             return this._maximizeButton;
         }
 
-        private _target: Geometry;
         private _iconItem: Item;
         private _textItem: Item;
         private _buttonBox: Item;
