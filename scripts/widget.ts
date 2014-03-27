@@ -54,7 +54,7 @@ module porcelain {
          *
          * @readonly
          */
-        elementEvents(): EventTracker {
+        get elementEvents(): EventTracker {
             if (!this._elementEvents) {
                 this._elementEvents = new EventTracker(
                     this, this.element, ELEMENT_EVENT_PREFIX
@@ -68,7 +68,7 @@ module porcelain {
          *
          * @readonly
          */
-        documentEvents(): EventTracker {
+        get documentEvents(): EventTracker {
             if (!this._documentEvents) {
                 this._documentEvents = new EventTracker(
                     this, document, DOCUMENT_EVENT_PREFIX

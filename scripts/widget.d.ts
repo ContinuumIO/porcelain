@@ -20,13 +20,13 @@
         *
         * @readonly
         */
-        public elementEvents(): EventTracker;
+        public elementEvents : EventTracker;
         /**
         * The event tracker for document events.
         *
         * @readonly
         */
-        public documentEvents(): EventTracker;
+        public documentEvents : EventTracker;
         /**
         * Create a new Signal with a lifetime bound to the widget.
         */

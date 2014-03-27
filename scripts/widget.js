@@ -56,29 +56,37 @@ var porcelain;
             this._destroySignals();
         };
 
-        /**
-        * The event tracker for element events.
-        *
-        * @readonly
-        */
-        Widget.prototype.elementEvents = function () {
-            if (!this._elementEvents) {
-                this._elementEvents = new porcelain.EventTracker(this, this.element, ELEMENT_EVENT_PREFIX);
-            }
-            return this._elementEvents;
-        };
+        Object.defineProperty(Widget.prototype, "elementEvents", {
+            /**
+            * The event tracker for element events.
+            *
+            * @readonly
+            */
+            get: function () {
+                if (!this._elementEvents) {
+                    this._elementEvents = new porcelain.EventTracker(this, this.element, ELEMENT_EVENT_PREFIX);
+                }
+                return this._elementEvents;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
-        /**
-        * The event tracker for document events.
-        *
-        * @readonly
-        */
-        Widget.prototype.documentEvents = function () {
-            if (!this._documentEvents) {
-                this._documentEvents = new porcelain.EventTracker(this, document, DOCUMENT_EVENT_PREFIX);
-            }
-            return this._documentEvents;
-        };
+        Object.defineProperty(Widget.prototype, "documentEvents", {
+            /**
+            * The event tracker for document events.
+            *
+            * @readonly
+            */
+            get: function () {
+                if (!this._documentEvents) {
+                    this._documentEvents = new porcelain.EventTracker(this, document, DOCUMENT_EVENT_PREFIX);
+                }
+                return this._documentEvents;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /**
         * Create a new Signal with a lifetime bound to the widget.
