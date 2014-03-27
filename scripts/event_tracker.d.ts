@@ -49,14 +49,15 @@
         /**
         * Enable event listening for the specified events.
         *
-        * When the event is triggered the specially named handler method
-        * will be automatically invoked.
+        * @param [...] The string names of the events to enable.
         */
         public enable(...events: string[]): void;
         /**
         * Disable event listenening for the specified events.
         *
-        * If no events are specified, all events will be disabled.
+        * If no events are specified, all enabled events are disabled.
+        *
+        * @param [...] The string names of the events to disable.
         */
         public disable(...events: string[]): void;
         /**

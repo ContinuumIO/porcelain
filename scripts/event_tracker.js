@@ -38,6 +38,7 @@ var porcelain;
             this.disable();
             this._item = null;
             this._target = null;
+            this._events = null;
         };
 
         Object.defineProperty(EventTracker.prototype, "item", {
@@ -95,8 +96,7 @@ var porcelain;
         /**
         * Enable event listening for the specified events.
         *
-        * When the event is triggered the specially named handler method
-        * will be automatically invoked.
+        * @param [...] The string names of the events to enable.
         */
         EventTracker.prototype.enable = function () {
             var events = [];
@@ -114,7 +114,9 @@ var porcelain;
         /**
         * Disable event listenening for the specified events.
         *
-        * If no events are specified, all events will be disabled.
+        * If no events are specified, all enabled events are disabled.
+        *
+        * @param [...] The string names of the events to disable.
         */
         EventTracker.prototype.disable = function () {
             var events = [];
@@ -137,9 +139,10 @@ var porcelain;
         */
         EventTracker.prototype.handleEvent = function (event) {
             var name = this._prefix + event.type;
-            var handler = this._item[name];
+            var item = this._item;
+            var handler = item[name];
             if (handler) {
-                handler.call(this._item, event);
+                handler.call(item, event);
             } else {
                 throw new Error("Item has no handler '" + name + "'.");
             }
