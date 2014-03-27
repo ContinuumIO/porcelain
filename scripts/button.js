@@ -24,7 +24,7 @@ var porcelain;
     * A Button provides the basic behavior of a simple push button.
     * This class is intented to be subclassed to provide features
     * such as button text and default visual styling, but it is
-    * useful on its own with CSS background images.
+    * useful on its own when decorated with custom CSS styling.
     *
     * @class
     */
@@ -34,7 +34,6 @@ var porcelain;
         * Construct a new Button instance.
         */
         function Button() {
-            var _this = this;
             _super.call(this);
             /**
             * A signal emitted when the button is clicked.
@@ -48,38 +47,39 @@ var porcelain;
             * A signal emitted when the button is released.
             */
             this.released = this.createSignal();
-            /**
-            * The internal mouse down handler.
-            *
-            * @private
-            */
-            this._onMouseDown = function (event) {
-                if (event.button === 0) {
-                    event.preventDefault();
-                    $(document).mouseup(_this._onMouseUp);
-                    _this.pressed.emit();
-                }
-            };
-            /**
-            * The internal mouse up handler.
-            *
-            * @private
-            */
-            this._onMouseUp = function (event) {
-                if (event.button === 0) {
-                    $(document).off("mouseup", _this._onMouseUp);
-                    _this.released.emit();
-                    if (event.target === _this.element) {
-                        event.preventDefault();
-                        _this.clicked.emit();
-                    }
-                }
-            };
             this.addClass(BUTTON_CLASS);
-            //mousedown(this._onMouseDown);
+            this.elementEvents.enable("mousedown");
         }
+        /**
+        * The element mousedown event handler.
+        *
+        * @private
+        */
+        Button.prototype.onElement_mousedown = function (event) {
+            if (event.button === 0) {
+                event.preventDefault();
+                this.documentEvents.enable("mouseup");
+                this.pressed.emit();
+            }
+        };
+
+        /**
+        * The document mouseup event handler.
+        *
+        * @private
+        */
+        Button.prototype.onDocument_mouseup = function (event) {
+            if (event.button === 0) {
+                this.documentEvents.disable("mouseup");
+                this.released.emit();
+                if (event.target === this.element) {
+                    event.preventDefault();
+                    this.clicked.emit();
+                }
+            }
+        };
         return Button;
-    })(porcelain.Item);
+    })(porcelain.Widget);
     porcelain.Button = Button;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=button.js.map

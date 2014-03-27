@@ -5,11 +5,11 @@
     * A Button provides the basic behavior of a simple push button.
     * This class is intented to be subclassed to provide features
     * such as button text and default visual styling, but it is
-    * useful on its own with CSS background images.
+    * useful on its own when decorated with custom CSS styling.
     *
     * @class
     */
-    class Button extends Item {
+    class Button extends Widget {
         /**
         * A signal emitted when the button is clicked.
         */
@@ -27,16 +27,16 @@
         */
         constructor();
         /**
-        * The internal mouse down handler.
+        * The element mousedown event handler.
         *
         * @private
         */
-        private _onMouseDown;
+        private onElement_mousedown(event);
         /**
-        * The internal mouse up handler.
+        * The document mouseup event handler.
         *
         * @private
         */
-        private _onMouseUp;
+        private onDocument_mouseup(event);
     }
 }

@@ -19,11 +19,11 @@ module porcelain {
      * A Button provides the basic behavior of a simple push button. 
      * This class is intented to be subclassed to provide features
      * such as button text and default visual styling, but it is 
-     * useful on its own with CSS background images.
+     * useful on its own when decorated with custom CSS styling.
      *
      * @class
      */
-    export class Button extends Item {
+    export class Button extends Widget {
 
         /**
          * A signal emitted when the button is clicked.
@@ -46,30 +46,30 @@ module porcelain {
         constructor() {
             super();
             this.addClass(BUTTON_CLASS);
-            //mousedown(this._onMouseDown);
+            this.elementEvents.enable("mousedown");
         }
 
         /**
-         * The internal mouse down handler.
+         * The element mousedown event handler.
          *
          * @private
          */
-        private _onMouseDown = (event: JQueryMouseEventObject) => {
+        private onElement_mousedown(event: MouseEvent): void {
             if (event.button === 0) {
                 event.preventDefault();
-                $(document).mouseup(this._onMouseUp);
+                this.documentEvents.enable("mouseup");
                 this.pressed.emit();
             }
         }
 
         /**
-         * The internal mouse up handler.
+         * The document mouseup event handler.
          *
          * @private
          */
-        private _onMouseUp = (event: JQueryMouseEventObject) => {
+        private onDocument_mouseup(event: MouseEvent): void {
             if (event.button === 0) {
-                $(document).off("mouseup", this._onMouseUp);
+                this.documentEvents.disable("mouseup");
                 this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();
