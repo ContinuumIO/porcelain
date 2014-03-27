@@ -19,22 +19,21 @@ module porcelain {
 
 
     /**
-     * An item which enables drag-sizing of an element's geometry.
+     * A widget which enables drag-sizing of an element's geometry.
      *
      * @class
      */
-    export class SizeGrip extends Item {
+    export class SizeGrip extends Widget {
 
         /**
          * Construct a new SizeGrip.
          */
-        constructor(border: Border, target: Geometry, parent: Item = null) {
-            super(parent);
+        constructor(border: Border) {
+            super();
             this._border = border;
-            this._target = target;
-            this.$.addClass(SIZE_GRIP_CLASS)
-                .addClass(BORDER_PREFIX + Border[border])
-                .mousedown(this._onMouseDown);
+            this.addClass(SIZE_GRIP_CLASS);
+            this.addClass(BORDER_PREFIX + Border[border]);
+            //this.elementEvents.enable("mousedown");
         }
 
         /**
@@ -50,6 +49,7 @@ module porcelain {
          *
          * @private
          */
+        /*
         private _onMouseDown = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 event.preventDefault();
@@ -85,12 +85,14 @@ module porcelain {
                 }
             }
         }
+        */
 
         /**
          * The internal mouseup handler.
          *
          * @private
          */
+        /*
         private _onMouseUp = (event: JQueryMouseEventObject) => {
             if (event.button === 0) {
                 event.preventDefault();
@@ -100,12 +102,14 @@ module porcelain {
                     .off("mousemove", this._onMouseMove);
             }
         }
+        */
 
         /**
          * The internal mousemove handler.
          *
          * @private
          */
+        /*
         private _onMouseMove = (event: JQueryMouseEventObject) => {
             event.preventDefault();
             var vp = viewport;
@@ -142,6 +146,7 @@ module porcelain {
                     break;
             }
         }
+        */
 
         private _border: Border;
         private _target: Geometry;
