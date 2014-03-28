@@ -1,264 +1,219 @@
 ﻿declare module porcelain {
     /**
-    * The interface for a box defined by four edges.
+    * The interface for defining a rectangle in terms of edges.
     */
-    interface IBox {
+    interface IRect {
         left: number;
         top: number;
         right: number;
         bottom: number;
     }
     /**
-    * The interface for a rect defined by position and size.
-    */
-    interface IRect {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    }
-    /**
-    * An implementation of IBox and IRect
+    * An implementation of the IRect interface.
     *
     * @class
     */
-    class Rect implements IBox, IRect {
+    class Rect implements IRect {
         /**
         * The left edge of the rect, in pixels.
         *
-        * This is equivalent to `x`. Modifying this value will
-        * change the width, but will not change the right edge.
+        * Modifying this value will change the width, but will not
+        * change the right edge.
         */
         public left: number;
         /**
-        * The top edge of the rect, in pixel.
+        * The top edge of the rect, in pixels.
         *
-        * This is equivalent to `y`. Modifying this value will
-        * change the height, but will not change the bottom edge.
+        * Modifying this value will change the height, but will not
+        * change the bottom edge.
         */
         public top: number;
         /**
         * The right edge of the rect, in pixels.
         *
-        * This is equivalent to `x + width`. Modifying this value
-        * will change the width, but will not change the left edge.
+        * Modifying this value will change the width, but will not
+        * change the left edge.
         */
         public right: number;
         /**
         * The bottom edge of the rect, in pixel.
         *
-        * This is equivalent to `y + height`. Modifying this value
-        * will change the height, but will not change the bottom edge.
+        * Modifying this value will change the height, but will not
+        * change the bottom edge.
         */
         public bottom: number;
         /**
         * Construct a new Rect.
         */
         constructor();
-        constructor(box: IBox);
         constructor(rect: IRect);
-        constructor(topLeft: IPoint, size: ISize);
         constructor(topLeft: IPoint, bottomRight: IPoint);
         constructor(x: number, y: number, width: number, height: number);
         /**
-        * The X-coordinate of the rect.
+        * Returns the width of the rect.
         *
-        * This is equivalent to `left`. Modifying this value will
-        * change the right edge, but will not change the width.
+        * This is equivalent to `right - left`
         */
-        public x : number;
+        public width(): number;
         /**
-        * The Y-coordinate of the rect.
+        * Set the width of the rect.
         *
-        * This is equivalent to `top`. Modifying this value will
-        * change the bottom edge, but will not change the height.
+        * This will move the right edge.
         */
-        public y : number;
+        public setWidth(width: number): void;
         /**
-        * The width of the rect.
+        * Returns the height of the rect.
         *
-        * This is equivalent to `right - left`. Modifying this value
-        * will change the right edge.
+        * This is Equivalent to `bottom - top`.
         */
-        public width : number;
+        public height(): number;
         /**
-        * The height of the rect.
+        * Set the height of the rect.
         *
-        * This is equivalent to `bottom - top`. Modifying this value
-        * will change the bottom edge.
+        * This will move the bottom edge.
         */
-        public height : number;
+        public setHeight(height: number): void;
         /**
-        * The top left corner of the rect.
+        * Returns the size of the rect.
+        */
+        public size(): Size;
+        /**
+        * Set the size of the rect.
         *
-        * Modifying this value will change the width and height but
-        * will not change the right or bottom edge.
+        * This will move the left and right edges.
         */
-        public topLeft : IPoint;
+        public setSize(size: ISize): void;
         /**
-        * The top right corner of the rect.
+        * Returns the top left corner of the rect.
+        */
+        public topLeft(): Point;
+        /**
+        * Set the top left corner of the rect.
         *
-        * Modifying this value will change the width and height but
-        * will not change the left or bottom edge.
+        * This will change the width and height, but will not change
+        * change the right or bottom edges.
         */
-        public topRight : IPoint;
+        public setTopLeft(point: IPoint): void;
         /**
-        * The bottom left corner of the rect.
+        * Returns the top right corner of the rect.
+        */
+        public topRight(): Point;
+        /**
+        * Set the top right corner of the rect.
         *
-        * Modifying this value will change the width and height but
-        * will not change the top or right edge.
+        * This will change the width and height, but will not change
+        * the left or bottom edges.
         */
-        public bottomLeft : IPoint;
+        public setTopRight(point: IPoint): void;
         /**
-        * The bottom right corner of the rect.
+        * Returns bottom left corner of the rect.
+        */
+        public bottomLeft(): Point;
+        /**
+        * Set the bottom left corner of the rect.
         *
-        * Modifying this value will change the width and height but
-        * will not change the top or left edge.
+        * This will change the width and height, but will not change
+        * the right or top edges.
         */
-        public bottomRight : IPoint;
+        public setBottomLeft(point: IPoint): void;
         /**
-        * The center point of the rect.
+        * Returns bottom right corner of the rect.
+        */
+        public bottomRight(): Point;
+        /** Set the bottom right corner of the rect.
         *
-        * @readonly
+        * This will change the width and height, but will not change
+        * the left or top edges.
         */
-        public center : IPoint;
+        public setBottomRight(point: IPoint): void;
         /**
-        * The position of the rect.
-        *
-        * This is equivalent to `topLeft`. Modifying this value will
-        * change the right and bottom edges but will not change the
-        * width or height.
+        * Returns the center point of the rect.
         */
-        public pos : IPoint;
-        /**
-        * The size of the rect.
-        *
-        * Modifying this value will change the right and bottom
-        * edges but will not change the left or top edge.
-        */
-        public size : ISize;
-        /**
-        * The position and size of the rect.
-        */
-        public rect : IRect;
-        /**
-        * The box edges of the rect.
-        */
-        public box : IBox;
+        public center(): Point;
         /**
         * Move the left edge of the rect.
         *
-        * This will not change the width of the rect.
-        *
-        * @param pos - the new location of the left edge
+        * This will change the right edge, but will not change
+        * the width.
         */
         public moveLeft(pos: number): void;
         /**
         * Move the top edge of the rect.
         *
-        * This will not change the height of the rect.
-        *
-        * @param pos - the new location of the top edge
+        * This will change the bottom edge, but will not change
+        * the height.
         */
         public moveTop(pos: number): void;
         /**
         * Move the right edge of the rect.
         *
-        * This will not change the width of the rect.
-        *
-        * @param pos - the new location of the right edge
+        * This will change the left edge, but will not change
+        * the width.
         */
         public moveRight(pos: number): void;
         /**
         * Move the bottom edge of the rect.
         *
-        * This will not change the height of the rect.
-        *
-        * @param pos - the new location of the bottom edge
+        * This will change the top edge, but will not change the
+        * height.
         */
         public moveBottom(pos: number): void;
         /**
         * Move the top left corner of the rect.
         *
-        * This is equivalent to moving the top and left edges
-        * separately.
-        *
-        * @param point - the new location of the corner
+        * This is equivalent to moving the top and left edges.
         */
         public moveTopLeft(point: IPoint): void;
         /**
         * Move the top right corner of the rect.
         *
-        * This is equivalent to moving the top and right edges
-        * separately.
-        *
-        * @param point - the new location of the corner
+        * This is equivalent to moving the top and right edges.
         */
         public moveTopRight(point: IPoint): void;
         /**
         * Move the bottom left corner of the rect.
         *
-        * This is equivalent to moving the bottom and left edges
-        * separately.
-        *
-        * @param point - the new location of the corner
+        * This is equivalent to moving the bottom and left edges.
         */
         public moveBottomLeft(point: IPoint): void;
         /**
         * Move the bottom right corner of the rect.
         *
-        * This is equivalent to moving the bottom and right edges
-        * separately.
-        *
-        * @param point - the new location of the corner
+        * This is equivalent to moving the bottom and right edges.
         */
         public moveBottomRight(point: IPoint): void;
         /**
         * Move the center point of the rect.
         *
         * This will not change the width or height.
-        *
-        * @param point - the new center point of the rect
         */
         public moveCenter(point: IPoint): void;
         /**
-        * Whether the width OR height is zero or negative.
+        * Returns true if the width OR height is zero or negative.
         */
         public isEmpty(): boolean;
         /**
-        * Whether the width AND height are zero.
+        * Returns true if the width AND height are zero.
         */
         public isNull(): boolean;
         /**
-        * Whether the width AND height are positive non-zero.
+        * Returns true the width AND height are positive non-zero.
         */
         public isValid(): boolean;
         /**
-        * Add the given deltas to the left, top, right and bottom edges.
+        * Adjust the rect edges by the given deltas.
         */
         public adjust(dx1: number, dy1: number, dx2: number, dy2: number): void;
         /**
-        * Create a new rect with edges adjusted by the given deltas.
+        * Returns a new rect adjusted by the given deltas.
         */
         public adjusted(dx1: number, dy1: number, dx2: number, dy2: number): Rect;
-        /**
-        * Test whether this rect contains the given point.
-        */
-        public contains(point: IPoint): boolean;
-        /**
-        * Test whether this rect intersects the given rect.
-        */
-        public intersects(rect: IRect): boolean;
-        /**
-        * The intersection of this rect with the given rect.
-        */
-        public intersected(rect: IRect): Rect;
         /**
         * Normalize the rect so that right >= left and bottom >= top.
         */
         public normalize(): void;
         /**
-        * Create a new rect with normalized edges.
+        * Returns a new rect with normalized edges.
         */
         public normalized(): Rect;
         /**
@@ -266,12 +221,24 @@
         */
         public translate(dx: number, dy: number): void;
         /**
-        * Create a new rect translated by the given deltas.
+        * Returns a new rect translated by the given deltas.
         */
         public translated(dx: number, dy: number): Rect;
         /**
-        * The bounding rect of this rect and the given rect.
+        * Returns true if this rect contains the given point.
         */
-        public united(rect: IRect): Rect;
+        public contains(point: IPoint): boolean;
+        /**
+        * Returns true if this rect intersects the given rect.
+        */
+        public intersects(rect: Rect): boolean;
+        /**
+        * Returns the bounding rect of this rect and the given rect.
+        */
+        public intersection(rect: Rect): Rect;
+        /**
+        * Returns the bounding rect of this rect and the given rect.
+        */
+        public union(rect: Rect): Rect;
     }
 }
