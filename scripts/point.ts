@@ -39,118 +39,80 @@ module porcelain {
         constructor();
         constructor(point: IPoint);
         constructor(x: number, y: number);
-        constructor(first?, second?) {
+        constructor(arg1?, arg2?) {
             switch (arguments.length) {
                 case 0:
                     this.x = 0;
                     this.y = 0;
                     break;
                 case 1: 
-                    var point = <IPoint>first;
-                    this.x = point.x;
-                    this.y = point.y;
+                    this.x = (<IPoint>arg1).x;
+                    this.y = (<IPoint>arg1).y;
                     break;
                 case 2: 
-                    var x = <number>first;
-                    var y = <number>second;
-                    this.x = x;
-                    this.y = y;
+                    this.x = <number>arg1;
+                    this.y = <number>arg2;
                     break;
                 default:
-                    throw "invalid constructor call";
+                    throw new Error("invalid constructor call");
             }
         }
 
         /**
-         * The X and Y coordinates of the point.
-         */
-        get point(): IPoint {
-            return { x: this.x, y: this.y };
-        }
-
-        set point(point: IPoint) {
-            this.x = point.x;
-            this.y = point.y;
-        }
-
-        /**
-         * Whether both X and Y coordinates are zero.
-         */
-        isNull(): boolean {
-            return this.x == 0 && this.y == 0;
-        }
-
-        /**
-         * The sum of the absolute X and Y distances to the origin.
-         */
-        manhattanLength(): number {
-            return Math.abs(this.x) + Math.abs(this.y);
-        }
-
-        /**
-         * Test the point for equality with another.
+         * Returns true if this point is equivalent to another.
          */
         equals(other: IPoint): boolean {
             return this.x == other.x && this.y == other.y;
         }
 
         /**
-         * Increment this point by another point.
+         * Returns true if both X AND Y coordinates are zero.
          */
-        add(other: IPoint): void {
-            this.x += other.x;
-            this.y += other.y;
+        isNull(): boolean {
+            return this.x == 0 && this.y == 0;
         }
 
         /**
-         * A new point which is the vector sum of the two points.
+         * Returns the sum of the abs X and Y distances to the origin.
          */
-        added(other: IPoint): Point {
+        manhattanLength(): number {
+            return Math.abs(this.x) + Math.abs(this.y);
+        }
+
+        /**
+         * Return a new size with the X and Y values swapped.
+         */
+        transpose(): Point {
+            return new Point(this.x, this.y);
+        }
+
+        /**
+         * Returns a new point which is the sum of the two points.
+         */
+        add(other: IPoint): Point {
             return new Point(this.x + other.x, this.y + other.y);
         }
 
         /**
-         * Decrement this point by another point.
+         * Returns a new point which is the difference of the two points.
          */
-        subtract(other: IPoint): void {
-            this.x -= other.x;
-            this.y -= other.y;
-        }
-
-        /**
-         * A new point which is the vector difference of the two points.
-         */
-        subtracted(other: IPoint): Point {
+        subtract(other: IPoint): Point {
             return new Point(this.x - other.x, this.y - other.y);
         }
 
         /**
-         * Scale this point by the given factor.
+         * Returns a new point scaled by the given factor.
          */
-        multiply(factor: number): void {
-            this.x *= factor;
-            this.y *= factor;
+        multiply(factor: number): Point {
+            var x = Math.floor(this.x * factor);
+            var y = Math.floor(this.y * factor);
+            return new Point(x, y);
         }
 
         /**
-         * A new point scaled by the given factor.
+         * Returns a new point scaled by the given divisor.
          */
-        multiplied(factor: number): Point {
-            return new Point(this.x * factor, this.y * factor);
-        }
-
-        /**
-         * Scale this point by the given divisor.
-         */
-        divide(divisor: number): void {
-            this.x /= divisor;
-            this.y /= divisor;
-        }
-
-        /**
-         * A new point scaled by the given divisor.
-         */
-        divided(divisor: number): Point {
+        divide(divisor: number): Point {
             var x = Math.floor(this.x / divisor);
             var y = Math.floor(this.y / divisor);
             return new Point(x, y);

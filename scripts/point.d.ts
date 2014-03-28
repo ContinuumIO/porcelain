@@ -27,52 +27,36 @@
         constructor(point: IPoint);
         constructor(x: number, y: number);
         /**
-        * The X and Y coordinates of the point.
-        */
-        public point : IPoint;
-        /**
-        * Whether both X and Y coordinates are zero.
-        */
-        public isNull(): boolean;
-        /**
-        * The sum of the absolute X and Y distances to the origin.
-        */
-        public manhattanLength(): number;
-        /**
-        * Test the point for equality with another.
+        * Returns true if this point is equivalent to another.
         */
         public equals(other: IPoint): boolean;
         /**
-        * Increment this point by another point.
+        * Returns true if both X AND Y coordinates are zero.
         */
-        public add(other: IPoint): void;
+        public isNull(): boolean;
         /**
-        * A new point which is the vector sum of the two points.
+        * Returns the sum of the abs X and Y distances to the origin.
         */
-        public added(other: IPoint): Point;
+        public manhattanLength(): number;
         /**
-        * Decrement this point by another point.
+        * Return a new size with the X and Y values swapped.
         */
-        public subtract(other: IPoint): void;
+        public transpose(): Point;
         /**
-        * A new point which is the vector difference of the two points.
+        * Returns a new point which is the sum of the two points.
         */
-        public subtracted(other: IPoint): Point;
+        public add(other: IPoint): Point;
         /**
-        * Scale this point by the given factor.
+        * Returns a new point which is the difference of the two points.
         */
-        public multiply(factor: number): void;
+        public subtract(other: IPoint): Point;
         /**
-        * A new point scaled by the given factor.
+        * Returns a new point scaled by the given factor.
         */
-        public multiplied(factor: number): Point;
+        public multiply(factor: number): Point;
         /**
-        * Scale this point by the given divisor.
+        * Returns a new point scaled by the given divisor.
         */
-        public divide(divisor: number): void;
-        /**
-        * A new point scaled by the given divisor.
-        */
-        public divided(divisor: number): Point;
+        public divide(divisor: number): Point;
     }
 }
