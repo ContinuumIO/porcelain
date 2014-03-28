@@ -27,72 +27,48 @@
         constructor(size: ISize);
         constructor(width: number, height: number);
         /**
-        * The width and height of the size.
-        */
-        public size : ISize;
-        /**
-        * Whether the width OR height is zero.
-        */
-        public isEmpty(): boolean;
-        /**
-        * Whether the width AND height are zero.
-        */
-        public isNull(): boolean;
-        /**
-        * Whether the width AND height are non-negative.
-        */
-        public isValid(): boolean;
-        /**
-        * Test the size for equality with another.
+        * Returns true if two sizes are equivalent.
         */
         public equals(other: ISize): boolean;
         /**
-        * A new size bounded in each dimension by another size.
+        * Returns true if the width OR height is zero.
+        */
+        public isEmpty(): boolean;
+        /**
+        * Returns true if the height width AND height are zero.
+        */
+        public isNull(): boolean;
+        /**
+        * Returns true if the width AND height are non-negative.
+        */
+        public isValid(): boolean;
+        /**
+        * Returns a new size limited in each dimension by another size.
         */
         public boundedTo(other: ISize): Size;
         /**
-        * A new size expanded in each dimension to another size.
+        * Returns a new size expaned in each dimension to another size.
         */
         public expandedTo(other: ISize): Size;
         /**
-        * Swap the width and height of this size.
+        * Return a new size with the width and height values swapped.
         */
-        public transpose(): void;
+        public transpose(): Size;
         /**
-        * A new size with the width and height swapped.
+        * Returns a new size which is the sum of two sizes.
         */
-        public transposed(): Size;
+        public add(other: ISize): Size;
         /**
-        * Increment this size by the given size.
+        * Returns a new size which is the difference of two sizes.
         */
-        public add(other: ISize): void;
+        public subtract(other: ISize): Size;
         /**
-        * A new size increased in each dimension by another.
+        * Returns a new size scaled by the given factor.
         */
-        public added(other: ISize): Size;
+        public multiply(factor: number): Size;
         /**
-        * Decrement this size by the given size.
+        * Returns a new size scaled by the given divisor.
         */
-        public subtract(other: ISize): void;
-        /**
-        * A new size decreased in each dimension by another.
-        */
-        public subtracted(other: ISize): Size;
-        /**
-        * Scale this size by the given factor.
-        */
-        public multiply(factor: number): void;
-        /**
-        * A new size scaled in each dimension by a factor.
-        */
-        public multiplied(factor: number): Size;
-        /**
-        * Scale this size by the given divisor.
-        */
-        public divide(divisor: number): void;
-        /**
-        * A new size scaled in each dimension by a divisor.
-        */
-        public divided(divisor: number): Size;
+        public divide(divisor: number): Size;
     }
 }
