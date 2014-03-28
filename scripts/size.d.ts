@@ -27,7 +27,7 @@
         constructor(size: ISize);
         constructor(width: number, height: number);
         /**
-        * Returns true if two sizes are equivalent.
+        * Returns true if this size is equivalent to another.
         */
         public equals(other: ISize): boolean;
         /**

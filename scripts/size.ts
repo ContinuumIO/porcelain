@@ -59,7 +59,7 @@ module porcelain {
         }
 
         /**
-         * Returns true if two sizes are equivalent.
+         * Returns true if this size is equivalent to another.
          */
         equals(other: ISize): boolean {
             return this.width == other.width && this.height == other.height;
