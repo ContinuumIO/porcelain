@@ -46,7 +46,7 @@ module porcelain {
         constructor() {
             super();
             this.addClass(BUTTON_CLASS);
-            this.elementEvents.enable("mousedown");
+            this.bind("mousedown", this._onMouseDown);
         }
 
         /**
@@ -54,10 +54,10 @@ module porcelain {
          *
          * @private
          */
-        private onElement_mousedown(event: MouseEvent): void {
+        private _onMouseDown(event: MouseEvent): void {
             if (event.button === 0) {
                 event.preventDefault();
-                this.documentEvents.enable("mouseup");
+                this.bind("mouseup", this._onMouseUp, document);
                 this.pressed.emit();
             }
         }
@@ -67,9 +67,9 @@ module porcelain {
          *
          * @private
          */
-        private onDocument_mouseup(event: MouseEvent): void {
+        private _onMouseUp(event: MouseEvent): void {
             if (event.button === 0) {
-                this.documentEvents.disable("mouseup");
+                this.unbind("mouseup", this._onMouseUp, document);
                 this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();

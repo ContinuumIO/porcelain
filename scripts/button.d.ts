@@ -31,12 +31,12 @@
         *
         * @private
         */
-        private onElement_mousedown(event);
+        private _onMouseDown(event);
         /**
         * The document mouseup event handler.
         *
         * @private
         */
-        private onDocument_mouseup(event);
+        private _onMouseUp(event);
     }
 }

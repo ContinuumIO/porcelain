@@ -48,17 +48,17 @@ var porcelain;
             */
             this.released = this.createSignal();
             this.addClass(BUTTON_CLASS);
-            this.elementEvents.enable("mousedown");
+            this.bind("mousedown", this._onMouseDown);
         }
         /**
         * The element mousedown event handler.
         *
         * @private
         */
-        Button.prototype.onElement_mousedown = function (event) {
+        Button.prototype._onMouseDown = function (event) {
             if (event.button === 0) {
                 event.preventDefault();
-                this.documentEvents.enable("mouseup");
+                this.bind("mouseup", this._onMouseUp, document);
                 this.pressed.emit();
             }
         };
@@ -68,9 +68,9 @@ var porcelain;
         *
         * @private
         */
-        Button.prototype.onDocument_mouseup = function (event) {
+        Button.prototype._onMouseUp = function (event) {
             if (event.button === 0) {
-                this.documentEvents.disable("mouseup");
+                this.unbind("mouseup", this._onMouseUp, document);
                 this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();
