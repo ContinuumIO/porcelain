@@ -189,6 +189,10 @@
         */
         public moveCenter(point: IPoint): void;
         /**
+        * Returns true if this rect is equivalent to another.
+        */
+        public equals(other: IRect): boolean;
+        /**
         * Returns true if the width OR height is zero or negative.
         */
         public isEmpty(): boolean;

@@ -273,6 +273,13 @@ var porcelain;
         };
 
         /**
+        * Returns true if this rect is equivalent to another.
+        */
+        Rect.prototype.equals = function (other) {
+            return this.left == other.left && this.top == other.top && this.right == other.right && this.bottom == other.bottom;
+        };
+
+        /**
         * Returns true if the width OR height is zero or negative.
         */
         Rect.prototype.isEmpty = function () {
