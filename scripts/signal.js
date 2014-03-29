@@ -58,7 +58,7 @@ var porcelain;
         * If no slot is provided, all slots will be disconnected.
         *
         * @param slot - the function to disconnect from the signal.
-        * @param [context] The context provided with the slot.
+        * @param [context] The context object provided with the slot.
         */
         Signal.prototype.disconnect = function (slot, context) {
             if (typeof slot === "undefined") { slot = null; }
