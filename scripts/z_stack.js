@@ -7,12 +7,29 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    
+
+    
+
+    /**
+    * A class for managing the z-order of a collection of items.
+    */
     var ZStack = (function () {
+        /**
+        * Construct a new ZStack.
+        *
+        * @param minZ The z-index to use for the bottom of the stack.
+        */
         function ZStack(minZ) {
             this._stack = [];
             this._minZ = minZ;
         }
         Object.defineProperty(ZStack.prototype, "top", {
+            /**
+            * The item on the top of the z-stack.
+            *
+            * @readonly
+            */
             get: function () {
                 if (this._stack.length) {
                     return this._stack[this._stack.length - 1];
@@ -24,6 +41,11 @@ var porcelain;
         });
 
         Object.defineProperty(ZStack.prototype, "bottom", {
+            /**
+            * The item on the bottom of the z-stack.
+            *
+            * @readonly
+            */
             get: function () {
                 if (this._stack.length) {
                     return this._stack[0];
@@ -34,27 +56,50 @@ var porcelain;
             configurable: true
         });
 
+        /**
+        * Returns true if the stack contains the item.
+        *
+        * @param item The item of interest.
+        */
         ZStack.prototype.contains = function (item) {
             return this._stack.indexOf(item) !== -1;
         };
 
+        /**
+        * Add an item to the top of the z-stack.
+        *
+        * If the stack already contains the item, this is a no-op.
+        *
+        * @param item The item to add to the stack.
+        */
         ZStack.prototype.add = function (item) {
             if (!item || this.contains(item)) {
                 return;
             }
             var z = this._minZ + this._stack.length;
             this._stack.push(item);
-            item.element.style.zIndex = z.toString();
+            item.zIndex = z;
         };
 
+        /**
+        * Remove an item from the z-stack and reset its z-index.
+        *
+        * If the stack does not contain the item, this is a no-op.
+        */
         ZStack.prototype.remove = function (item) {
             var index = this._stack.indexOf(item);
             if (index >= 0) {
                 this._stack.splice(index, 1);
+                item.zIndex = null;
                 this._updateIndices();
             }
         };
 
+        /**
+        * Raise the specified items to the top of the stack.
+        *
+        * The relative stack order of the items will be maintained.
+        */
         ZStack.prototype.raise = function () {
             var items = [];
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
@@ -68,6 +113,11 @@ var porcelain;
             this._updateIndices();
         };
 
+        /**
+        * Lower the specified items to the bottom of the stack.
+        *
+        * The relative stack order of the items will be maintained.
+        */
         ZStack.prototype.lower = function () {
             var items = [];
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
@@ -81,6 +131,11 @@ var porcelain;
             this._updateIndices();
         };
 
+        /**
+        * Classify the given items and current items into old and new.
+        *
+        * @private
+        */
         ZStack.prototype._classify = function (items) {
             var oldItems = [];
             var newItems = [];
@@ -94,18 +149,23 @@ var porcelain;
                 }
             }
             newItems.sort(function (a, b) {
-                var z1 = parseInt(a.element.style.zIndex) || 0;
-                var z2 = parseInt(a.element.style.zIndex) || 0;
+                var z1 = a.zIndex || 0;
+                var z2 = b.zIndex || 0;
                 return z1 - z2;
             });
             return { oldItems: oldItems, newItems: newItems };
         };
 
+        /**
+        * Update the z indices for the current stack items.
+        *
+        * @private
+        */
         ZStack.prototype._updateIndices = function () {
             var minZ = this._minZ;
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                stack[i].element.style.zIndex = (i + minZ).toString();
+                stack[i].zIndex = i + minZ;
             }
         };
         return ZStack;
