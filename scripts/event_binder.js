@@ -91,6 +91,8 @@ var porcelain;
 
         /**
         * Returns true if this binder is equivalent to another.
+        *
+        * @param other The binder to test for equality.
         */
         EventBinder.prototype.equals = function (other) {
             return this._target === other._target && this._type === other._type && this._listener === other._listener && this._context === other._context;

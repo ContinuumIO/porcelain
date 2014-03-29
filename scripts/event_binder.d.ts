@@ -39,6 +39,8 @@
         public context : any;
         /**
         * Returns true if this binder is equivalent to another.
+        *
+        * @param other The binder to test for equality.
         */
         public equals(other: EventBinder): boolean;
         /**
