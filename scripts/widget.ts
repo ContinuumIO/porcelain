@@ -12,21 +12,11 @@ module porcelain {
      */
     var WIDGET_CLASS = "p-Widget";
 
-    /**
-     * The prefix used for dispatching element events.
-     */
-    var ELEMENT_EVENT_PREFIX = "onElement_";
-    
-    /**
-     * The prefix used for dispatching document events.
-     */
-    var DOCUMENT_EVENT_PREFIX = "onDocument_";
-
 
     /**
      * A base class for creating interactive porcelain widgets.
      *
-     * The Widget class adds support for signals and events.
+     * The Widget class adds support for events and signals.
      *
      * @class
      */
@@ -45,36 +35,65 @@ module porcelain {
          */
         destroy(): void {
             super.destroy();
-            this._destroyEvents();
+            this._destroyBinders();
             this._destroySignals();
         }
 
         /**
-         * The event tracker for element events.
+         * Bind a listener to the specified event.
          *
-         * @readonly
+         * The listener will be removed when the widget is destroyed.
+         *
+         * @param type The string type of the event to bind.
+         * @param listener The event listener to bind to the target.
+         * @param [target] The event target. The default is the widget div.
+         * @param [context] The listener context. The default is the widget.
          */
-        get elementEvents(): EventTracker {
-            if (!this._elementEvents) {
-                this._elementEvents = new EventTracker(
-                    this, this.element, ELEMENT_EVENT_PREFIX
-                );
+        bind(
+            type: string,
+            listener: EventListener,
+            target: EventTarget = this.element,
+            context: any = this): void
+        {
+            var binders = this._binders
+            if (!binders) {
+                binders = this._binders = [];
             }
-            return this._elementEvents;
+            var binder = new EventBinder(target, type, listener, context);
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                if (binder.equals(binders[i])) {
+                    return;
+                }
+            }
+            binder.attach();
+            binders.push(binder);
         }
 
         /**
-         * The event tracker for document events.
+         * Unbind a listener from the specified event.
          *
-         * @readonly
+         * @param type The string type of the event.
+         * @param listener The event listener which was bound.
+         * @param [target] The event target. The default is the widget div.
+         * @param [context] The listener context. The default is the widget.
          */
-        get documentEvents(): EventTracker {
-            if (!this._documentEvents) {
-                this._documentEvents = new EventTracker(
-                    this, document, DOCUMENT_EVENT_PREFIX
-                );
+        unbind(
+            type: string,
+            listener: EventListener,
+            target: EventTarget = this.element,
+            context: any = this): void
+        {
+            var binders = this._binders;
+            if (!binders) {
+                return;
             }
-            return this._documentEvents;
+            var binder = new EventBinder(target, type, listener, context);
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                if (binder.equals(binders[i])) {
+                    binders[i].destroy();
+                    binders.splice(i, 1);
+                }
+            }
         }
 
         /**
@@ -90,18 +109,18 @@ module porcelain {
         }
 
         /**
-         * A helper method for destroying the event trackers.
+         * A helper method for destroying the event binders.
          *
          * @private
          */
-        private _destroyEvents(): void {
-            if (this._elementEvents) {
-                this._elementEvents.destroy();
-                this._elementEvents = null;
+        private _destroyBinders(): void {
+            var binders = this._binders;
+            if (!binders) {
+                return;
             }
-            if (this._documentEvents) {
-                this._documentEvents.destroy();
-                this._documentEvents = null;
+            this._binders = null;
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                binders[i].destroy();
             }
         }
      
@@ -111,19 +130,18 @@ module porcelain {
          * @private
          */
         private _destroySignals(): void {
-            if (!this._signals) {
+            var signals = this._signals;
+            if (!signals) {
                 return;
             }
-            var signals = this._signals;
             this._signals = null;
             for (var i = 0, n = signals.length; i < n; ++i) {
                 signals[i].disconnect();
             }
         }
 
+        private _binders: EventBinder[] = null;
         private _signals: Signal[] = null;
-        private _elementEvents: EventTracker = null;
-        private _documentEvents: EventTracker = null;
     }
 
 }

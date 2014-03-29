@@ -2,7 +2,7 @@
     /**
     * A base class for creating interactive porcelain widgets.
     *
-    * The Widget class adds support for signals and events.
+    * The Widget class adds support for events and signals.
     *
     * @class
     */
@@ -16,35 +16,42 @@
         */
         public destroy(): void;
         /**
-        * The event tracker for element events.
+        * Bind a listener to the specified event.
         *
-        * @readonly
+        * The listener will be removed when the widget is destroyed.
+        *
+        * @param type The string type of the event to bind.
+        * @param listener The event listener to bind to the target.
+        * @param [target] The event target. The default is the widget div.
+        * @param [context] The listener context. The default is the widget.
         */
-        public elementEvents : EventTracker;
+        public bind(type: string, listener: EventListener, target?: EventTarget, context?: any): void;
         /**
-        * The event tracker for document events.
+        * Unbind a listener from the specified event.
         *
-        * @readonly
+        * @param type The string type of the event.
+        * @param listener The event listener which was bound.
+        * @param [target] The event target. The default is the widget div.
+        * @param [context] The listener context. The default is the widget.
         */
-        public documentEvents : EventTracker;
+        public unbind(type: string, listener: EventListener, target?: EventTarget, context?: any): void;
         /**
         * Create a new Signal with a lifetime bound to the widget.
         */
         public createSignal(): Signal;
         /**
-        * A helper method for destroying the event trackers.
+        * A helper method for destroying the event binders.
         *
         * @private
         */
-        private _destroyEvents();
+        private _destroyBinders();
         /**
         * A helper method for destroying the widget signals.
         *
         * @private
         */
         private _destroySignals();
+        private _binders;
         private _signals;
-        private _elementEvents;
-        private _documentEvents;
     }
 }

@@ -19,19 +19,9 @@ var porcelain;
     var WIDGET_CLASS = "p-Widget";
 
     /**
-    * The prefix used for dispatching element events.
-    */
-    var ELEMENT_EVENT_PREFIX = "onElement_";
-
-    /**
-    * The prefix used for dispatching document events.
-    */
-    var DOCUMENT_EVENT_PREFIX = "onDocument_";
-
-    /**
     * A base class for creating interactive porcelain widgets.
     *
-    * The Widget class adds support for signals and events.
+    * The Widget class adds support for events and signals.
     *
     * @class
     */
@@ -42,9 +32,8 @@ var porcelain;
         */
         function Widget() {
             _super.call(this);
+            this._binders = null;
             this._signals = null;
-            this._elementEvents = null;
-            this._documentEvents = null;
             this.addClass(WIDGET_CLASS);
         }
         /**
@@ -52,41 +41,60 @@ var porcelain;
         */
         Widget.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._destroyEvents();
+            this._destroyBinders();
             this._destroySignals();
         };
 
-        Object.defineProperty(Widget.prototype, "elementEvents", {
-            /**
-            * The event tracker for element events.
-            *
-            * @readonly
-            */
-            get: function () {
-                if (!this._elementEvents) {
-                    this._elementEvents = new porcelain.EventTracker(this, this.element, ELEMENT_EVENT_PREFIX);
+        /**
+        * Bind a listener to the specified event.
+        *
+        * The listener will be removed when the widget is destroyed.
+        *
+        * @param type The string type of the event to bind.
+        * @param listener The event listener to bind to the target.
+        * @param [target] The event target. The default is the widget div.
+        * @param [context] The listener context. The default is the widget.
+        */
+        Widget.prototype.bind = function (type, listener, target, context) {
+            if (typeof target === "undefined") { target = this.element; }
+            if (typeof context === "undefined") { context = this; }
+            var binders = this._binders;
+            if (!binders) {
+                binders = this._binders = [];
+            }
+            var binder = new porcelain.EventBinder(target, type, listener, context);
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                if (binder.equals(binders[i])) {
+                    return;
                 }
-                return this._elementEvents;
-            },
-            enumerable: true,
-            configurable: true
-        });
+            }
+            binder.attach();
+            binders.push(binder);
+        };
 
-        Object.defineProperty(Widget.prototype, "documentEvents", {
-            /**
-            * The event tracker for document events.
-            *
-            * @readonly
-            */
-            get: function () {
-                if (!this._documentEvents) {
-                    this._documentEvents = new porcelain.EventTracker(this, document, DOCUMENT_EVENT_PREFIX);
+        /**
+        * Unbind a listener from the specified event.
+        *
+        * @param type The string type of the event.
+        * @param listener The event listener which was bound.
+        * @param [target] The event target. The default is the widget div.
+        * @param [context] The listener context. The default is the widget.
+        */
+        Widget.prototype.unbind = function (type, listener, target, context) {
+            if (typeof target === "undefined") { target = this.element; }
+            if (typeof context === "undefined") { context = this; }
+            var binders = this._binders;
+            if (!binders) {
+                return;
+            }
+            var binder = new porcelain.EventBinder(target, type, listener, context);
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                if (binder.equals(binders[i])) {
+                    binders[i].destroy();
+                    binders.splice(i, 1);
                 }
-                return this._documentEvents;
-            },
-            enumerable: true,
-            configurable: true
-        });
+            }
+        };
 
         /**
         * Create a new Signal with a lifetime bound to the widget.
@@ -101,18 +109,18 @@ var porcelain;
         };
 
         /**
-        * A helper method for destroying the event trackers.
+        * A helper method for destroying the event binders.
         *
         * @private
         */
-        Widget.prototype._destroyEvents = function () {
-            if (this._elementEvents) {
-                this._elementEvents.destroy();
-                this._elementEvents = null;
+        Widget.prototype._destroyBinders = function () {
+            var binders = this._binders;
+            if (!binders) {
+                return;
             }
-            if (this._documentEvents) {
-                this._documentEvents.destroy();
-                this._documentEvents = null;
+            this._binders = null;
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                binders[i].destroy();
             }
         };
 
@@ -122,10 +130,10 @@ var porcelain;
         * @private
         */
         Widget.prototype._destroySignals = function () {
-            if (!this._signals) {
+            var signals = this._signals;
+            if (!signals) {
                 return;
             }
-            var signals = this._signals;
             this._signals = null;
             for (var i = 0, n = signals.length; i < n; ++i) {
                 signals[i].disconnect();
