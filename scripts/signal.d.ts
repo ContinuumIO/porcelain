@@ -2,7 +2,7 @@
     /**
     * The Slot interface.
     *
-    * This interface should be extended to create custom strongly typed slots.
+    * This interface can be extended to create custom strongly typed slots.
     */
     interface ISlot {
         (): void;
@@ -10,17 +10,17 @@
     /**
     * The Signal interface.
     *
-    * This interface should be extended to create custom strongly typed signals.
+    * This interface can be extended to create custom strongly typed signals.
     */
     interface ISignal {
-        connect(slot: ISlot): void;
-        disconnect(slot: ISlot): void;
+        connect(slot: ISlot, context?: any): void;
+        disconnect(slot: ISlot, context?: any): void;
         emit(...args: any[]): void;
     }
     /**
     * The Signal class.
     *
-    * A Signal provides a type-safe on-to-many notification mechanism.
+    * A Signal provides a type-safe one-to-many notification mechanism.
     * It allows objects to broadcast information without regard as to
     * whether or not anything is listening.
     *
@@ -34,9 +34,10 @@
         * arguments emitted by the signal will be passed to the slot.
         * If the slot is already connected, this is a no-op.
         *
-        * @param slot - the function to connect to the signal.
+        * @param slot The function to connect to the signal.
+        * @param [context] The context to bind to the function call.
         */
-        public connect(slot: ISlot): void;
+        public connect(slot: ISlot, context?: any): void;
         /**
         * Disconnect a slot from the signal.
         *
@@ -44,18 +45,17 @@
         * If no slot is provided, all slots will be disconnected.
         *
         * @param slot - the function to disconnect from the signal.
+        * @param [context] The context provided with the slot.
         */
-        public disconnect(slot?: ISlot): void;
+        public disconnect(slot?: ISlot, context?: any): void;
         /**
-        * Emit the signal with the given parameter.
+        * Emit the signal with the given parameters.
         *
-        * This will invoke all slots with the provided parameter in
+        * This will invoke all slots with the provided parameters in
         * the order in which they were connected. It is safe to
         * connect and disconnect slots while the signal is emitting.
-        *
-        * @param param - the parameter to pass to the slots
         */
         public emit(...args: any[]): void;
-        private _slots;
+        private _connections;
     }
 }

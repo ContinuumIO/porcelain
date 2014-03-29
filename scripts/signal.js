@@ -11,10 +11,12 @@ var porcelain;
 
     
 
+    
+
     /**
     * The Signal class.
     *
-    * A Signal provides a type-safe on-to-many notification mechanism.
+    * A Signal provides a type-safe one-to-many notification mechanism.
     * It allows objects to broadcast information without regard as to
     * whether or not anything is listening.
     *
@@ -22,7 +24,7 @@ var porcelain;
     */
     var Signal = (function () {
         function Signal() {
-            this._slots = null;
+            this._connections = null;
         }
         /**
         * Connect a slot to the signal.
@@ -31,14 +33,22 @@ var porcelain;
         * arguments emitted by the signal will be passed to the slot.
         * If the slot is already connected, this is a no-op.
         *
-        * @param slot - the function to connect to the signal.
+        * @param slot The function to connect to the signal.
+        * @param [context] The context to bind to the function call.
         */
-        Signal.prototype.connect = function (slot) {
-            if (!this._slots) {
-                this._slots = [slot];
-            } else if (this._slots.indexOf(slot) === -1) {
-                this._slots.push(slot);
+        Signal.prototype.connect = function (slot, context) {
+            if (typeof context === "undefined") { context = null; }
+            var connections = this._connections;
+            if (!connections) {
+                connections = this._connections = [];
             }
+            for (var i = 0, n = connections.length; i < n; ++i) {
+                var conn = connections[i];
+                if (conn.slot === slot && conn.context === context) {
+                    return;
+                }
+            }
+            connections.push({ slot: slot, context: context });
         };
 
         /**
@@ -48,33 +58,37 @@ var porcelain;
         * If no slot is provided, all slots will be disconnected.
         *
         * @param slot - the function to disconnect from the signal.
+        * @param [context] The context provided with the slot.
         */
-        Signal.prototype.disconnect = function (slot) {
+        Signal.prototype.disconnect = function (slot, context) {
             if (typeof slot === "undefined") { slot = null; }
-            if (!this._slots) {
+            if (typeof context === "undefined") { context = null; }
+            var connections = this._connections;
+            if (!connections) {
                 return;
             }
             if (!slot) {
-                this._slots = null;
+                this._connections = null;
                 return;
             }
-            var index = this._slots.indexOf(slot);
-            if (index !== -1) {
-                this._slots.splice(index, 1);
-                if (this._slots.length === 0) {
-                    this._slots = null;
+            for (var i = 0, n = connections.length; i < n; ++i) {
+                var conn = connections[i];
+                if (conn.slot === slot && conn.context === context) {
+                    this._connections.splice(i, 1);
+                    return;
                 }
             }
         };
 
         Signal.prototype.emit = function () {
-            if (!this._slots) {
+            var connections = this._connections;
+            if (!connections || !connections.length) {
                 return;
             }
-            var context = {};
-            var slots = this._slots.slice();
-            for (var i = 0, n = slots.length; i < n; ++i) {
-                slots[i].apply(context, arguments);
+            connections = connections.slice();
+            for (var i = 0, n = connections.length; i < n; ++i) {
+                var conn = connections[i];
+                conn.slot.apply(conn.context, arguments);
             }
         };
         return Signal;
