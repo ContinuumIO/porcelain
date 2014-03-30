@@ -2,12 +2,12 @@
     class Window extends Widget {
         constructor();
         public destroy(): void;
+        public zIndex : number;
         public show(): void;
         public raise(): void;
         public lower(): void;
-        public geometry : Geometry;
+        private _onMouseDown(event);
         private _body;
         private _titleBar;
-        private _geometry;
     }
 }

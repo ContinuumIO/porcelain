@@ -19,63 +19,101 @@ module porcelain {
     var windowStack = new ZStack(1000);
 
 
+    class Sizer implements ILayoutActor {
+
+        constructor(elem: HTMLElement) {
+            this._elem = elem;
+        }
+
+        minimumSize(): Size {
+            return new Size(192, 192);
+        }
+
+        maximumSize(): Size {
+            return new Size(800, 800);
+        }
+
+        sizeHint(): Size {
+            return new Size();
+        }
+
+        geometry(): Rect {
+            return new Rect(this._rect);
+        }
+
+        setGeometry(rect: Rect) {
+            this._rect = rect;
+            var s = this._elem.style;
+            s.top = this._rect.top + "px";
+            s.left = this._rect.left + "px";
+            s.width = this._rect.width() + "px";
+            s.height = this._rect.height() + "px";
+        }
+
+        private _elem: HTMLElement;
+        private _rect: Rect = new Rect();
+    }
+
+
     export class Window extends Widget {
 
         constructor() {
             super();
             this.addClass(WINDOW_CLASS);
 
-            var geo = this._geometry = new Geometry(this.element);
-
             var body = this._body = new Item();
             body.addClass(BODY_CLASS);
 
-            var titleBar = this._titleBar = new TitleBar();
+            var actor = new Sizer(this.element);
+
+            var titleBar = this._titleBar = new TitleBar(actor);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.element.style.display = "none";
 
-            var tgrip = new SizeGrip(Border.Top);
+            var tgrip = new SizeGrip(GripArea.Top, actor);
             tgrip.addClass(SIZE_GRIP_CLASS);
 
-            var lgrip = new SizeGrip(Border.Left);
+            var lgrip = new SizeGrip(GripArea.Left, actor);
             lgrip.addClass(SIZE_GRIP_CLASS);
 
-            var rgrip = new SizeGrip(Border.Right);
+            var rgrip = new SizeGrip(GripArea.Right, actor);
             rgrip.addClass(SIZE_GRIP_CLASS);
             
-            var bgrip = new SizeGrip(Border.Bottom);
+            var bgrip = new SizeGrip(GripArea.Bottom, actor);
             bgrip.addClass(SIZE_GRIP_CLASS);
 
-            var tlgrip = new SizeGrip(Border.TopLeft);
+            var tlgrip = new SizeGrip(GripArea.TopLeft, actor);
             tlgrip.addClass(SIZE_GRIP_CLASS);
 
-            var trgrip = new SizeGrip(Border.TopRight);
+            var trgrip = new SizeGrip(GripArea.TopRight, actor);
             trgrip.addClass(SIZE_GRIP_CLASS);
 
-            var blgrip = new SizeGrip(Border.BottomLeft);
+            var blgrip = new SizeGrip(GripArea.BottomLeft, actor);
             blgrip.addClass(SIZE_GRIP_CLASS);
             
-            var brgrip = new SizeGrip(Border.BottomRight);
+            var brgrip = new SizeGrip(GripArea.BottomRight, actor);
             brgrip.addClass(SIZE_GRIP_CLASS);
 
             this.append(body, tgrip, lgrip, rgrip, bgrip,
                         tlgrip, trgrip, blgrip, brgrip, titleBar);
 
-            //this.elementEvents.enable("mousedown");
-            
-            // XXX temporary
-            // Setup a default min, max, and initial size.
-            this.geometry.minimumSize = { width: 192, height: 192 };
-            this.geometry.maximumSize = { width: 640, height: 480 };
-            this.geometry.rect = { x: 50, y: 50, width: 100, height: 100 };
+            actor.setGeometry(new Rect(50, 50, 200, 200));
+
+            this.bind("mousedown", this._onMouseDown);
         }
 
         destroy(): void {
             super.destroy()
-            this._geometry.destroy();
-            this._geometry = null;
             this._titleBar = null;
             this._body = null;
+        }
+
+        get zIndex(): number {
+            return parseInt(this.element.style.zIndex) || 0;
+        }
+
+        set zIndex(z: number) {
+            this.element.style.zIndex = z ? z.toString() : "";
         }
 
         show(): void {
@@ -92,18 +130,12 @@ module porcelain {
             windowStack.lower(this);
         }
 
-        get geometry(): Geometry {
-            return this._geometry;
-        }
-        /*
-        private _onMouseDown = (event: JQueryMouseEventObject) => {
+        private _onMouseDown(event: MouseEvent): void {
             this.raise();
         }
-        */
 
         private _body: Item;
         private _titleBar: Item;
-        private _geometry: Geometry;
     }
 
 }
