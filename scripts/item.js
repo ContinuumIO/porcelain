@@ -52,6 +52,21 @@ var porcelain;
             configurable: true
         });
 
+        Object.defineProperty(Item.prototype, "id", {
+            /**
+            * The id of the underlying div element.
+            */
+            get: function () {
+                return this._element.id;
+            },
+            set: function (id) {
+                this._element.id = id;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         Object.defineProperty(Item.prototype, "parent", {
             /**
             * The parent Item of this item.
@@ -159,6 +174,39 @@ var porcelain;
                 var trailing = current.slice(index);
                 this._children = leading.concat(children, trailing);
                 this._element.insertBefore(fragment, before._element);
+            }
+        };
+
+        /**
+        * Show the underlying div element.
+        *
+        * This is a convenience for setVisible(true);
+        */
+        Item.prototype.show = function () {
+            this.setVisible(true);
+        };
+
+        /**
+        * Hide the underlying div element.
+        *
+        * This is a convenience for setVisible(false);
+        */
+        Item.prototype.hide = function () {
+            this.setVisible(false);
+        };
+
+        /**
+        * Set the visibility of the underlying div element.
+        *
+        * The default implementation of this method sets and clears
+        * the display property of the element style.
+        */
+        Item.prototype.setVisible = function (visible) {
+            var style = this._element.style;
+            if (visible) {
+                style.removeProperty("display");
+            } else {
+                style.display = "none";
             }
         };
 

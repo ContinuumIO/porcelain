@@ -22,6 +22,10 @@
         */
         public element : HTMLDivElement;
         /**
+        * The id of the underlying div element.
+        */
+        public id : string;
+        /**
         * The parent Item of this item.
         *
         * @readonly
@@ -67,6 +71,25 @@
         * @param [...] The child Items to insert into the item.
         */
         public insertBefore(before: Item, ...children: Item[]): void;
+        /**
+        * Show the underlying div element.
+        *
+        * This is a convenience for setVisible(true);
+        */
+        public show(): void;
+        /**
+        * Hide the underlying div element.
+        *
+        * This is a convenience for setVisible(false);
+        */
+        public hide(): void;
+        /**
+        * Set the visibility of the underlying div element.
+        *
+        * The default implementation of this method sets and clears
+        * the display property of the element style.
+        */
+        public setVisible(visible: boolean): void;
         /**
         * Add a name or names to the element's CSS class name.
         *

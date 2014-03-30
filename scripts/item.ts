@@ -50,6 +50,17 @@ module porcelain {
         }
 
         /**
+         * The id of the underlying div element.
+         */
+        get id(): string {
+            return this._element.id
+        }
+
+        set id(id: string) {
+            this._element.id = id;
+        }
+
+        /**
          * The parent Item of this item.
          *
          * @readonly
@@ -139,6 +150,39 @@ module porcelain {
             }
         }   
 
+        /**
+         * Show the underlying div element.
+         *
+         * This is a convenience for setVisible(true);
+         */
+        show(): void {
+            this.setVisible(true);
+        }
+
+        /**
+         * Hide the underlying div element.
+         *
+         * This is a convenience for setVisible(false);
+         */
+        hide(): void {
+            this.setVisible(false);
+        }
+
+        /**
+         * Set the visibility of the underlying div element.
+         *
+         * The default implementation of this method sets and clears
+         * the display property of the element style.
+         */
+        setVisible(visible: boolean): void {
+            var style = this._element.style;
+            if (visible) {
+                style.removeProperty("display");
+            } else {
+                style.display = "none";
+            }
+        }
+          
         /**
          * Add a name or names to the element's CSS class name.
          *
