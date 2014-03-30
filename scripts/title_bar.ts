@@ -13,6 +13,11 @@ module porcelain {
     var TITLE_BAR_CLASS = "p-TitleBar";
 
     /**
+     * The class added to a title bar icon area.
+     */
+    var ICON_CLASS = "p-TitleBar-icon";
+
+    /**
      * The class added to a title bar text area.
      */
     var TEXT_CLASS = "p-TitleBar-text";
@@ -52,9 +57,12 @@ module porcelain {
 
         /** 
          * Construct a new TitleBar
+         *
+         * @param actor The layout actor to move with the title bar.
          */
-        constructor() {
+        constructor(actor: ILayoutActor) {
             super();
+            this._actor = actor;
             this.addClass(TITLE_BAR_CLASS);
 
             var minBtn = this._minimizeButton = new Button();
@@ -74,13 +82,15 @@ module porcelain {
             btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 
             var iconItem = this._iconItem = new Item();
-            iconItem.addClass("p-TitleBar-icon");
+            iconItem.addClass(ICON_CLASS);
 
             var textItem = this._textItem = new Item();
             textItem.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
             this.append(iconItem, btnBox, textItem);
+
+            this.bind("mousedown", this._onMouseDown);
         }
 
         /**
@@ -97,22 +107,98 @@ module porcelain {
             this._maximizeButton = null;
         }
 
+        /**
+         * The close button attached to the title bar.
+         *
+         * @readonly
+         */
         get closeButton(): Button {
             return this._closeButton;
         }
 
+        /**
+         * The restore button attached to the title bar.
+         *
+         * @readonly
+         */
         get restoreButton(): Button {
             return this._restoreButton;
         }
 
+        /**
+         * The minimize button attached to the title bar.
+         *
+         * @readonly
+         */
         get minimizeButton(): Button {
             return this._minimizeButton;
         }
 
+        /**
+         * The maximize button attached to the title bar.
+         *
+         * @readonly
+         */
         get maximizeButton(): Button {
             return this._maximizeButton;
         }
 
+        /**
+         * The internal mousedown handler.
+         *
+         * @private
+         */
+        private _onMouseDown(event: MouseEvent): void {
+            if (event.button !== 0) {
+                return;
+            }
+            var target = event.target;
+            if (target !== this._textItem.element &&
+                target !== this._iconItem.element &&
+                target !== this.element) {
+                return;
+            }
+            event.preventDefault();
+            this.bind("mouseup", this._onMouseUp, document);
+            this.bind("mousemove", this._onMouseMove, document);
+            var geo = this._actor.geometry();
+            this._offsetX = event.pageX - geo.left;
+            this._offsetY = event.pageY - geo.top;
+        }
+
+        /**
+         * The internal mouseup handler.
+         *
+         * @private
+         */
+        private _onMouseUp(event: MouseEvent): void {
+            if (event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            this.unbind("mouseup", this._onMouseUp, document);
+            this.unbind("mousemove", this._onMouseMove, document);
+            this._offsetX = 0;
+            this._offsetY = 0;
+        }
+
+        /**
+         * The internal mousemove handler.
+         *
+         * @private
+         */
+        private _onMouseMove(event: MouseEvent): void {
+            event.preventDefault();
+            var vp = viewport;
+            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
+            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
+            var origin = { x: x - this._offsetX, y: y - this._offsetY };
+            var rect = this._actor.geometry();
+            rect.moveTopLeft(origin);
+            this._actor.setGeometry(rect);
+        }
+
+        private _actor: ILayoutActor;
         private _iconItem: Item;
         private _textItem: Item;
         private _buttonBox: Item;
@@ -120,6 +206,8 @@ module porcelain {
         private _restoreButton: Button;
         private _minimizeButton: Button;
         private _maximizeButton: Button;
+        private _offsetX: number = 0;
+        private _offsetY: number = 0;
     }
 
 }

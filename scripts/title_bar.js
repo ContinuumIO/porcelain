@@ -19,6 +19,11 @@ var porcelain;
     var TITLE_BAR_CLASS = "p-TitleBar";
 
     /**
+    * The class added to a title bar icon area.
+    */
+    var ICON_CLASS = "p-TitleBar-icon";
+
+    /**
     * The class added to a title bar text area.
     */
     var TEXT_CLASS = "p-TitleBar-text";
@@ -57,9 +62,14 @@ var porcelain;
         __extends(TitleBar, _super);
         /**
         * Construct a new TitleBar
+        *
+        * @param actor The layout actor to move with the title bar.
         */
-        function TitleBar() {
+        function TitleBar(actor) {
             _super.call(this);
+            this._offsetX = 0;
+            this._offsetY = 0;
+            this._actor = actor;
             this.addClass(TITLE_BAR_CLASS);
 
             var minBtn = this._minimizeButton = new porcelain.Button();
@@ -79,13 +89,15 @@ var porcelain;
             btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 
             var iconItem = this._iconItem = new porcelain.Item();
-            iconItem.addClass("p-TitleBar-icon");
+            iconItem.addClass(ICON_CLASS);
 
             var textItem = this._textItem = new porcelain.Item();
             textItem.addClass(TEXT_CLASS);
             textItem.element.innerHTML = "The Window Title";
 
             this.append(iconItem, btnBox, textItem);
+
+            this.bind("mousedown", this._onMouseDown);
         }
         /**
         * Destroy the title bar.
@@ -102,6 +114,11 @@ var porcelain;
         };
 
         Object.defineProperty(TitleBar.prototype, "closeButton", {
+            /**
+            * The close button attached to the title bar.
+            *
+            * @readonly
+            */
             get: function () {
                 return this._closeButton;
             },
@@ -110,6 +127,11 @@ var porcelain;
         });
 
         Object.defineProperty(TitleBar.prototype, "restoreButton", {
+            /**
+            * The restore button attached to the title bar.
+            *
+            * @readonly
+            */
             get: function () {
                 return this._restoreButton;
             },
@@ -118,6 +140,11 @@ var porcelain;
         });
 
         Object.defineProperty(TitleBar.prototype, "minimizeButton", {
+            /**
+            * The minimize button attached to the title bar.
+            *
+            * @readonly
+            */
             get: function () {
                 return this._minimizeButton;
             },
@@ -126,12 +153,70 @@ var porcelain;
         });
 
         Object.defineProperty(TitleBar.prototype, "maximizeButton", {
+            /**
+            * The maximize button attached to the title bar.
+            *
+            * @readonly
+            */
             get: function () {
                 return this._maximizeButton;
             },
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * The internal mousedown handler.
+        *
+        * @private
+        */
+        TitleBar.prototype._onMouseDown = function (event) {
+            if (event.button !== 0) {
+                return;
+            }
+            var target = event.target;
+            if (target !== this._textItem.element && target !== this._iconItem.element && target !== this.element) {
+                return;
+            }
+            event.preventDefault();
+            this.bind("mouseup", this._onMouseUp, document);
+            this.bind("mousemove", this._onMouseMove, document);
+            var geo = this._actor.geometry();
+            this._offsetX = event.pageX - geo.left;
+            this._offsetY = event.pageY - geo.top;
+        };
+
+        /**
+        * The internal mouseup handler.
+        *
+        * @private
+        */
+        TitleBar.prototype._onMouseUp = function (event) {
+            if (event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            this.unbind("mouseup", this._onMouseUp, document);
+            this.unbind("mousemove", this._onMouseMove, document);
+            this._offsetX = 0;
+            this._offsetY = 0;
+        };
+
+        /**
+        * The internal mousemove handler.
+        *
+        * @private
+        */
+        TitleBar.prototype._onMouseMove = function (event) {
+            event.preventDefault();
+            var vp = porcelain.viewport;
+            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
+            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
+            var origin = { x: x - this._offsetX, y: y - this._offsetY };
+            var rect = this._actor.geometry();
+            rect.moveTopLeft(origin);
+            this._actor.setGeometry(rect);
+        };
         return TitleBar;
     })(porcelain.Widget);
     porcelain.TitleBar = TitleBar;
