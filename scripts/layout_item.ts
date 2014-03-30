@@ -36,7 +36,7 @@ module porcelain {
         /**
          * Set the object's geometry to the given rect.
          */
-        setGeometry(rect: Rect);
+        setGeometry(rect: IRect);
 
         /**
          * Returns the minimum allowed size of the object.

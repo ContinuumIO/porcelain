@@ -22,7 +22,7 @@
         /**
         * Set the object's geometry to the given rect.
         */
-        setGeometry(rect: Rect): any;
+        setGeometry(rect: IRect): any;
         /**
         * Returns the minimum allowed size of the object.
         */
