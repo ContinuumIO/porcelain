@@ -17,6 +17,7 @@
     line-height: 1em;
     text-align: center;
     text-overflow: ellipsis;
+    cursor: default;
 }
 
 .p-TitleBar-buttonBox {
