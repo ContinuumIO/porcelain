@@ -61,8 +61,8 @@
     background-color: #E04343;
 }
 
-.p-TitleBar-closeButton:hover:active {
-    background-color: #993D3D;
+.p-TitleBar-closeButton.p-Button-pressed:hover {
+        background-color: #993D3D;
 }
 
 .p-TitleBar-restoreButton:hover,
@@ -83,8 +83,8 @@
     background-image: url("/media/maximizehover.png");
 }
 
-.p-TitleBar-restoreButton:hover:active,
-.p-TitleBar-minimizeButton:hover:active,
-.p-TitleBar-maximizeButton:hover:active {
+.p-TitleBar-restoreButton.p-Button-pressed:hover,
+.p-TitleBar-minimizeButton.p-Button-pressed:hover,
+.p-TitleBar-maximizeButton.p-Button-pressed:hover {
     background-color: #3D6099;
 }
