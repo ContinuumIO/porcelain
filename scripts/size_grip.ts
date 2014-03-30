@@ -13,13 +13,28 @@ module porcelain {
     var SIZE_GRIP_CLASS = "p-SizeGrip";
 
     /**
-     * The prefix for the border class added to a size grip.
+     * The prefix for the grip area class added to a size grip.
      */
-    var BORDER_PREFIX = "p-Border-";
+    var GRIP_AREA_PREFIX = "p-GripArea-";
+
+    
+    /**
+     * The areas which define the behavior of a size grip.
+     */
+    export enum GripArea {
+        Left,
+        Top,
+        Right,
+        Bottom,
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
 
 
     /**
-     * A widget which enables drag-sizing of an element's geometry.
+     * A widget which enables mouse resizing of a layout actor.
      *
      * @class
      */
@@ -27,21 +42,43 @@ module porcelain {
 
         /**
          * Construct a new SizeGrip.
+         *
+         * @param area The area defining the size grip behavior.
+         * @param actor The layout actor to be resized by the grip.
          */
-        constructor(border: Border) {
+        constructor(area: GripArea, actor: ILayoutActor) {
             super();
-            this._border = border;
+            this._area = area;
+            this._actor = actor;
             this.addClass(SIZE_GRIP_CLASS);
-            this.addClass(BORDER_PREFIX + Border[border]);
-            //this.elementEvents.enable("mousedown");
+            this.addClass(GRIP_AREA_PREFIX + GripArea[area]);
+            this.bind("mousedown", this._onMouseDown);
         }
 
         /**
-         * Destroy the size grip.
+         * Destroy the edge grip.
          */
         destroy(): void {
             super.destroy();
-            this._target = null;
+            this._actor = null;
+        }
+
+        /**
+         * The grip area defining the grip behavior.
+         *
+         * @readonly
+         */
+        get area(): GripArea {
+            return this._area;
+        }
+
+        /**
+         * The actor on which the grip operators.
+         *
+         * @readonly
+         */
+        get actor(): ILayoutActor {
+            return this._actor;
         }
 
         /**
@@ -49,107 +86,117 @@ module porcelain {
          *
          * @private
          */
-        /*
-        private _onMouseDown = (event: JQueryMouseEventObject) => {
-            if (event.button === 0) {
-                event.preventDefault();
-                $(document).mouseup(this._onMouseUp)
-                    .mousemove(this._onMouseMove);
-                switch (this._border) {
-                    case Border.Left:
-                    case Border.TopLeft:
-                    case Border.BottomLeft:
-                        this._offsetX = event.pageX - this._target.left;
-                        break;
-                    case Border.Right:
-                    case Border.TopRight:
-                    case Border.BottomRight:
-                        this._offsetX = event.pageX - this._target.right;
-                        break;
-                    default:
-                        break;
-                }
-                switch (this._border) {
-                    case Border.Top:
-                    case Border.TopLeft:
-                    case Border.TopRight:
-                        this._offsetY = event.pageY - this._target.top;
-                        break;
-                    case Border.Bottom:
-                    case Border.BottomLeft:
-                    case Border.BottomRight:
-                        this._offsetY = event.pageY - this._target.bottom;
-                        break;
-                    default:
-                        break;
-                }
+        private _onMouseDown(event: MouseEvent): void {
+            if (event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            this.bind("mouseup", this._onMouseUp, document);
+            this.bind("mousemove", this._onMouseMove, document);
+            var geo = this._actor.geometry();
+            switch (this._area) {
+                case GripArea.Left:
+                case GripArea.TopLeft:
+                case GripArea.BottomLeft:
+                    this._offsetX = event.pageX - geo.left;
+                    break;
+                case GripArea.Right:
+                case GripArea.TopRight:
+                case GripArea.BottomRight:
+                    this._offsetX = event.pageX - geo.right;
+                    break;
+            }
+            switch (this._area) {
+                case GripArea.Top:
+                case GripArea.TopLeft:
+                case GripArea.TopRight:
+                    this._offsetY = event.pageY - geo.top;
+                    break;
+                case GripArea.Bottom:
+                case GripArea.BottomLeft:
+                case GripArea.BottomRight:
+                    this._offsetY = event.pageY - geo.bottom;
+                    break;
+                default:
+                    break;
             }
         }
-        */
 
         /**
          * The internal mouseup handler.
          *
          * @private
          */
-        /*
-        private _onMouseUp = (event: JQueryMouseEventObject) => {
-            if (event.button === 0) {
-                event.preventDefault();
-                this._offsetX = 0;
-                this._offsetY = 0;
-                $(document).off("mouseup", this._onMouseUp)
-                    .off("mousemove", this._onMouseMove);
+        private _onMouseUp(event: MouseEvent): void {
+            if (event.button !== 0) {
+                return;
             }
+            event.preventDefault();
+            this.unbind("mouseup", this._onMouseUp, document);
+            this.unbind("mousemove", this._onMouseMove, document);
+            this._offsetX = 0;
+            this._offsetY = 0;
         }
-        */
 
         /**
          * The internal mousemove handler.
          *
          * @private
          */
-        /*
-        private _onMouseMove = (event: JQueryMouseEventObject) => {
+        private _onMouseMove(event: MouseEvent): void {
             event.preventDefault();
             var vp = viewport;
+            var actor = this._actor;
+            var geo = actor.geometry();
+            var minSize = actor.minimumSize();
+            var maxSize = actor.maximumSize();
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
             x = Math.min(Math.max(vp.left, x), vp.windowRight);
             y = Math.min(Math.max(vp.top, y), vp.windowBottom);
-            switch (this._border) {
-                case Border.Left:
-                    this._target.left = x;
+            var minX: number, maxX: number;
+            switch (this._area) {
+                case GripArea.Left:
+                case GripArea.TopLeft:
+                case GripArea.BottomLeft:
+                    minX = geo.right - maxSize.width;
+                    maxX = geo.right - minSize.width;
+                    geo.left = Math.min(Math.max(minX, x), maxX);
                     break;
-                case Border.Top:
-                    this._target.top = y;
-                    break;
-                case Border.Right:
-                    this._target.right = x;
-                    break;
-                case Border.Bottom:
-                    this._target.bottom = y;
-                    break;
-                case Border.TopLeft:
-                    this._target.topLeft = { x: x, y: y };
-                    break;
-                case Border.TopRight:
-                    this._target.topRight = { x: x, y: y };
-                    break;
-                case Border.BottomLeft:
-                    this._target.bottomLeft = { x: x, y: y };
-                    break;
-                case Border.BottomRight:
-                    this._target.bottomRight = { x: x, y: y };
+                case GripArea.Right:
+                case GripArea.TopRight:
+                case GripArea.BottomRight:
+                    minX = geo.left + minSize.width;
+                    maxX = geo.left + maxSize.width;
+                    geo.right = Math.min(Math.max(minX, x), maxX);
                     break;
                 default:
                     break;
             }
+            var minY: number, maxY: number;
+            switch (this._area) {
+                case GripArea.Top:
+                case GripArea.TopLeft:
+                case GripArea.TopRight:
+                    minY = geo.bottom - maxSize.height;
+                    maxY = geo.bottom - minSize.height;
+                    geo.top = Math.min(Math.max(minY, y), maxY);
+                    break;
+                case GripArea.Bottom:
+                case GripArea.BottomLeft:
+                case GripArea.BottomRight:
+                    minY = geo.top + minSize.height;
+                    maxY = geo.top + maxSize.height;
+                    geo.bottom = Math.min(Math.max(minY, y), maxY);
+                    break;
+                default:
+                    break;
+            }
+            actor.setGeometry(geo);
         }
-        */
 
-        private _border: Border;
-        private _target: Geometry;
+        private _area: GripArea;
+        private _actor: ILayoutActor;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }
