@@ -34,76 +34,76 @@
     position: absolute;
 }
 
-.p-Window-sizeGrip.p-Border-Left,
-.p-Window-sizeGrip.p-Border-Right {
+.p-Window-sizeGrip.p-GripArea-Left,
+.p-Window-sizeGrip.p-GripArea-Right {
     top: 6px;
     bottom: 6px;
     width: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-Top {
+.p-Window-sizeGrip.p-GripArea-Top {
     left: 6px;
     right: 6px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-Bottom {
+.p-Window-sizeGrip.p-GripArea-Bottom {
     left: 15px;
     right: 15px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-TopLeft,
-.p-Window-sizeGrip.p-Border-TopRight {
+.p-Window-sizeGrip.p-GripArea-TopLeft,
+.p-Window-sizeGrip.p-GripArea-TopRight {
     width: 6px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-BottomLeft,
-.p-Window-sizeGrip.p-Border-BottomRight {
+.p-Window-sizeGrip.p-GripArea-BottomLeft,
+.p-Window-sizeGrip.p-GripArea-BottomRight {
     width: 15px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-Left {
+.p-Window-sizeGrip.p-GripArea-Left {
     cursor: w-resize;
     left: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-Top {
+.p-Window-sizeGrip.p-GripArea-Top {
     cursor: n-resize;
     top: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-Right {
+.p-Window-sizeGrip.p-GripArea-Right {
     cursor: e-resize;
     right: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-Bottom {
+.p-Window-sizeGrip.p-GripArea-Bottom {
     cursor: s-resize;
     bottom: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-TopLeft {
+.p-Window-sizeGrip.p-GripArea-TopLeft {
     cursor: nw-resize;
     left: 0px;
     top: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-TopRight {
+.p-Window-sizeGrip.p-GripArea-TopRight {
     cursor: ne-resize;
     top: 0px;
     right: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-BottomLeft {
+.p-Window-sizeGrip.p-GripArea-BottomLeft {
     cursor: sw-resize;
     left: 0px;
     bottom: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-BottomRight {
+.p-Window-sizeGrip.p-GripArea-BottomRight {
     cursor: se-resize;
     right: 0px;
     bottom: 0px;
