@@ -92,6 +92,7 @@ var porcelain;
                 if (binder.equals(binders[i])) {
                     binders[i].destroy();
                     binders.splice(i, 1);
+                    return;
                 }
             }
         };
