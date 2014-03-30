@@ -18,7 +18,7 @@ module porcelain {
     /**
      * The internal interface for a z-stack classification.
      */
-    interface ClassifyResult {
+    interface IClassifyResult {
         oldItems: IZStackItem[];
         newItems: IZStackItem[];
     }
@@ -134,7 +134,7 @@ module porcelain {
          *
          * @private
          */
-        private _classify(items: IZStackItem[]): ClassifyResult {
+        private _classify(items: IZStackItem[]): IClassifyResult {
             var oldItems: IZStackItem[] = [];
             var newItems: IZStackItem[] = [];
             var stack = this._stack;
