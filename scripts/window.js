@@ -21,82 +21,48 @@ var porcelain;
 
     var TITLE_BAR_CLASS = "p-Window-titleBar";
 
+    var GRIP_AREAS = [
+        0 /* Left */,
+        1 /* Top */,
+        2 /* Right */,
+        3 /* Bottom */,
+        4 /* TopLeft */,
+        5 /* TopRight */,
+        6 /* BottomLeft */,
+        7 /* BottomRight */
+    ];
+
     var windowStack = new porcelain.ZStack(1000);
-
-    var Sizer = (function () {
-        function Sizer(elem) {
-            this._rect = new porcelain.Rect();
-            this._elem = elem;
-        }
-        Sizer.prototype.minimumSize = function () {
-            return new porcelain.Size(192, 192);
-        };
-
-        Sizer.prototype.maximumSize = function () {
-            return new porcelain.Size(800, 800);
-        };
-
-        Sizer.prototype.sizeHint = function () {
-            return new porcelain.Size();
-        };
-
-        Sizer.prototype.geometry = function () {
-            return new porcelain.Rect(this._rect);
-        };
-
-        Sizer.prototype.setGeometry = function (rect) {
-            this._rect = rect;
-            var s = this._elem.style;
-            s.top = this._rect.top + "px";
-            s.left = this._rect.left + "px";
-            s.width = this._rect.width() + "px";
-            s.height = this._rect.height() + "px";
-        };
-        return Sizer;
-    })();
 
     var Window = (function (_super) {
         __extends(Window, _super);
         function Window() {
             _super.call(this);
+            this._layoutItem = new porcelain.LayoutItem(this);
             this.addClass(WINDOW_CLASS);
+
+            var children = [];
 
             var body = this._body = new porcelain.Item();
             body.addClass(BODY_CLASS);
+            children.push(body);
 
-            var actor = new Sizer(this.element);
+            var self = this;
+            GRIP_AREAS.forEach(function (area) {
+                var grip = new porcelain.SizeGrip(area, self);
+                grip.addClass(SIZE_GRIP_CLASS);
+                children.push(grip);
+            });
 
-            var titleBar = this._titleBar = new porcelain.TitleBar(actor);
+            var titleBar = this._titleBar = new porcelain.TitleBar(this._layoutItem);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.element.style.display = "none";
+            children.push(titleBar);
 
-            var tgrip = new porcelain.SizeGrip(1 /* Top */, actor);
-            tgrip.addClass(SIZE_GRIP_CLASS);
+            this.append.apply(this, children);
 
-            var lgrip = new porcelain.SizeGrip(0 /* Left */, actor);
-            lgrip.addClass(SIZE_GRIP_CLASS);
-
-            var rgrip = new porcelain.SizeGrip(2 /* Right */, actor);
-            rgrip.addClass(SIZE_GRIP_CLASS);
-
-            var bgrip = new porcelain.SizeGrip(3 /* Bottom */, actor);
-            bgrip.addClass(SIZE_GRIP_CLASS);
-
-            var tlgrip = new porcelain.SizeGrip(4 /* TopLeft */, actor);
-            tlgrip.addClass(SIZE_GRIP_CLASS);
-
-            var trgrip = new porcelain.SizeGrip(5 /* TopRight */, actor);
-            trgrip.addClass(SIZE_GRIP_CLASS);
-
-            var blgrip = new porcelain.SizeGrip(6 /* BottomLeft */, actor);
-            blgrip.addClass(SIZE_GRIP_CLASS);
-
-            var brgrip = new porcelain.SizeGrip(7 /* BottomRight */, actor);
-            brgrip.addClass(SIZE_GRIP_CLASS);
-
-            this.append(body, tgrip, lgrip, rgrip, bgrip, tlgrip, trgrip, blgrip, brgrip, titleBar);
-
-            actor.setGeometry(new porcelain.Rect(50, 50, 200, 200));
+            this._layoutItem.setMinimumSize({ width: 192, height: 192 });
+            this._layoutItem.setGeometry(new porcelain.Rect(50, 50, 200, 200));
 
             this.bind("mousedown", this._onMouseDown);
         }
@@ -105,6 +71,14 @@ var porcelain;
             this._titleBar = null;
             this._body = null;
         };
+
+        Object.defineProperty(Window.prototype, "layoutItem", {
+            get: function () {
+                return this._layoutItem;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         Object.defineProperty(Window.prototype, "zIndex", {
             get: function () {
@@ -118,10 +92,17 @@ var porcelain;
         });
 
 
-        Window.prototype.show = function () {
-            windowStack.add(this);
-            var body = document.getElementsByTagName("body")[0];
-            body.appendChild(this.element);
+        Window.prototype.sizeHint = function () {
+            return new porcelain.Size();
+        };
+
+        Window.prototype.setVisible = function (visible) {
+            _super.prototype.setVisible.call(this, visible);
+            if (visible && !this.element.parentNode) {
+                windowStack.add(this);
+                var body = document.getElementsByTagName("body")[0];
+                body.appendChild(this.element);
+            }
         };
 
         Window.prototype.raise = function () {

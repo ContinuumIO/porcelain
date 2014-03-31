@@ -15,89 +15,50 @@ module porcelain {
 
     var TITLE_BAR_CLASS = "p-Window-titleBar";
 
-    
+    var GRIP_AREAS = [
+        GripArea.Left,
+        GripArea.Top,
+        GripArea.Right,
+        GripArea.Bottom,
+        GripArea.TopLeft,
+        GripArea.TopRight,
+        GripArea.BottomLeft,
+        GripArea.BottomRight
+    ];
+
+
     var windowStack = new ZStack(1000);
-
-
-    class Sizer implements ILayoutActor {
-
-        constructor(elem: HTMLElement) {
-            this._elem = elem;
-        }
-
-        minimumSize(): Size {
-            return new Size(192, 192);
-        }
-
-        maximumSize(): Size {
-            return new Size(800, 800);
-        }
-
-        sizeHint(): Size {
-            return new Size();
-        }
-
-        geometry(): Rect {
-            return new Rect(this._rect);
-        }
-
-        setGeometry(rect: Rect) {
-            this._rect = rect;
-            var s = this._elem.style;
-            s.top = this._rect.top + "px";
-            s.left = this._rect.left + "px";
-            s.width = this._rect.width() + "px";
-            s.height = this._rect.height() + "px";
-        }
-
-        private _elem: HTMLElement;
-        private _rect: Rect = new Rect();
-    }
 
 
     export class Window extends Widget {
 
         constructor() {
             super();
+            this._layoutItem = new LayoutItem(this);
             this.addClass(WINDOW_CLASS);
+
+            var children: Item[] = [];
 
             var body = this._body = new Item();
             body.addClass(BODY_CLASS);
+            children.push(body);
 
-            var actor = new Sizer(this.element);
+            var self = this;
+            GRIP_AREAS.forEach(function (area) {
+                var grip = new SizeGrip(area, self);
+                grip.addClass(SIZE_GRIP_CLASS);
+                children.push(grip);
+            });
 
-            var titleBar = this._titleBar = new TitleBar(actor);
+            var titleBar = this._titleBar = new TitleBar(this._layoutItem);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.element.style.display = "none";
+            children.push(titleBar);
 
-            var tgrip = new SizeGrip(GripArea.Top, actor);
-            tgrip.addClass(SIZE_GRIP_CLASS);
+            this.append.apply(this, children);
 
-            var lgrip = new SizeGrip(GripArea.Left, actor);
-            lgrip.addClass(SIZE_GRIP_CLASS);
-
-            var rgrip = new SizeGrip(GripArea.Right, actor);
-            rgrip.addClass(SIZE_GRIP_CLASS);
-            
-            var bgrip = new SizeGrip(GripArea.Bottom, actor);
-            bgrip.addClass(SIZE_GRIP_CLASS);
-
-            var tlgrip = new SizeGrip(GripArea.TopLeft, actor);
-            tlgrip.addClass(SIZE_GRIP_CLASS);
-
-            var trgrip = new SizeGrip(GripArea.TopRight, actor);
-            trgrip.addClass(SIZE_GRIP_CLASS);
-
-            var blgrip = new SizeGrip(GripArea.BottomLeft, actor);
-            blgrip.addClass(SIZE_GRIP_CLASS);
-            
-            var brgrip = new SizeGrip(GripArea.BottomRight, actor);
-            brgrip.addClass(SIZE_GRIP_CLASS);
-
-            this.append(body, tgrip, lgrip, rgrip, bgrip,
-                        tlgrip, trgrip, blgrip, brgrip, titleBar);
-
-            actor.setGeometry(new Rect(50, 50, 200, 200));
+            this._layoutItem.setMinimumSize({ width: 192, height: 192 });
+            this._layoutItem.setGeometry(new Rect(50, 50, 200, 200));
 
             this.bind("mousedown", this._onMouseDown);
         }
@@ -108,6 +69,10 @@ module porcelain {
             this._body = null;
         }
 
+        get layoutItem(): LayoutItem {
+            return this._layoutItem;
+        }
+
         get zIndex(): number {
             return parseInt(this.element.style.zIndex) || 0;
         }
@@ -116,10 +81,17 @@ module porcelain {
             this.element.style.zIndex = z ? z.toString() : "";
         }
 
-        show(): void {
-            windowStack.add(this);
-            var body = document.getElementsByTagName("body")[0];
-            body.appendChild(this.element);
+        sizeHint(): Size {
+            return new Size();
+        }
+
+        setVisible(visible: boolean): void {
+            super.setVisible(visible);
+            if (visible && !this.element.parentNode) {
+                windowStack.add(this);
+                var body = document.getElementsByTagName("body")[0];
+                body.appendChild(this.element);
+            }
         }
 
         raise(): void {
@@ -136,6 +108,7 @@ module porcelain {
 
         private _body: Item;
         private _titleBar: Item;
+        private _layoutItem: LayoutItem;
     }
 
 }
