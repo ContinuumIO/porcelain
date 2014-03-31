@@ -19,7 +19,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="scripts\button.ts" />
     <TypeScriptCompile Include="scripts\event_binder.ts" />
-    <TypeScriptCompile Include="scripts\layout_actor.ts" />
+    <TypeScriptCompile Include="scripts\layout_item.ts" />
     <TypeScriptCompile Include="scripts\point.ts" />
     <TypeScriptCompile Include="scripts\size_grip.ts" />
     <TypeScriptCompile Include="scripts\size.ts" />
