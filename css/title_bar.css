@@ -9,7 +9,7 @@
     float: left;
 }
 
-.p-TitleBar-text {
+.p-TitleBar-label {
     overflow: hidden;
     white-space: nowrap;
     font-family: "Segoe UI", "Lucida Grande", "Dejavu Sans", Arial, sans-serif;
