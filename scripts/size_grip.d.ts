@@ -21,26 +21,26 @@
         /**
         * Construct a new SizeGrip.
         *
-        * @param area The area defining the size grip behavior.
-        * @param actor The layout actor to be resized by the grip.
+        * @param gripArea The grip area defining the size grip behavior.
+        * @param target The adjustable object to be resized by the grip.
         */
-        constructor(area: GripArea, actor: ILayoutActor);
+        constructor(gripArea: GripArea, target: IAdjustable);
         /**
         * Destroy the edge grip.
         */
         public destroy(): void;
         /**
-        * The grip area defining the grip behavior.
+        * The grip area defining the size grip behavior.
         *
         * @readonly
         */
-        public area : GripArea;
+        public gripArea : GripArea;
         /**
-        * The actor on which the grip operators.
+        * The target object of the size grip.
         *
         * @readonly
         */
-        public actor : ILayoutActor;
+        public target : IAdjustable;
         /**
         * The internal mousedown handler.
         *
@@ -59,8 +59,8 @@
         * @private
         */
         private _onMouseMove(event);
-        private _area;
-        private _actor;
+        private _gripArea;
+        private _target;
         private _offsetX;
         private _offsetY;
     }

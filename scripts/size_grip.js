@@ -48,17 +48,17 @@ var porcelain;
         /**
         * Construct a new SizeGrip.
         *
-        * @param area The area defining the size grip behavior.
-        * @param actor The layout actor to be resized by the grip.
+        * @param gripArea The grip area defining the size grip behavior.
+        * @param target The adjustable object to be resized by the grip.
         */
-        function SizeGrip(area, actor) {
+        function SizeGrip(gripArea, target) {
             _super.call(this);
             this._offsetX = 0;
             this._offsetY = 0;
-            this._area = area;
-            this._actor = actor;
+            this._gripArea = gripArea;
+            this._target = target;
             this.addClass(SIZE_GRIP_CLASS);
-            this.addClass(GRIP_AREA_PREFIX + GripArea[area]);
+            this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
             this.bind("mousedown", this._onMouseDown);
         }
         /**
@@ -66,30 +66,30 @@ var porcelain;
         */
         SizeGrip.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._actor = null;
+            this._target = null;
         };
 
-        Object.defineProperty(SizeGrip.prototype, "area", {
+        Object.defineProperty(SizeGrip.prototype, "gripArea", {
             /**
-            * The grip area defining the grip behavior.
+            * The grip area defining the size grip behavior.
             *
             * @readonly
             */
             get: function () {
-                return this._area;
+                return this._gripArea;
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(SizeGrip.prototype, "actor", {
+        Object.defineProperty(SizeGrip.prototype, "target", {
             /**
-            * The actor on which the grip operators.
+            * The target object of the size grip.
             *
             * @readonly
             */
             get: function () {
-                return this._actor;
+                return this._target;
             },
             enumerable: true,
             configurable: true
@@ -107,8 +107,8 @@ var porcelain;
             event.preventDefault();
             this.bind("mouseup", this._onMouseUp, document);
             this.bind("mousemove", this._onMouseMove, document);
-            var geo = this._actor.geometry();
-            switch (this._area) {
+            var geo = this._target.layoutItem.geometry();
+            switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
                 case 6 /* BottomLeft */:
@@ -120,7 +120,7 @@ var porcelain;
                     this._offsetX = event.pageX - geo.right;
                     break;
             }
-            switch (this._area) {
+            switch (this._gripArea) {
                 case 1 /* Top */:
                 case 4 /* TopLeft */:
                 case 5 /* TopRight */:
@@ -160,16 +160,16 @@ var porcelain;
         SizeGrip.prototype._onMouseMove = function (event) {
             event.preventDefault();
             var vp = porcelain.viewport;
-            var actor = this._actor;
-            var geo = actor.geometry();
-            var minSize = actor.minimumSize();
-            var maxSize = actor.maximumSize();
+            var item = this._target.layoutItem;
+            var geo = item.geometry();
+            var minSize = item.minimumSize();
+            var maxSize = item.maximumSize();
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
             x = Math.min(Math.max(vp.left, x), vp.windowRight);
             y = Math.min(Math.max(vp.top, y), vp.windowBottom);
             var minX, maxX;
-            switch (this._area) {
+            switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
                 case 6 /* BottomLeft */:
@@ -188,7 +188,7 @@ var porcelain;
                     break;
             }
             var minY, maxY;
-            switch (this._area) {
+            switch (this._gripArea) {
                 case 1 /* Top */:
                 case 4 /* TopLeft */:
                 case 5 /* TopRight */:
@@ -206,7 +206,7 @@ var porcelain;
                 default:
                     break;
             }
-            actor.setGeometry(geo);
+            item.setGeometry(geo);
         };
         return SizeGrip;
     })(porcelain.Widget);
