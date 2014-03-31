@@ -83,8 +83,27 @@ module porcelain {
 
         /**
          * The preferred size of the element.
+         *
+         * An invalid size will be ignored. Expensive hints 
+         * should be cached by the target.
          */
         sizeHint(): Size;
+
+        /**
+         * The suggested minimum size of the element.
+         *
+         * An invalid size will be ignored. Expensive hints 
+         * should be cached by the target.
+         */
+        minimumSizeHint(): Size;
+
+        /**
+         * The suggested maximum size of the element.
+         *
+         * An invalid size will be ignored. Expensive hints 
+         * should be cached by the target.
+         */
+        maximumSizeHint(): Size;
     }
 
 
@@ -130,7 +149,7 @@ module porcelain {
     /**
      * A class which manipulates the geometry of a layout target.
      *
-     * The target's element will be forced to absolute positioning.
+     * The target element's style will be forced to absolute positioning.
      *
      * @class
      */
@@ -144,6 +163,7 @@ module porcelain {
         constructor(target: ILayoutTarget) {
             this._target = target;
             initStyleGeometry(target.element.style);
+            this.resize(this.sizeHint());
         }
 
         /**
@@ -199,9 +219,10 @@ module porcelain {
          */
         setGeometry(rect: IRect) {
             var current = new Rect(rect);
-            current.setSize(current.size()
-                .expandedTo(this._minimumSize)
-                .boundedTo(this._maximumSize));
+            var size = current.size();
+            size = size.boundedTo(this.maximumSize());
+            size = size.expandedTo(this.minimumSize());
+            current.setSize(size);
             var previous = this._geometry;
             this._geometry = current;
             var style = this._target.element.style;
@@ -212,16 +233,34 @@ module porcelain {
          * Returns the minimum allowed size of the item.
          */
         minimumSize(): Size {
-            return new Size(this._minimumSize);
+            var size = this._minimumSize;
+            if (size.isValid()) {
+                return new Size(size);
+            }
+            size = this._target.minimumSizeHint();
+            if (!size.isValid()) {
+                return new Size(MIN_ITEM_SIZE);
+            }
+            size = size.boundedTo(MAX_ITEM_SIZE);
+            size = size.expandedTo(MIN_ITEM_SIZE);
+            return size;
         }
 
         /**
          * Set the minimum allowed size of the item.
+         *
+         * This will override the target's minimumSizeHint. It can be
+         * set to an ivalid size to reset the value to minimum hint.
          */
         setMinimumSize(size: ISize): void {
-            this._minimumSize = new Size(size)
-                .expandedTo(MIN_ITEM_SIZE)
-                .boundedTo(this._maximumSize);
+            var minSize = new Size(size);
+            if (minSize.isValid()) {
+                minSize = minSize.boundedTo(MAX_ITEM_SIZE);
+                minSize = minSize.expandedTo(MIN_ITEM_SIZE);
+                this._minimumSize = minSize;
+            } else {
+                this._minimumSize = new Size();
+            }
             this.setGeometry(this._geometry);
         }
 
@@ -229,16 +268,31 @@ module porcelain {
          * Returns the maximum allowed size of the item.
          */
         maximumSize(): Size {
-            return new Size(this._maximumSize);
+            var size = this._maximumSize;
+            if (size.isValid()) {
+                return new Size(size);
+            }
+            size = this._target.maximumSizeHint();
+            if (!size.isValid()) {
+                return new Size(MAX_ITEM_SIZE);
+            }
+            size = size.boundedTo(MAX_ITEM_SIZE);
+            size = size.expandedTo(MIN_ITEM_SIZE);
+            return size;
         }
 
         /**
          * Set the maximum allowed size of the item.
          */
         setMaximumSize(size: ISize): void {
-            this._maximumSize = new Size(size)
-                .expandedTo(this._minimumSize)
-                .boundedTo(MAX_ITEM_SIZE);
+            var maxSize = new Size(size);
+            if (maxSize.isValid()) {
+                maxSize = maxSize.boundedTo(MAX_ITEM_SIZE);
+                maxSize = maxSize.expandedTo(MIN_ITEM_SIZE);
+                this._maximumSize = maxSize;
+            } else {
+                this._maximumSize = new Size();
+            }
             this.setGeometry(this._geometry);
         }
 
@@ -246,13 +300,16 @@ module porcelain {
          * Returns the preferred size of the item.
          */
         sizeHint(): Size {
-            return this._target.sizeHint();
+            var size = this._target.sizeHint();
+            size = size.boundedTo(this.maximumSize());
+            size = size.expandedTo(this.minimumSize());
+            return size;
         }
 
         private _target: ILayoutTarget;
         private _geometry: Rect = new Rect();
-        private _minimumSize: Size = new Size(MIN_ITEM_SIZE);
-        private _maximumSize: Size = new Size(MAX_ITEM_SIZE);
+        private _minimumSize: Size = new Size();
+        private _maximumSize: Size = new Size();
     }
 
 }

@@ -59,13 +59,30 @@
         element: HTMLElement;
         /**
         * The preferred size of the element.
+        *
+        * An invalid size will be ignored. Expensive hints
+        * should be cached by the target.
         */
         sizeHint(): Size;
+        /**
+        * The suggested minimum size of the element.
+        *
+        * An invalid size will be ignored. Expensive hints
+        * should be cached by the target.
+        */
+        minimumSizeHint(): Size;
+        /**
+        * The suggested maximum size of the element.
+        *
+        * An invalid size will be ignored. Expensive hints
+        * should be cached by the target.
+        */
+        maximumSizeHint(): Size;
     }
     /**
     * A class which manipulates the geometry of a layout target.
     *
-    * The target's element will be forced to absolute positioning.
+    * The target element's style will be forced to absolute positioning.
     *
     * @class
     */
@@ -112,6 +129,9 @@
         public minimumSize(): Size;
         /**
         * Set the minimum allowed size of the item.
+        *
+        * This will override the target's minimumSizeHint. It can be
+        * set to an ivalid size to reset the value to minimum hint.
         */
         public setMinimumSize(size: ISize): void;
         /**

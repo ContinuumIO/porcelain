@@ -64,7 +64,7 @@ var porcelain;
     /**
     * A class which manipulates the geometry of a layout target.
     *
-    * The target's element will be forced to absolute positioning.
+    * The target element's style will be forced to absolute positioning.
     *
     * @class
     */
@@ -76,10 +76,11 @@ var porcelain;
         */
         function LayoutItem(target) {
             this._geometry = new porcelain.Rect();
-            this._minimumSize = new porcelain.Size(porcelain.MIN_ITEM_SIZE);
-            this._maximumSize = new porcelain.Size(porcelain.MAX_ITEM_SIZE);
+            this._minimumSize = new porcelain.Size();
+            this._maximumSize = new porcelain.Size();
             this._target = target;
             initStyleGeometry(target.element.style);
+            this.resize(this.sizeHint());
         }
         Object.defineProperty(LayoutItem.prototype, "target", {
             /**
@@ -138,7 +139,10 @@ var porcelain;
         */
         LayoutItem.prototype.setGeometry = function (rect) {
             var current = new porcelain.Rect(rect);
-            current.setSize(current.size().expandedTo(this._minimumSize).boundedTo(this._maximumSize));
+            var size = current.size();
+            size = size.boundedTo(this.maximumSize());
+            size = size.expandedTo(this.minimumSize());
+            current.setSize(size);
             var previous = this._geometry;
             this._geometry = current;
             var style = this._target.element.style;
@@ -149,14 +153,34 @@ var porcelain;
         * Returns the minimum allowed size of the item.
         */
         LayoutItem.prototype.minimumSize = function () {
-            return new porcelain.Size(this._minimumSize);
+            var size = this._minimumSize;
+            if (size.isValid()) {
+                return new porcelain.Size(size);
+            }
+            size = this._target.minimumSizeHint();
+            if (!size.isValid()) {
+                return new porcelain.Size(porcelain.MIN_ITEM_SIZE);
+            }
+            size = size.boundedTo(porcelain.MAX_ITEM_SIZE);
+            size = size.expandedTo(porcelain.MIN_ITEM_SIZE);
+            return size;
         };
 
         /**
         * Set the minimum allowed size of the item.
+        *
+        * This will override the target's minimumSizeHint. It can be
+        * set to an ivalid size to reset the value to minimum hint.
         */
         LayoutItem.prototype.setMinimumSize = function (size) {
-            this._minimumSize = new porcelain.Size(size).expandedTo(porcelain.MIN_ITEM_SIZE).boundedTo(this._maximumSize);
+            var minSize = new porcelain.Size(size);
+            if (minSize.isValid()) {
+                minSize = minSize.boundedTo(porcelain.MAX_ITEM_SIZE);
+                minSize = minSize.expandedTo(porcelain.MIN_ITEM_SIZE);
+                this._minimumSize = minSize;
+            } else {
+                this._minimumSize = new porcelain.Size();
+            }
             this.setGeometry(this._geometry);
         };
 
@@ -164,14 +188,31 @@ var porcelain;
         * Returns the maximum allowed size of the item.
         */
         LayoutItem.prototype.maximumSize = function () {
-            return new porcelain.Size(this._maximumSize);
+            var size = this._maximumSize;
+            if (size.isValid()) {
+                return new porcelain.Size(size);
+            }
+            size = this._target.maximumSizeHint();
+            if (!size.isValid()) {
+                return new porcelain.Size(porcelain.MAX_ITEM_SIZE);
+            }
+            size = size.boundedTo(porcelain.MAX_ITEM_SIZE);
+            size = size.expandedTo(porcelain.MIN_ITEM_SIZE);
+            return size;
         };
 
         /**
         * Set the maximum allowed size of the item.
         */
         LayoutItem.prototype.setMaximumSize = function (size) {
-            this._maximumSize = new porcelain.Size(size).expandedTo(this._minimumSize).boundedTo(porcelain.MAX_ITEM_SIZE);
+            var maxSize = new porcelain.Size(size);
+            if (maxSize.isValid()) {
+                maxSize = maxSize.boundedTo(porcelain.MAX_ITEM_SIZE);
+                maxSize = maxSize.expandedTo(porcelain.MIN_ITEM_SIZE);
+                this._maximumSize = maxSize;
+            } else {
+                this._maximumSize = new porcelain.Size();
+            }
             this.setGeometry(this._geometry);
         };
 
@@ -179,7 +220,10 @@ var porcelain;
         * Returns the preferred size of the item.
         */
         LayoutItem.prototype.sizeHint = function () {
-            return this._target.sizeHint();
+            var size = this._target.sizeHint();
+            size = size.boundedTo(this.maximumSize());
+            size = size.expandedTo(this.minimumSize());
+            return size;
         };
         return LayoutItem;
     })();
