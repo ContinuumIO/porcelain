@@ -28,11 +28,31 @@
     white-space: nowrap;
 }
 
+.p-TitleBar-closeButton,
+.p-TitleBar-restoreButton,
+.p-TitleBar-minimizeButton,
+.p-TitleBar-maximizeButton {
+    margin-left: 1px;
+    display: inline-block;
+    -webkit-transition: background-color 200ms;
+    -moz-transition: background-color 200ms;
+    -o-transition: background-color 200ms;
+    transition: background-color 200ms;
+}
+
+.p-TitleBar-closeButton:hover,
+.p-TitleBar-restoreButton:hover,
+.p-TitleBar-minimizeButton:hover,
+.p-TitleBar-maximizeButton:hover {
+    -webkit-transition: background-color 0ms;
+    -moz-transition: background-color 0ms;
+    -o-transition: background-color 0ms;
+    transition: background-color 0ms;
+}
+
 .p-TitleBar-closeButton {
     width: 45px;
     height: 20px;
-    display: inline-block;
-    margin-left: 1px;
     background-image: url("/media/close.png");
     background-color: #C75050;
 }
@@ -42,8 +62,6 @@
 .p-TitleBar-maximizeButton {
     width: 26px;
     height: 20px;
-    display: inline-block;
-    margin-left: 1px;
 }
 
 .p-TitleBar-restoreButton {
@@ -63,7 +81,7 @@
 }
 
 .p-TitleBar-closeButton.p-Button-pressed:hover {
-        background-color: #993D3D;
+    background-color: #993D3D;
 }
 
 .p-TitleBar-restoreButton:hover,
