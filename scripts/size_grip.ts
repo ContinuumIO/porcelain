@@ -34,7 +34,7 @@ module porcelain {
 
 
     /**
-     * A widget which enables mouse resizing of a layout actor.
+     * A widget which enables mouse resizing of an adjustable item.
      *
      * @class
      */
@@ -52,7 +52,7 @@ module porcelain {
             this._target = target;
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
-            this.bind("mousedown", this._onMouseDown);
+            this.bind("mousedown", this.onMouseDown);
         }
 
         /**
@@ -82,17 +82,17 @@ module porcelain {
         }
 
         /**
-         * The internal mousedown handler.
+         * The mousedown handler.
          *
-         * @private
+         * @protected
          */
-        private _onMouseDown(event: MouseEvent): void {
+        onMouseDown(event: MouseEvent): void {
             if (event.button !== 0) {
                 return;
             }
             event.preventDefault();
-            this.bind("mouseup", this._onMouseUp, document);
-            this.bind("mousemove", this._onMouseMove, document);
+            this.bind("mouseup", this.onMouseUp, document);
+            this.bind("mousemove", this.onMouseMove, document);
             var geo = this._target.layoutItem.geometry();
             switch (this._gripArea) {
                 case GripArea.Left:
@@ -123,27 +123,27 @@ module porcelain {
         }
 
         /**
-         * The internal mouseup handler.
+         * The mouseup handler.
          *
-         * @private
+         * @protected
          */
-        private _onMouseUp(event: MouseEvent): void {
+        onMouseUp(event: MouseEvent): void {
             if (event.button !== 0) {
                 return;
             }
             event.preventDefault();
-            this.unbind("mouseup", this._onMouseUp, document);
-            this.unbind("mousemove", this._onMouseMove, document);
+            this.unbind("mouseup", this.onMouseUp, document);
+            this.unbind("mousemove", this.onMouseMove, document);
             this._offsetX = 0;
             this._offsetY = 0;
         }
 
         /**
-         * The internal mousemove handler.
+         * The mousemove handler.
          *
-         * @private
+         * @protected
          */
-        private _onMouseMove(event: MouseEvent): void {
+        onMouseMove(event: MouseEvent): void {
             event.preventDefault();
             var vp = viewport;
             var item = this._target.layoutItem;

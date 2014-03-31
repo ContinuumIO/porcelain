@@ -13,7 +13,7 @@
         BottomRight = 7,
     }
     /**
-    * A widget which enables mouse resizing of a layout actor.
+    * A widget which enables mouse resizing of an adjustable item.
     *
     * @class
     */
@@ -42,23 +42,23 @@
         */
         public target : IAdjustable;
         /**
-        * The internal mousedown handler.
+        * The mousedown handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseDown(event);
+        public onMouseDown(event: MouseEvent): void;
         /**
-        * The internal mouseup handler.
+        * The mouseup handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseUp(event);
+        public onMouseUp(event: MouseEvent): void;
         /**
-        * The internal mousemove handler.
+        * The mousemove handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseMove(event);
+        public onMouseMove(event: MouseEvent): void;
         private _gripArea;
         private _target;
         private _offsetX;

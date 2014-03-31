@@ -39,7 +39,7 @@ var porcelain;
     var GripArea = porcelain.GripArea;
 
     /**
-    * A widget which enables mouse resizing of a layout actor.
+    * A widget which enables mouse resizing of an adjustable item.
     *
     * @class
     */
@@ -59,7 +59,7 @@ var porcelain;
             this._target = target;
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
-            this.bind("mousedown", this._onMouseDown);
+            this.bind("mousedown", this.onMouseDown);
         }
         /**
         * Destroy the edge grip.
@@ -96,17 +96,17 @@ var porcelain;
         });
 
         /**
-        * The internal mousedown handler.
+        * The mousedown handler.
         *
-        * @private
+        * @protected
         */
-        SizeGrip.prototype._onMouseDown = function (event) {
+        SizeGrip.prototype.onMouseDown = function (event) {
             if (event.button !== 0) {
                 return;
             }
             event.preventDefault();
-            this.bind("mouseup", this._onMouseUp, document);
-            this.bind("mousemove", this._onMouseMove, document);
+            this.bind("mouseup", this.onMouseUp, document);
+            this.bind("mousemove", this.onMouseMove, document);
             var geo = this._target.layoutItem.geometry();
             switch (this._gripArea) {
                 case 0 /* Left */:
@@ -137,27 +137,27 @@ var porcelain;
         };
 
         /**
-        * The internal mouseup handler.
+        * The mouseup handler.
         *
-        * @private
+        * @protected
         */
-        SizeGrip.prototype._onMouseUp = function (event) {
+        SizeGrip.prototype.onMouseUp = function (event) {
             if (event.button !== 0) {
                 return;
             }
             event.preventDefault();
-            this.unbind("mouseup", this._onMouseUp, document);
-            this.unbind("mousemove", this._onMouseMove, document);
+            this.unbind("mouseup", this.onMouseUp, document);
+            this.unbind("mousemove", this.onMouseMove, document);
             this._offsetX = 0;
             this._offsetY = 0;
         };
 
         /**
-        * The internal mousemove handler.
+        * The mousemove handler.
         *
-        * @private
+        * @protected
         */
-        SizeGrip.prototype._onMouseMove = function (event) {
+        SizeGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
             var vp = porcelain.viewport;
             var item = this._target.layoutItem;
