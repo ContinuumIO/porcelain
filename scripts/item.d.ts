@@ -20,7 +20,7 @@
         *
         * @readonly
         */
-        public element : HTMLDivElement;
+        public element : HTMLElement;
         /**
         * The id of the underlying div element.
         */
@@ -106,6 +106,14 @@
         * @param className - the class name(s) to remove from the element.
         */
         public removeClass(className: string): void;
+        /**
+        * Create the underlying element for the item.
+        *
+        * The default implementation of this method creates a div.
+        *
+        * @protected.
+        */
+        public createElement(): HTMLElement;
         /**
         * A helper method to detach the div element.
         *

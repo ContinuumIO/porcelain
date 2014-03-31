@@ -26,7 +26,7 @@ module porcelain {
          * Construct a new Item.
          */
         constructor() {
-            this._element = document.createElement("div");
+            this._element = this.createElement();
             this.addClass(ITEM_CLASS);
         }
 
@@ -45,7 +45,7 @@ module porcelain {
          *
          * @readonly
          */
-        get element(): HTMLDivElement {
+        get element(): HTMLElement {
             return this._element;
         }
 
@@ -218,6 +218,17 @@ module porcelain {
         }
 
         /**
+         * Create the underlying element for the item.
+         *
+         * The default implementation of this method creates a div.
+         *
+         * @protected.
+         */
+        createElement(): HTMLElement {
+            return document.createElement("div");
+        }
+
+        /**
          * A helper method to detach the div element.
          * 
          * @private
@@ -280,7 +291,7 @@ module porcelain {
             return fragment;
         }
 
-        private _element: HTMLDivElement;
+        private _element: HTMLElement;
         private _parent: Item = null;
         private _children: Item[] = null;
     }

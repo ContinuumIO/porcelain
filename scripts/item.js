@@ -26,7 +26,7 @@ var porcelain;
         function Item() {
             this._parent = null;
             this._children = null;
-            this._element = document.createElement("div");
+            this._element = this.createElement();
             this.addClass(ITEM_CLASS);
         }
         /**
@@ -242,6 +242,17 @@ var porcelain;
             if (newName !== currName) {
                 this._element.className = newName;
             }
+        };
+
+        /**
+        * Create the underlying element for the item.
+        *
+        * The default implementation of this method creates a div.
+        *
+        * @protected.
+        */
+        Item.prototype.createElement = function () {
+            return document.createElement("div");
         };
 
         /**
