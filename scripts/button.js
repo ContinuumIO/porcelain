@@ -56,31 +56,31 @@ var porcelain;
             */
             this.released = this.createSignal();
             this.addClass(BUTTON_CLASS);
-            this.bind("mousedown", this._onMouseDown);
+            this.bind("mousedown", this.onMouseDown);
         }
         /**
-        * The element mousedown event handler.
+        * The mousedown event handler.
         *
-        * @private
+        * @protected
         */
-        Button.prototype._onMouseDown = function (event) {
+        Button.prototype.onMouseDown = function (event) {
             if (event.button === 0) {
                 event.preventDefault();
                 this.addClass(PRESSED_CLASS);
-                this.bind("mouseup", this._onMouseUp, document);
+                this.bind("mouseup", this.onMouseUp, document);
                 this.pressed.emit();
             }
         };
 
         /**
-        * The document mouseup event handler.
+        * The mouseup event handler.
         *
-        * @private
+        * @protected
         */
-        Button.prototype._onMouseUp = function (event) {
+        Button.prototype.onMouseUp = function (event) {
             if (event.button === 0) {
                 this.removeClass(PRESSED_CLASS);
-                this.unbind("mouseup", this._onMouseUp, document);
+                this.unbind("mouseup", this.onMouseUp, document);
                 this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();

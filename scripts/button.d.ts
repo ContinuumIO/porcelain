@@ -27,16 +27,16 @@
         */
         constructor();
         /**
-        * The element mousedown event handler.
+        * The mousedown event handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseDown(event);
+        public onMouseDown(event: MouseEvent): void;
         /**
-        * The document mouseup event handler.
+        * The mouseup event handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseUp(event);
+        public onMouseUp(event: MouseEvent): void;
     }
 }
