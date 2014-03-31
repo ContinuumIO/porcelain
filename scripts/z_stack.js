@@ -9,16 +9,40 @@ var porcelain;
 (function (porcelain) {
     
 
-    
+    /**
+    * Get the z-index of an item.
+    */
+    function getZIndex(item) {
+        var style = item.element.style;
+        return parseInt(style.zIndex) || 0;
+    }
 
     /**
-    * A class for managing the z-order of a collection of items.
+    * Set the z-index of an item.
+    */
+    function setZIndex(item, index) {
+        var style = item.element.style;
+        style.zIndex = index.toString();
+    }
+
+    /**
+    * Clear the z-index on an item.
+    */
+    function clearZIndex(item) {
+        var style = item.element.style;
+        style.removeProperty("z-index");
+    }
+
+    /**
+    * A class for managing the Z-order of a collection of Items.
+    *
+    * @class
     */
     var ZStack = (function () {
         /**
         * Construct a new ZStack.
         *
-        * @param minZ The z-index to use for the bottom of the stack.
+        * @param minZ The Z-index to use for the bottom of the stack.
         */
         function ZStack(minZ) {
             this._stack = [];
@@ -26,7 +50,7 @@ var porcelain;
         }
         Object.defineProperty(ZStack.prototype, "top", {
             /**
-            * The item on the top of the z-stack.
+            * The item on the top of the stack.
             *
             * @readonly
             */
@@ -42,7 +66,7 @@ var porcelain;
 
         Object.defineProperty(ZStack.prototype, "bottom", {
             /**
-            * The item on the bottom of the z-stack.
+            * The item on the bottom of the stack.
             *
             * @readonly
             */
@@ -66,7 +90,7 @@ var porcelain;
         };
 
         /**
-        * Add an item to the top of the z-stack.
+        * Add an item to the top of the stack.
         *
         * If the stack already contains the item, this is a no-op.
         *
@@ -76,13 +100,13 @@ var porcelain;
             if (!item || this.contains(item)) {
                 return;
             }
-            var z = this._minZ + this._stack.length;
+            var index = this._minZ + this._stack.length;
             this._stack.push(item);
-            item.zIndex = z;
+            setZIndex(item, index);
         };
 
         /**
-        * Remove an item from the z-stack and reset its z-index.
+        * Remove an item from the stack and clear its Z-index.
         *
         * If the stack does not contain the item, this is a no-op.
         */
@@ -90,7 +114,7 @@ var porcelain;
             var index = this._stack.indexOf(item);
             if (index >= 0) {
                 this._stack.splice(index, 1);
-                item.zIndex = null;
+                clearZIndex(item);
                 this._updateIndices();
             }
         };
@@ -98,7 +122,7 @@ var porcelain;
         /**
         * Raise the specified items to the top of the stack.
         *
-        * The relative stack order of the items will be maintained.
+        * The relative stacking order of the items will be maintained.
         */
         ZStack.prototype.raise = function () {
             var items = [];
@@ -116,7 +140,7 @@ var porcelain;
         /**
         * Lower the specified items to the bottom of the stack.
         *
-        * The relative stack order of the items will be maintained.
+        * The relative stacking order of the items will be maintained.
         */
         ZStack.prototype.lower = function () {
             var items = [];
@@ -149,15 +173,13 @@ var porcelain;
                 }
             }
             newItems.sort(function (a, b) {
-                var z1 = a.zIndex || 0;
-                var z2 = b.zIndex || 0;
-                return z1 - z2;
+                return getZIndex(a) - getZIndex(b);
             });
             return { oldItems: oldItems, newItems: newItems };
         };
 
         /**
-        * Update the z indices for the current stack items.
+        * Update the Z-indices for the current stack items.
         *
         * @private
         */
@@ -165,11 +187,26 @@ var porcelain;
             var minZ = this._minZ;
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                stack[i].zIndex = i + minZ;
+                setZIndex(stack[i], i + minZ);
             }
         };
         return ZStack;
     })();
     porcelain.ZStack = ZStack;
+
+    /**
+    * A predefinined Z-stack for normal window items.
+    */
+    porcelain.globalNormalWindowStack = new ZStack(10000);
+
+    /**
+    * A predefined Z-stack for top-most Window items.
+    */
+    porcelain.globalTopMostWindowStack = new ZStack(20000);
+
+    /**
+    * A predefined Z-stack for popup window items.
+    */
+    porcelain.globalPopupWindowStack = new ZStack(30000);
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=z_stack.js.map

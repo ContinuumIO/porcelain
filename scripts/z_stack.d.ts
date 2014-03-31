@@ -1,64 +1,60 @@
 ﻿declare module porcelain {
     /**
-    * The interface for defining a ZStackItem.
-    */
-    interface IZStackItem {
-        zIndex: number;
-    }
-    /**
-    * A class for managing the z-order of a collection of items.
+    * A class for managing the Z-order of a collection of Items.
+    *
+    * @class
     */
     class ZStack {
         /**
         * Construct a new ZStack.
         *
-        * @param minZ The z-index to use for the bottom of the stack.
+        * @param minZ The Z-index to use for the bottom of the stack.
         */
         constructor(minZ: number);
         /**
-        * The item on the top of the z-stack.
+        * The item on the top of the stack.
         *
         * @readonly
         */
-        public top : IZStackItem;
+        public top : Item;
         /**
-        * The item on the bottom of the z-stack.
+        * The item on the bottom of the stack.
         *
         * @readonly
         */
-        public bottom : IZStackItem;
+        public bottom : Item;
         /**
         * Returns true if the stack contains the item.
         *
         * @param item The item of interest.
         */
-        public contains(item: IZStackItem): boolean;
+        public contains(item: Item): boolean;
         /**
-        * Add an item to the top of the z-stack.
+        * Add an item to the top of the stack.
         *
         * If the stack already contains the item, this is a no-op.
         *
         * @param item The item to add to the stack.
         */
-        public add(item: IZStackItem): void;
+        public add(item: Item): void;
         /**
-        * Remove an item from the z-stack and reset its z-index.
+        * Remove an item from the stack and clear its Z-index.
         *
         * If the stack does not contain the item, this is a no-op.
         */
-        public remove(item: IZStackItem): void;
+        public remove(item: Item): void;
         /**
         * Raise the specified items to the top of the stack.
         *
-        * The relative stack order of the items will be maintained.
+        * The relative stacking order of the items will be maintained.
         */
-        public raise(...items: IZStackItem[]): void;
+        public raise(...items: Item[]): void;
         /**
         * Lower the specified items to the bottom of the stack.
         *
-        * The relative stack order of the items will be maintained.
+        * The relative stacking order of the items will be maintained.
         */
-        public lower(...items: IZStackItem[]): void;
+        public lower(...items: Item[]): void;
         /**
         * Classify the given items and current items into old and new.
         *
@@ -66,7 +62,7 @@
         */
         private _classify(items);
         /**
-        * Update the z indices for the current stack items.
+        * Update the Z-indices for the current stack items.
         *
         * @private
         */
@@ -74,4 +70,16 @@
         private _stack;
         private _minZ;
     }
+    /**
+    * A predefinined Z-stack for normal window items.
+    */
+    var globalNormalWindowStack: ZStack;
+    /**
+    * A predefined Z-stack for top-most Window items.
+    */
+    var globalTopMostWindowStack: ZStack;
+    /**
+    * A predefined Z-stack for popup window items.
+    */
+    var globalPopupWindowStack: ZStack;
 }

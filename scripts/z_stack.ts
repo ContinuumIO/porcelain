@@ -7,43 +7,65 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /**
-     * The interface for defining a ZStackItem.
-     */
-    export interface IZStackItem {
-        zIndex: number;
-    }
-
 
     /**
      * The internal interface for a z-stack classification.
      */
     interface IClassifyResult {
-        oldItems: IZStackItem[];
-        newItems: IZStackItem[];
+        oldItems: Item[];
+        newItems: Item[];
     }
 
 
     /**
-     * A class for managing the z-order of a collection of items.
+     * Get the z-index of an item.
+     */
+    function getZIndex(item: Item): number {
+        var style = item.element.style;
+        return parseInt(style.zIndex) || 0;
+    }
+
+
+    /**
+     * Set the z-index of an item. 
+     */
+    function setZIndex(item: Item, index: number): void {
+        var style = item.element.style;
+        style.zIndex = index.toString();
+    }
+
+
+    /**
+     * Clear the z-index on an item.
+     */
+    function clearZIndex(item: Item): void {
+        var style = item.element.style;
+        style.removeProperty("z-index");
+    }
+
+
+    /**
+     * A class for managing the Z-order of a collection of Items.
+     *
+     * @class
      */
     export class ZStack {
 
         /**
          * Construct a new ZStack.
          *
-         * @param minZ The z-index to use for the bottom of the stack.
+         * @param minZ The Z-index to use for the bottom of the stack.
          */
         constructor(minZ: number) {
             this._minZ = minZ;
         }
 
         /**
-         * The item on the top of the z-stack.
+         * The item on the top of the stack.
          *
          * @readonly
          */
-        get top(): IZStackItem {
+        get top(): Item {
             if (this._stack.length) {
                 return this._stack[this._stack.length - 1];
             }
@@ -51,11 +73,11 @@ module porcelain {
         }
     
         /**
-         * The item on the bottom of the z-stack.
+         * The item on the bottom of the stack.
          *
          * @readonly
          */
-        get bottom(): IZStackItem {
+        get bottom(): Item {
             if (this._stack.length) {
                 return this._stack[0];
             }
@@ -67,36 +89,36 @@ module porcelain {
          *
          * @param item The item of interest.
          */
-        contains(item: IZStackItem): boolean {
+        contains(item: Item): boolean {
             return this._stack.indexOf(item) !== -1;
         }
 
         /**
-         * Add an item to the top of the z-stack.
+         * Add an item to the top of the stack.
          *
          * If the stack already contains the item, this is a no-op.
          *
          * @param item The item to add to the stack.
          */
-        add(item: IZStackItem): void {
+        add(item: Item): void {
             if (!item || this.contains(item)) {
                 return;
             }
-            var z = this._minZ + this._stack.length;
+            var index = this._minZ + this._stack.length;
             this._stack.push(item);
-            item.zIndex = z;
+            setZIndex(item, index);
         }
 
         /**
-         * Remove an item from the z-stack and reset its z-index.
+         * Remove an item from the stack and clear its Z-index.
          *
          * If the stack does not contain the item, this is a no-op.
          */
-        remove(item: IZStackItem): void {
+        remove(item: Item): void {
             var index = this._stack.indexOf(item);
             if (index >= 0) {
                 this._stack.splice(index, 1);
-                item.zIndex = null;
+                clearZIndex(item);
                 this._updateIndices();
             }
         }
@@ -104,9 +126,9 @@ module porcelain {
         /** 
          * Raise the specified items to the top of the stack.
          *
-         * The relative stack order of the items will be maintained.
+         * The relative stacking order of the items will be maintained.
          */
-        raise(...items: IZStackItem[]): void {
+        raise(...items: Item[]): void {
             if (items.length === 1 && items[0] === this.top) {
                 return;
             }
@@ -118,9 +140,9 @@ module porcelain {
         /**
          * Lower the specified items to the bottom of the stack.
          *
-         * The relative stack order of the items will be maintained.
+         * The relative stacking order of the items will be maintained.
          */
-        lower(...items: IZStackItem[]): void {
+        lower(...items: Item[]): void {
             if (items.length === 1 && items[0] === this.bottom) {
                 return;
             }
@@ -134,9 +156,9 @@ module porcelain {
          *
          * @private
          */
-        private _classify(items: IZStackItem[]): IClassifyResult {
-            var oldItems: IZStackItem[] = [];
-            var newItems: IZStackItem[] = [];
+        private _classify(items: Item[]): IClassifyResult {
+            var oldItems: Item[] = [];
+            var newItems: Item[] = [];
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
                 var item = stack[i];
@@ -147,15 +169,13 @@ module porcelain {
                 }
             }
             newItems.sort(function (a, b) {
-                var z1 = a.zIndex || 0;
-                var z2 = b.zIndex || 0;
-                return z1 - z2;
+                return getZIndex(a) - getZIndex(b); 
             });
             return { oldItems: oldItems, newItems: newItems };
         }
 
         /**
-         * Update the z indices for the current stack items.
+         * Update the Z-indices for the current stack items.
          *
          * @private
          */
@@ -163,12 +183,30 @@ module porcelain {
             var minZ = this._minZ;
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                stack[i].zIndex = i + minZ;
+                setZIndex(stack[i], i + minZ);
             }
         }
 
-        private _stack: IZStackItem[] = [];
+        private _stack: Item[] = [];
         private _minZ: number;
     }
+
+
+    /**
+     * A predefinined Z-stack for normal window items.
+     */
+    export var globalNormalWindowStack = new ZStack(10000);
+
+
+    /**
+     * A predefined Z-stack for top-most Window items.
+     */
+    export var globalTopMostWindowStack = new ZStack(20000);
+
+
+    /**
+     * A predefined Z-stack for popup window items.
+     */
+    export var globalPopupWindowStack = new ZStack(30000);
 
 }
