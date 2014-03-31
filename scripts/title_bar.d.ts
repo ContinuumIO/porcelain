@@ -1,20 +1,35 @@
 ﻿declare module porcelain {
     /**
-    * A title bar widget for use in a top level window.
+    * A simple title bar widget for use in a typical window.
+    *
+    * The title bar is a dumb container widget. The window is
+    * responsible for interacting directly with its sub items.
     *
     * @class
     */
-    class TitleBar extends Widget {
+    class TitleBar extends MoveGrip {
         /**
         * Construct a new TitleBar
         *
-        * @param target The layout item to move with the title bar.
+        * @param target The adjustable item moved by the title bar.
         */
-        constructor(target: ILayoutItem);
+        constructor(target: IAdjustable);
         /**
         * Destroy the title bar.
         */
         public destroy(): void;
+        /**
+        * The icon item attached to the title bar.
+        *
+        * @readonly
+        */
+        public icon : Item;
+        /**
+        * The label item attached to the title bar.
+        *
+        * @readonly
+        */
+        public label : Item;
         /**
         * The close button attached to the title bar.
         *
@@ -40,32 +55,14 @@
         */
         public maximizeButton : Button;
         /**
-        * The internal mousedown handler.
+        * The mousedown handler.
         *
-        * @private
-        */
-        private _onMouseDown(event);
-        /**
-        * The internal mouseup handler.
+        * This is a reimplemented parent class method. The mouse press
+        * is ignored when clicking within the bounds of the button box.
         *
-        * @private
+        * @protected
         */
-        private _onMouseUp(event);
-        /**
-        * The internal mousemove handler.
-        *
-        * @private
-        */
-        private _onMouseMove(event);
-        private _target;
-        private _iconItem;
-        private _textItem;
-        private _buttonBox;
-        private _closeButton;
-        private _restoreButton;
-        private _minimizeButton;
-        private _maximizeButton;
-        private _offsetX;
-        private _offsetY;
+        public onMouseDown(event: MouseEvent): void;
+        private _subItems;
     }
 }

@@ -13,14 +13,14 @@ module porcelain {
     var TITLE_BAR_CLASS = "p-TitleBar";
 
     /**
-     * The class added to a title bar icon area.
+     * The class added to a title bar icon item.
      */
     var ICON_CLASS = "p-TitleBar-icon";
 
     /**
-     * The class added to a title bar text area.
+     * The class added to a title bar label item.
      */
-    var TEXT_CLASS = "p-TitleBar-text";
+    var LABEL_CLASS = "p-TitleBar-label";
 
     /**
      * The class added to a title bar button box.
@@ -49,48 +49,72 @@ module porcelain {
 
 
     /**
-     * A title bar widget for use in a top level window.
+     * An interface for storing the sub items of a title bar.
+     */
+    interface ITitleBarSubItems {
+        icon: Item;
+        label: Item;
+        minimizeButton: Button;
+        maximizeButton: Button;
+        restoreButton: Button;
+        closeButton: Button;
+        buttonBox: Item;
+    }
+
+
+    /**
+     * A simple title bar widget for use in a typical window.
+     *
+     * The title bar is a dumb container widget. The window is 
+     * responsible for interacting directly with its sub items.
      *
      * @class
      */
-    export class TitleBar extends Widget {
+    export class TitleBar extends MoveGrip {
 
         /** 
          * Construct a new TitleBar
          *
-         * @param target The layout item to move with the title bar.
+         * @param target The adjustable item moved by the title bar.
          */
-        constructor(target: ILayoutItem) {
-            super();
-            this._target = target;
+        constructor(target: IAdjustable) {
+            super(target);
             this.addClass(TITLE_BAR_CLASS);
 
-            var minBtn = this._minimizeButton = new Button();
+            var icon = new Item();
+            icon.addClass(ICON_CLASS);
+
+            var label = new Item();
+            label.addClass(LABEL_CLASS);
+
+            var minBtn = new Button();
             minBtn.addClass(MINIMIZE_BUTTON_CLASS);
 
-            var maxBtn = this._maximizeButton = new Button();
-            maxBtn.addClass(MAXIMIZE_BUTTON_CLASS)
+            var maxBtn = new Button();
+            maxBtn.addClass(MAXIMIZE_BUTTON_CLASS);
 
-            var rstBtn = this._restoreButton = new Button();
+            var rstBtn = new Button();
             rstBtn.addClass(RESTORE_BUTTON_CLASS);
 
-            var clsBtn = this._closeButton = new Button();
+            var clsBtn = new Button();
             clsBtn.addClass(CLOSE_BUTTON_CLASS);
 
-            var btnBox = this._buttonBox = new Item();
+            var btnBox = new Item();
             btnBox.addClass(BUTTON_BOX_CLASS);
             btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 
-            var iconItem = this._iconItem = new Item();
-            iconItem.addClass(ICON_CLASS);
+            this._subItems = {
+                icon: icon,
+                label: label,
+                minimizeButton: minBtn,
+                maximizeButton: maxBtn,
+                restoreButton: rstBtn,
+                closeButton: clsBtn,
+                buttonBox: btnBox,
+            };
 
-            var textItem = this._textItem = new Item();
-            textItem.addClass(TEXT_CLASS);
-            textItem.element.innerHTML = "The Window Title";
-
-            this.append(iconItem, btnBox, textItem);
-
-            this.bind("mousedown", this._onMouseDown);
+            // the order is important for CSS float layout
+            this.append(icon, btnBox, label);
         }
 
         /**
@@ -98,14 +122,25 @@ module porcelain {
          */
         destroy(): void {
             super.destroy();
-            this._target = null;
-            this._iconItem = null;
-            this._textItem = null;
-            this._buttonBox = null;
-            this._closeButton = null;
-            this._restoreButton = null;
-            this._minimizeButton = null;
-            this._maximizeButton = null;
+            this._subItems = null;
+        }
+
+        /**
+         * The icon item attached to the title bar.
+         *
+         * @readonly
+         */
+        get icon(): Item {
+            return this._subItems.icon;
+        }
+
+        /**
+         * The label item attached to the title bar.
+         *
+         * @readonly
+         */
+        get label(): Item {
+            return this._subItems.label;
         }
 
         /**
@@ -114,7 +149,7 @@ module porcelain {
          * @readonly
          */
         get closeButton(): Button {
-            return this._closeButton;
+            return this._subItems.closeButton;
         }
 
         /**
@@ -123,7 +158,7 @@ module porcelain {
          * @readonly
          */
         get restoreButton(): Button {
-            return this._restoreButton;
+            return this._subItems.restoreButton;
         }
 
         /**
@@ -132,7 +167,7 @@ module porcelain {
          * @readonly
          */
         get minimizeButton(): Button {
-            return this._minimizeButton;
+            return this._subItems.minimizeButton;
         }
 
         /**
@@ -141,74 +176,31 @@ module porcelain {
          * @readonly
          */
         get maximizeButton(): Button {
-            return this._maximizeButton;
+            return this._subItems.maximizeButton;
         }
 
         /**
-         * The internal mousedown handler.
+         * The mousedown handler.
          *
-         * @private
+         * This is a reimplemented parent class method. The mouse press 
+         * is ignored when clicking within the bounds of the button box.
+         *
+         * @protected
          */
-        private _onMouseDown(event: MouseEvent): void {
+        onMouseDown(event: MouseEvent): void {
             if (event.button !== 0) {
                 return;
             }
-            var target = event.target;
-            if (target !== this._textItem.element &&
-                target !== this._iconItem.element &&
-                target !== this.element) {
+            var btnBox = this._subItems.buttonBox;
+            var rect = new Rect(btnBox.element.getBoundingClientRect());
+            var point = { x: event.clientX, y: event.clientY };
+            if (rect.contains(point)) {
                 return;
             }
-            event.preventDefault();
-            this.bind("mouseup", this._onMouseUp, document);
-            this.bind("mousemove", this._onMouseMove, document);
-            var geo = this._target.geometry();
-            this._offsetX = event.pageX - geo.left;
-            this._offsetY = event.pageY - geo.top;
+            super.onMouseDown(event);
         }
 
-        /**
-         * The internal mouseup handler.
-         *
-         * @private
-         */
-        private _onMouseUp(event: MouseEvent): void {
-            if (event.button !== 0) {
-                return;
-            }
-            event.preventDefault();
-            this.unbind("mouseup", this._onMouseUp, document);
-            this.unbind("mousemove", this._onMouseMove, document);
-            this._offsetX = 0;
-            this._offsetY = 0;
-        }
-
-        /**
-         * The internal mousemove handler.
-         *
-         * @private
-         */
-        private _onMouseMove(event: MouseEvent): void {
-            event.preventDefault();
-            var vp = viewport;
-            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
-            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
-            var origin = { x: x - this._offsetX, y: y - this._offsetY };
-            var rect = this._target.geometry();
-            rect.moveTopLeft(origin);
-            this._target.setGeometry(rect);
-        }
-
-        private _target: ILayoutItem;
-        private _iconItem: Item;
-        private _textItem: Item;
-        private _buttonBox: Item;
-        private _closeButton: Button;
-        private _restoreButton: Button;
-        private _minimizeButton: Button;
-        private _maximizeButton: Button;
-        private _offsetX: number = 0;
-        private _offsetY: number = 0;
+        private _subItems: ITitleBarSubItems;
     }
 
 }
