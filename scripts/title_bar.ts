@@ -58,11 +58,11 @@ module porcelain {
         /** 
          * Construct a new TitleBar
          *
-         * @param actor The layout actor to move with the title bar.
+         * @param target The layout item to move with the title bar.
          */
-        constructor(actor: ILayoutActor) {
+        constructor(target: ILayoutItem) {
             super();
-            this._actor = actor;
+            this._target = target;
             this.addClass(TITLE_BAR_CLASS);
 
             var minBtn = this._minimizeButton = new Button();
@@ -98,6 +98,7 @@ module porcelain {
          */
         destroy(): void {
             super.destroy();
+            this._target = null;
             this._iconItem = null;
             this._textItem = null;
             this._buttonBox = null;
@@ -161,7 +162,7 @@ module porcelain {
             event.preventDefault();
             this.bind("mouseup", this._onMouseUp, document);
             this.bind("mousemove", this._onMouseMove, document);
-            var geo = this._actor.geometry();
+            var geo = this._target.geometry();
             this._offsetX = event.pageX - geo.left;
             this._offsetY = event.pageY - geo.top;
         }
@@ -193,12 +194,12 @@ module porcelain {
             var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
             var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
             var origin = { x: x - this._offsetX, y: y - this._offsetY };
-            var rect = this._actor.geometry();
+            var rect = this._target.geometry();
             rect.moveTopLeft(origin);
-            this._actor.setGeometry(rect);
+            this._target.setGeometry(rect);
         }
 
-        private _actor: ILayoutActor;
+        private _target: ILayoutItem;
         private _iconItem: Item;
         private _textItem: Item;
         private _buttonBox: Item;

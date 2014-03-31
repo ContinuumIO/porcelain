@@ -63,13 +63,13 @@ var porcelain;
         /**
         * Construct a new TitleBar
         *
-        * @param actor The layout actor to move with the title bar.
+        * @param target The layout item to move with the title bar.
         */
-        function TitleBar(actor) {
+        function TitleBar(target) {
             _super.call(this);
             this._offsetX = 0;
             this._offsetY = 0;
-            this._actor = actor;
+            this._target = target;
             this.addClass(TITLE_BAR_CLASS);
 
             var minBtn = this._minimizeButton = new porcelain.Button();
@@ -104,6 +104,7 @@ var porcelain;
         */
         TitleBar.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
+            this._target = null;
             this._iconItem = null;
             this._textItem = null;
             this._buttonBox = null;
@@ -181,7 +182,7 @@ var porcelain;
             event.preventDefault();
             this.bind("mouseup", this._onMouseUp, document);
             this.bind("mousemove", this._onMouseMove, document);
-            var geo = this._actor.geometry();
+            var geo = this._target.geometry();
             this._offsetX = event.pageX - geo.left;
             this._offsetY = event.pageY - geo.top;
         };
@@ -213,9 +214,9 @@ var porcelain;
             var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
             var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
             var origin = { x: x - this._offsetX, y: y - this._offsetY };
-            var rect = this._actor.geometry();
+            var rect = this._target.geometry();
             rect.moveTopLeft(origin);
-            this._actor.setGeometry(rect);
+            this._target.setGeometry(rect);
         };
         return TitleBar;
     })(porcelain.Widget);

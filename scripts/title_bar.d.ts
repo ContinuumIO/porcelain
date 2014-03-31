@@ -8,9 +8,9 @@
         /**
         * Construct a new TitleBar
         *
-        * @param actor The layout actor to move with the title bar.
+        * @param target The layout item to move with the title bar.
         */
-        constructor(actor: ILayoutActor);
+        constructor(target: ILayoutItem);
         /**
         * Destroy the title bar.
         */
@@ -57,7 +57,7 @@
         * @private
         */
         private _onMouseMove(event);
-        private _actor;
+        private _target;
         private _iconItem;
         private _textItem;
         private _buttonBox;
