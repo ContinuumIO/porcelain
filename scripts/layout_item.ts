@@ -56,6 +56,20 @@ module porcelain {
 
 
     /**
+     * An interface describing a layout adjustable object.
+     */
+    export interface IAdjustable {
+
+        /**
+         * The layout item to use for adjusting the object.
+         *
+         * @readonly
+         */
+        layoutItem: ILayoutItem;
+    }
+
+
+    /**
      * An interface describing the target of a layout item.
      */
     export interface ILayoutTarget {

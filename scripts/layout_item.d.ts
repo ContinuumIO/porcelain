@@ -37,6 +37,17 @@
         sizeHint(): Size;
     }
     /**
+    * An interface describing a layout adjustable object.
+    */
+    interface IAdjustable {
+        /**
+        * The layout item to use for adjusting the object.
+        *
+        * @readonly
+        */
+        layoutItem: ILayoutItem;
+    }
+    /**
     * An interface describing the target of a layout item.
     */
     interface ILayoutTarget {
