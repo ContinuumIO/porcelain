@@ -56,7 +56,7 @@ module porcelain {
 
 
     /**
-     * An interface describing a layout adjustable object.
+     * An interface for objects adjusted by a layout item.
      */
     export interface IAdjustable {
 

@@ -37,7 +37,7 @@
         sizeHint(): Size;
     }
     /**
-    * An interface describing a layout adjustable object.
+    * An interface for objects adjusted by a layout item.
     */
     interface IAdjustable {
         /**
