@@ -7,6 +7,29 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    /**
+    * An internal class which implements an event listener proxy.
+    */
+    var ProxyListener = (function () {
+        /**
+        * Construct a new proxy listener.
+        *
+        * @param listener The listener function to invoke.
+        * @param context The 'this' context to pass to the listener.
+        */
+        function ProxyListener(listener, context) {
+            this.listener = listener;
+            this.context = context;
+        }
+        /**
+        * The event listener dispatch method.
+        */
+        ProxyListener.prototype.handleEvent = function (event) {
+            this.listener.call(this.context, event);
+        };
+        return ProxyListener;
+    })();
+
     /*
     * A class which manages an event listener binding.
     *
@@ -16,39 +39,22 @@ var porcelain;
         /**
         * Construct a new event binder.
         *
-        * @param target The target of the event.
         * @param type The event type to bind for the target.
-        * @param listener The event listener to bind to the target.
-        * @param context The context to bind to the listener.
+        * @param target The target of the event.
         */
-        function EventBinder(target, type, listener, context) {
-            this._target = target;
+        function EventBinder(type, target) {
+            this._proxies = null;
             this._type = type;
-            this._listener = listener;
-            this._context = context;
+            this._target = target;
         }
         /**
         * Destroy the event binder.
         */
         EventBinder.prototype.destroy = function () {
-            this.detach();
+            this.unbind();
             this._target = null;
-            this._listener = null;
-            this._context = null;
+            this._proxies = null;
         };
-
-        Object.defineProperty(EventBinder.prototype, "target", {
-            /**
-            * Get the target for the binder.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._target;
-            },
-            enumerable: true,
-            configurable: true
-        });
 
         Object.defineProperty(EventBinder.prototype, "type", {
             /**
@@ -63,67 +69,90 @@ var porcelain;
             configurable: true
         });
 
-        Object.defineProperty(EventBinder.prototype, "listener", {
+        Object.defineProperty(EventBinder.prototype, "target", {
             /**
-            * Get the listener for the binder.
+            * Get the event target for the binder.
             *
             * @readonly
             */
             get: function () {
-                return this._listener;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(EventBinder.prototype, "context", {
-            /**
-            * Get the context for the binder.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._context;
+                return this._target;
             },
             enumerable: true,
             configurable: true
         });
 
         /**
-        * Returns true if this binder is equivalent to another.
+        * Bind a listener to the event.
         *
-        * @param other The binder to test for equality.
-        */
-        EventBinder.prototype.equals = function (other) {
-            return this._target === other._target && this._type === other._type && this._listener === other._listener && this._context === other._context;
-        };
-
-        /**
-        * Attach the binder to the event target.
-        */
-        EventBinder.prototype.attach = function () {
-            var listener = this;
-            this._target.addEventListener(this._type, listener, false);
-        };
-
-        /**
-        * Detach the binder from the event target.
-        */
-        EventBinder.prototype.detach = function () {
-            var listener = this;
-            this._target.removeEventListener(this._type, listener, false);
-        };
-
-        /**
-        * The event listener dispatch method.
+        * If the listener is already attached, this is a no-op.
         *
-        * This should not be called directly by user code.
+        * @param listener The event listener to bind to the event.
+        * @param [context] The 'this' context to pass to the listener.
         */
-        EventBinder.prototype.handleEvent = function (event) {
-            this._listener.call(this._context, event);
+        EventBinder.prototype.bind = function (listener, context) {
+            if (typeof context === "undefined") { context = null; }
+            var proxies = this._proxies;
+            if (!proxies) {
+                proxies = this._proxies = [];
+            }
+            for (var i = 0, n = proxies.length; i < n; ++i) {
+                var p = proxies[i];
+                if (p.listener === listener && p.context === context) {
+                    return;
+                }
+            }
+            var proxy = new ProxyListener(listener, context);
+
+            // workaround http://typescript.codeplex.com/workitem/45
+            this._target.addEventListener(this._type, proxy, false);
+            proxies.push(proxy);
+        };
+
+        /**
+        * Unbind a listener from the event.
+        *
+        * If the listener is not attached, this is a no-op. If
+        * no listener is supplied, all listeners will be unbound.
+        *
+        * @param [listener] The event listener to bind to the event.
+        * @param [context] The 'this' context to pass to the listener.
+        */
+        EventBinder.prototype.unbind = function (listener, context) {
+            if (typeof listener === "undefined") { listener = null; }
+            if (typeof context === "undefined") { context = null; }
+            var proxies = this._proxies;
+            if (!proxies) {
+                return;
+            }
+            if (!listener) {
+                var type = this._type;
+                var target = this._target;
+                for (var i = 0, n = proxies.length; i < n; ++i) {
+                    target.removeEventListener(type, proxies[i]);
+                }
+                this._proxies = null;
+                return;
+            }
+            for (var i = 0, n = proxies.length; i < n; ++i) {
+                var p = proxies[i];
+                if (p.listener === listener && p.context === context) {
+                    // workaround http://typescript.codeplex.com/workitem/45
+                    this._target.removeEventListener(this._type, p);
+                    this._proxies.splice(i, 1);
+                    return;
+                }
+            }
         };
         return EventBinder;
     })();
     porcelain.EventBinder = EventBinder;
+
+    /**
+    * IComponentExtra interface.
+    *
+    * This should not be manipulated directly by user code.
+    */
+    EventBinder.prototype.porcelain_ComponentExtra = true;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=event_binder.js.map

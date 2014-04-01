@@ -1,24 +1,16 @@
 ﻿declare module porcelain {
-    class EventBinder {
+    class EventBinder implements IComponentExtra {
         /**
         * Construct a new event binder.
         *
-        * @param target The target of the event.
         * @param type The event type to bind for the target.
-        * @param listener The event listener to bind to the target.
-        * @param context The context to bind to the listener.
+        * @param target The target of the event.
         */
-        constructor(target: EventTarget, type: string, listener: EventListener, context: any);
+        constructor(type: string, target: EventTarget);
         /**
         * Destroy the event binder.
         */
         public destroy(): void;
-        /**
-        * Get the target for the binder.
-        *
-        * @readonly
-        */
-        public target : EventTarget;
         /**
         * Get the event type for the binder.
         *
@@ -26,40 +18,36 @@
         */
         public type : string;
         /**
-        * Get the listener for the binder.
+        * Get the event target for the binder.
         *
         * @readonly
         */
-        public listener : EventListener;
+        public target : EventTarget;
         /**
-        * Get the context for the binder.
+        * Bind a listener to the event.
         *
-        * @readonly
-        */
-        public context : any;
-        /**
-        * Returns true if this binder is equivalent to another.
+        * If the listener is already attached, this is a no-op.
         *
-        * @param other The binder to test for equality.
+        * @param listener The event listener to bind to the event.
+        * @param [context] The 'this' context to pass to the listener.
         */
-        public equals(other: EventBinder): boolean;
+        public bind(listener: EventListener, context?: any): void;
         /**
-        * Attach the binder to the event target.
-        */
-        public attach(): void;
-        /**
-        * Detach the binder from the event target.
-        */
-        public detach(): void;
-        /**
-        * The event listener dispatch method.
+        * Unbind a listener from the event.
         *
-        * This should not be called directly by user code.
+        * If the listener is not attached, this is a no-op. If
+        * no listener is supplied, all listeners will be unbound.
+        *
+        * @param [listener] The event listener to bind to the event.
+        * @param [context] The 'this' context to pass to the listener.
         */
-        public handleEvent(event: Event): void;
-        private _target;
+        public unbind(listener?: EventListener, context?: any): void;
+        /**
+        * IComponentExtra interface. Prototype property.
+        */
+        public porcelain_ComponentExtra: boolean;
         private _type;
-        private _listener;
-        private _context;
+        private _target;
+        private _proxies;
     }
 }
