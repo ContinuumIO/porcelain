@@ -235,14 +235,14 @@
         /**
         * Returns true if this rect intersects the given rect.
         */
-        public intersects(rect: Rect): boolean;
+        public intersects(rect: IRect): boolean;
         /**
         * Returns the bounding rect of this rect and the given rect.
         */
-        public intersection(rect: Rect): Rect;
+        public intersection(rect: IRect): Rect;
         /**
         * Returns the bounding rect of this rect and the given rect.
         */
-        public union(rect: Rect): Rect;
+        public union(rect: IRect): Rect;
     }
 }

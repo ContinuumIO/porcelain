@@ -401,8 +401,13 @@ var porcelain;
         * Returns true if this rect intersects the given rect.
         */
         Rect.prototype.intersects = function (rect) {
-            if (this.isNull() || rect.isNull()) {
+            if (this.isNull()) {
                 return false;
+            }
+
+            // inline isNull()
+            if (rect.left === rect.right && rect.top === rect.bottom) {
+                return;
             }
             var temp;
             var l1 = this.left;
@@ -446,8 +451,13 @@ var porcelain;
         * Returns the bounding rect of this rect and the given rect.
         */
         Rect.prototype.intersection = function (rect) {
-            if (this.isNull() || rect.isNull()) {
+            if (this.isNull()) {
                 return new Rect();
+            }
+
+            // inline isNull()
+            if (rect.left === rect.right && rect.top === rect.bottom) {
+                return;
             }
             var temp;
             var l1 = this.left;
@@ -497,8 +507,11 @@ var porcelain;
         Rect.prototype.union = function (rect) {
             if (this.isNull()) {
                 return new Rect(rect);
+                ;
             }
-            if (rect.isNull()) {
+
+            // inline isNull()
+            if (rect.left === rect.right && rect.top === rect.bottom) {
                 return new Rect(this);
             }
             var temp;

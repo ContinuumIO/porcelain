@@ -453,9 +453,13 @@ module porcelain {
         /**
          * Returns true if this rect intersects the given rect.
          */
-        intersects(rect: Rect): boolean {
-            if (this.isNull() || rect.isNull()) {
+        intersects(rect: IRect): boolean {
+            if (this.isNull()) {
                 return false;
+            }
+            // inline isNull()
+            if (rect.left === rect.right && rect.top === rect.bottom) {
+                return;
             }
             var temp: number;
             var l1 = this.left;
@@ -498,9 +502,13 @@ module porcelain {
         /**
          * Returns the bounding rect of this rect and the given rect.
          */
-        intersection(rect: Rect): Rect {
-            if (this.isNull() || rect.isNull()) {
+        intersection(rect: IRect): Rect {
+            if (this.isNull()) {
                 return new Rect();
+            }
+            // inline isNull()
+            if (rect.left === rect.right && rect.top === rect.bottom) {
+                return;
             }
             var temp: number;
             var l1 = this.left;
@@ -547,11 +555,12 @@ module porcelain {
         /**
          * Returns the bounding rect of this rect and the given rect.
          */
-        union(rect: Rect): Rect {
+        union(rect: IRect): Rect {
             if (this.isNull()) {
-                return new Rect(rect);
+                return new Rect(rect);;
             }
-            if (rect.isNull()) {
+            // inline isNull()
+            if (rect.left === rect.right && rect.top === rect.bottom) {
                 return new Rect(this);
             }
             var temp: number;
