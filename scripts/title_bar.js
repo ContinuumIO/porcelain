@@ -74,10 +74,10 @@ var porcelain;
             _super.call(this, target);
             this.addClass(TITLE_BAR_CLASS);
 
-            var icon = new porcelain.Item();
+            var icon = new porcelain.Component();
             icon.addClass(ICON_CLASS);
 
-            var label = new porcelain.Item();
+            var label = new porcelain.Component();
             label.addClass(LABEL_CLASS);
 
             var minBtn = new porcelain.Button();
@@ -92,7 +92,7 @@ var porcelain;
             var clsBtn = new porcelain.Button();
             clsBtn.addClass(CLOSE_BUTTON_CLASS);
 
-            var btnBox = new porcelain.Item();
+            var btnBox = new porcelain.Component();
             btnBox.addClass(BUTTON_BOX_CLASS);
             btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 

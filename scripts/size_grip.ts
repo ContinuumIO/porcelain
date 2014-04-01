@@ -38,7 +38,22 @@ module porcelain {
      *
      * @class
      */
-    export class SizeGrip extends Widget {
+    export class SizeGrip extends Component {
+
+        /**
+         * The mousedown event binder.
+         */
+        mousedown = new EventBinder("mousedown", this.element);
+
+        /**
+         * The mouseup event binder.
+         */
+        mouseup = new EventBinder("mouseup", document);
+
+        /**
+         * The mousemove event binder.
+         */
+        mousemove = new EventBinder("mousemove", document);
 
         /**
          * Construct a new SizeGrip.
@@ -46,13 +61,13 @@ module porcelain {
          * @param gripArea The grip area defining the size grip behavior.
          * @param target The adjustable object to be resized by the grip.
          */
-        constructor(gripArea: GripArea, target: IAdjustable) {
+        constructor(gripArea: GripArea, target: ILayoutItem) {
             super();
             this._gripArea = gripArea;
             this._target = target;
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
         }
 
         /**
@@ -77,7 +92,7 @@ module porcelain {
          *
          * @readonly
          */
-        get target(): IAdjustable {
+        get target(): ILayoutItem {
             return this._target;
         }
 
@@ -90,10 +105,11 @@ module porcelain {
             if (event.button !== 0) {
                 return;
             }
+            console.log(this);
             event.preventDefault();
-            this.bind("mouseup", this.onMouseUp, document);
-            this.bind("mousemove", this.onMouseMove, document);
-            var geo = this._target.layoutItem.geometry();
+            this.mouseup.bind(this.onMouseUp, this);
+            this.mousemove.bind(this.onMouseMove, this);
+            var geo = this._target.geometry();
             switch (this._gripArea) {
                 case GripArea.Left:
                 case GripArea.TopLeft:
@@ -132,8 +148,8 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.unbind("mouseup", this.onMouseUp, document);
-            this.unbind("mousemove", this.onMouseMove, document);
+            this.mouseup.unbind(this.onMouseUp, this);
+            this.mousemove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         }
@@ -146,7 +162,7 @@ module porcelain {
         onMouseMove(event: MouseEvent): void {
             event.preventDefault();
             var vp = viewport;
-            var item = this._target.layoutItem;
+            var item = this._target;
             var geo = item.geometry();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
@@ -196,7 +212,7 @@ module porcelain {
         }
 
         private _gripArea: GripArea;
-        private _target: IAdjustable;
+        private _target: ILayoutItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }

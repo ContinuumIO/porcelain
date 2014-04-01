@@ -7,13 +7,25 @@
     *
     * @class
     */
-    class MoveGrip extends Widget {
+    class MoveGrip extends Component {
+        /**
+        * The mousedown event binder.
+        */
+        public mousedown: EventBinder;
+        /**
+        * The mouseup event binder.
+        */
+        public mouseup: EventBinder;
+        /**
+        * The mousemove event binder.
+        */
+        public mousemove: EventBinder;
         /**
         * Construct a new MoveGrip.
         *
         * @param target The adjustable object moved by the grip.
         */
-        constructor(target: IAdjustable);
+        constructor(target: ILayoutItem);
         /**
         * Destroy the title bar.
         */

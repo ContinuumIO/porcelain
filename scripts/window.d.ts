@@ -1,8 +1,9 @@
 ﻿declare module porcelain {
-    class Window extends Widget {
+    class Window extends Component {
+        public mousedown: EventBinder;
         constructor();
         public destroy(): void;
-        public layoutItem : LayoutItem;
+        public layoutItem : ILayoutItem;
         public sizeHint(): Size;
         public minimumSizeHint(): Size;
         public maximumSizeHint(): Size;

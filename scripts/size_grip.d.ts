@@ -17,14 +17,26 @@
     *
     * @class
     */
-    class SizeGrip extends Widget {
+    class SizeGrip extends Component {
+        /**
+        * The mousedown event binder.
+        */
+        public mousedown: EventBinder;
+        /**
+        * The mouseup event binder.
+        */
+        public mouseup: EventBinder;
+        /**
+        * The mousemove event binder.
+        */
+        public mousemove: EventBinder;
         /**
         * Construct a new SizeGrip.
         *
         * @param gripArea The grip area defining the size grip behavior.
         * @param target The adjustable object to be resized by the grip.
         */
-        constructor(gripArea: GripArea, target: IAdjustable);
+        constructor(gripArea: GripArea, target: ILayoutItem);
         /**
         * Destroy the edge grip.
         */
@@ -40,7 +52,7 @@
         *
         * @readonly
         */
-        public target : IAdjustable;
+        public target : ILayoutItem;
         /**
         * The mousedown handler.
         *

@@ -12,15 +12,15 @@ module porcelain {
      * The internal interface for a z-stack classification.
      */
     interface IClassifyResult {
-        oldItems: Item[];
-        newItems: Item[];
+        oldItems: Component[];
+        newItems: Component[];
     }
 
 
     /**
      * Get the z-index of an item.
      */
-    function getZIndex(item: Item): number {
+    function getZIndex(item: Component): number {
         var style = item.element.style;
         return parseInt(style.zIndex) || 0;
     }
@@ -29,7 +29,7 @@ module porcelain {
     /**
      * Set the z-index of an item. 
      */
-    function setZIndex(item: Item, index: number): void {
+    function setZIndex(item: Component, index: number): void {
         var style = item.element.style;
         style.zIndex = index.toString();
     }
@@ -38,7 +38,7 @@ module porcelain {
     /**
      * Clear the z-index on an item.
      */
-    function clearZIndex(item: Item): void {
+    function clearZIndex(item: Component): void {
         var style = item.element.style;
         style.removeProperty("z-index");
     }
@@ -65,7 +65,7 @@ module porcelain {
          *
          * @readonly
          */
-        get top(): Item {
+        get top(): Component {
             if (this._stack.length) {
                 return this._stack[this._stack.length - 1];
             }
@@ -77,7 +77,7 @@ module porcelain {
          *
          * @readonly
          */
-        get bottom(): Item {
+        get bottom(): Component {
             if (this._stack.length) {
                 return this._stack[0];
             }
@@ -89,7 +89,7 @@ module porcelain {
          *
          * @param item The item of interest.
          */
-        contains(item: Item): boolean {
+        contains(item: Component): boolean {
             return this._stack.indexOf(item) !== -1;
         }
 
@@ -100,7 +100,7 @@ module porcelain {
          *
          * @param item The item to add to the stack.
          */
-        add(item: Item): void {
+        add(item: Component): void {
             if (!item || this.contains(item)) {
                 return;
             }
@@ -114,7 +114,7 @@ module porcelain {
          *
          * If the stack does not contain the item, this is a no-op.
          */
-        remove(item: Item): void {
+        remove(item: Component): void {
             var index = this._stack.indexOf(item);
             if (index >= 0) {
                 this._stack.splice(index, 1);
@@ -128,7 +128,7 @@ module porcelain {
          *
          * The relative stacking order of the items will be maintained.
          */
-        raise(...items: Item[]): void {
+        raise(...items: Component[]): void {
             if (items.length === 1 && items[0] === this.top) {
                 return;
             }
@@ -142,7 +142,7 @@ module porcelain {
          *
          * The relative stacking order of the items will be maintained.
          */
-        lower(...items: Item[]): void {
+        lower(...items: Component[]): void {
             if (items.length === 1 && items[0] === this.bottom) {
                 return;
             }
@@ -156,9 +156,9 @@ module porcelain {
          *
          * @private
          */
-        private _classify(items: Item[]): IClassifyResult {
-            var oldItems: Item[] = [];
-            var newItems: Item[] = [];
+        private _classify(items: Component[]): IClassifyResult {
+            var oldItems: Component[] = [];
+            var newItems: Component[] = [];
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
                 var item = stack[i];
@@ -187,7 +187,7 @@ module porcelain {
             }
         }
 
-        private _stack: Item[] = [];
+        private _stack: Component[] = [];
         private _minZ: number;
     }
 

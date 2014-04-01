@@ -13,7 +13,7 @@
         *
         * @param target The adjustable item moved by the title bar.
         */
-        constructor(target: IAdjustable);
+        constructor(target: ILayoutItem);
         /**
         * Destroy the title bar.
         */
@@ -23,13 +23,13 @@
         *
         * @readonly
         */
-        public icon : Item;
+        public icon : Component;
         /**
         * The label item attached to the title bar.
         *
         * @readonly
         */
-        public label : Item;
+        public label : Component;
         /**
         * The close button attached to the title bar.
         *

@@ -21,18 +21,33 @@ module porcelain {
      *
      * @class
      */
-    export class MoveGrip extends Widget {
+    export class MoveGrip extends Component {
+
+        /**
+         * The mousedown event binder.
+         */
+        mousedown = new EventBinder("mousedown", this.element);
+
+        /**
+         * The mouseup event binder.
+         */
+        mouseup = new EventBinder("mouseup", document);
+
+        /**
+         * The mousemove event binder.
+         */
+        mousemove = new EventBinder("mousemove", document);
 
         /** 
          * Construct a new MoveGrip.
          *
          * @param target The adjustable object moved by the grip.
          */
-        constructor(target: IAdjustable) {
+        constructor(target: ILayoutItem) {
             super();
             this._target = target;
             this.addClass(MOVE_GRIP_CLASS);
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
         }
 
         /**
@@ -53,9 +68,9 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.bind("mouseup", this.onMouseUp, document);
-            this.bind("mousemove", this.onMouseMove, document);
-            var geo = this._target.layoutItem.geometry();
+            this.mouseup.bind(this.onMouseUp, this);
+            this.mousemove.bind(this.onMouseMove, this);
+            var geo = this._target.geometry();
             this._offsetX = event.pageX - geo.left;
             this._offsetY = event.pageY - geo.top;
         }
@@ -70,8 +85,8 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.unbind("mouseup", this.onMouseUp, document);
-            this.unbind("mousemove", this.onMouseMove, document);
+            this.mouseup.unbind(this.onMouseUp, this);
+            this.mousemove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         }
@@ -87,13 +102,13 @@ module porcelain {
             var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
             var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
             var origin = { x: x - this._offsetX, y: y - this._offsetY };
-            var item = this._target.layoutItem;
+            var item = this._target;
             var rect = item.geometry();
             rect.moveTopLeft(origin);
             item.setGeometry(rect);
         }
 
-        private _target: IAdjustable;
+        private _target: ILayoutItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }

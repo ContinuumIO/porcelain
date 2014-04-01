@@ -52,13 +52,13 @@ module porcelain {
      * An interface for storing the sub items of a title bar.
      */
     interface ITitleBarSubItems {
-        icon: Item;
-        label: Item;
+        icon: Component;
+        label: Component;
         minimizeButton: Button;
         maximizeButton: Button;
         restoreButton: Button;
         closeButton: Button;
-        buttonBox: Item;
+        buttonBox: Component;
     }
 
 
@@ -77,14 +77,14 @@ module porcelain {
          *
          * @param target The adjustable item moved by the title bar.
          */
-        constructor(target: IAdjustable) {
+        constructor(target: ILayoutItem) {
             super(target);
             this.addClass(TITLE_BAR_CLASS);
 
-            var icon = new Item();
+            var icon = new Component();
             icon.addClass(ICON_CLASS);
 
-            var label = new Item();
+            var label = new Component();
             label.addClass(LABEL_CLASS);
 
             var minBtn = new Button();
@@ -99,7 +99,7 @@ module porcelain {
             var clsBtn = new Button();
             clsBtn.addClass(CLOSE_BUTTON_CLASS);
 
-            var btnBox = new Item();
+            var btnBox = new Component();
             btnBox.addClass(BUTTON_BOX_CLASS);
             btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
 
@@ -130,7 +130,7 @@ module porcelain {
          *
          * @readonly
          */
-        get icon(): Item {
+        get icon(): Component {
             return this._subItems.icon;
         }
 
@@ -139,7 +139,7 @@ module porcelain {
          *
          * @readonly
          */
-        get label(): Item {
+        get label(): Component {
             return this._subItems.label;
         }
 

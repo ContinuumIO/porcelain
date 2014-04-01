@@ -36,23 +36,24 @@ var porcelain;
         __extends(Window, _super);
         function Window() {
             _super.call(this);
-            this._layoutItem = new porcelain.LayoutItem(this);
+            this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            this._layoutItem = new porcelain.ComponentItem(this);
             this.addClass(WINDOW_CLASS);
 
             var children = [];
 
-            var body = this._body = new porcelain.Item();
+            var body = this._body = new porcelain.Component();
             body.addClass(BODY_CLASS);
             children.push(body);
 
             var self = this;
             GRIP_AREAS.forEach(function (area) {
-                var grip = new porcelain.SizeGrip(area, self);
+                var grip = new porcelain.SizeGrip(area, self._layoutItem);
                 grip.addClass(SIZE_GRIP_CLASS);
                 children.push(grip);
             });
 
-            var titleBar = this._titleBar = new porcelain.TitleBar(this);
+            var titleBar = this._titleBar = new porcelain.TitleBar(this._layoutItem);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.hide();
             titleBar.restoreButton.clicked.connect(this.restore, this);
@@ -65,7 +66,7 @@ var porcelain;
 
             this.append.apply(this, children);
 
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
 
             porcelain.globalNormalWindowStack.add(this);
         }
@@ -140,7 +141,7 @@ var porcelain;
             this.destroy();
         };
         return Window;
-    })(porcelain.Widget);
+    })(porcelain.Component);
     porcelain.Window = Window;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=window.js.map

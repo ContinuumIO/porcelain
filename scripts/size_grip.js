@@ -53,13 +53,25 @@ var porcelain;
         */
         function SizeGrip(gripArea, target) {
             _super.call(this);
+            /**
+            * The mousedown event binder.
+            */
+            this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            /**
+            * The mouseup event binder.
+            */
+            this.mouseup = new porcelain.EventBinder("mouseup", document);
+            /**
+            * The mousemove event binder.
+            */
+            this.mousemove = new porcelain.EventBinder("mousemove", document);
             this._offsetX = 0;
             this._offsetY = 0;
             this._gripArea = gripArea;
             this._target = target;
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
         }
         /**
         * Destroy the edge grip.
@@ -104,10 +116,11 @@ var porcelain;
             if (event.button !== 0) {
                 return;
             }
+            console.log(this);
             event.preventDefault();
-            this.bind("mouseup", this.onMouseUp, document);
-            this.bind("mousemove", this.onMouseMove, document);
-            var geo = this._target.layoutItem.geometry();
+            this.mouseup.bind(this.onMouseUp, this);
+            this.mousemove.bind(this.onMouseMove, this);
+            var geo = this._target.geometry();
             switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
@@ -146,8 +159,8 @@ var porcelain;
                 return;
             }
             event.preventDefault();
-            this.unbind("mouseup", this.onMouseUp, document);
-            this.unbind("mousemove", this.onMouseMove, document);
+            this.mouseup.unbind(this.onMouseUp, this);
+            this.mousemove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         };
@@ -160,7 +173,7 @@ var porcelain;
         SizeGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
             var vp = porcelain.viewport;
-            var item = this._target.layoutItem;
+            var item = this._target;
             var geo = item.geometry();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
@@ -209,7 +222,7 @@ var porcelain;
             item.setGeometry(geo);
         };
         return SizeGrip;
-    })(porcelain.Widget);
+    })(porcelain.Component);
     porcelain.SizeGrip = SizeGrip;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=size_grip.js.map

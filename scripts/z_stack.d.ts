@@ -16,19 +16,19 @@
         *
         * @readonly
         */
-        public top : Item;
+        public top : Component;
         /**
         * The item on the bottom of the stack.
         *
         * @readonly
         */
-        public bottom : Item;
+        public bottom : Component;
         /**
         * Returns true if the stack contains the item.
         *
         * @param item The item of interest.
         */
-        public contains(item: Item): boolean;
+        public contains(item: Component): boolean;
         /**
         * Add an item to the top of the stack.
         *
@@ -36,25 +36,25 @@
         *
         * @param item The item to add to the stack.
         */
-        public add(item: Item): void;
+        public add(item: Component): void;
         /**
         * Remove an item from the stack and clear its Z-index.
         *
         * If the stack does not contain the item, this is a no-op.
         */
-        public remove(item: Item): void;
+        public remove(item: Component): void;
         /**
         * Raise the specified items to the top of the stack.
         *
         * The relative stacking order of the items will be maintained.
         */
-        public raise(...items: Item[]): void;
+        public raise(...items: Component[]): void;
         /**
         * Lower the specified items to the bottom of the stack.
         *
         * The relative stacking order of the items will be maintained.
         */
-        public lower(...items: Item[]): void;
+        public lower(...items: Component[]): void;
         /**
         * Classify the given items and current items into old and new.
         *

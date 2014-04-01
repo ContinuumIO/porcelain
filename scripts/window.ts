@@ -27,27 +27,29 @@ module porcelain {
     ];
 
 
-    export class Window extends Widget {
+    export class Window extends Component {
+
+        mousedown = new EventBinder("mousedown", this.element);
 
         constructor() {
             super();
-            this._layoutItem = new LayoutItem(this);
+            this._layoutItem = new ComponentItem(this);
             this.addClass(WINDOW_CLASS);
 
-            var children: Item[] = [];
+            var children: Component[] = [];
 
-            var body = this._body = new Item();
+            var body = this._body = new Component();
             body.addClass(BODY_CLASS);
             children.push(body);
 
             var self = this;
             GRIP_AREAS.forEach(function (area) {
-                var grip = new SizeGrip(area, self);
+                var grip = new SizeGrip(area, self._layoutItem);
                 grip.addClass(SIZE_GRIP_CLASS);
                 children.push(grip);
             });
 
-            var titleBar = this._titleBar = new TitleBar(this);
+            var titleBar = this._titleBar = new TitleBar(this._layoutItem);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.hide();
             titleBar.restoreButton.clicked.connect(this.restore, this);
@@ -60,7 +62,7 @@ module porcelain {
 
             this.append.apply(this, children);
 
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
 
             globalNormalWindowStack.add(this);
         }
@@ -72,7 +74,7 @@ module porcelain {
             this._body = null;
         }
 
-        get layoutItem(): LayoutItem {
+        get layoutItem(): ILayoutItem {
             return this._layoutItem;
         }
 
@@ -132,9 +134,9 @@ module porcelain {
             this.destroy();
         }
 
-        private _body: Item;
+        private _body: Component;
         private _titleBar: TitleBar;
-        private _layoutItem: LayoutItem;
+        private _layoutItem: ILayoutItem;
     }
 
 }
