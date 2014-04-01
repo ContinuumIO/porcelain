@@ -27,9 +27,6 @@ module porcelain {
     ];
 
 
-    var windowStack = new ZStack(1000);
-
-
     export class Window extends Widget {
 
         constructor() {
@@ -50,20 +47,26 @@ module porcelain {
                 children.push(grip);
             });
 
-            var titleBar = this._titleBar = new TitleBar(this._layoutItem);
+            var titleBar = this._titleBar = new TitleBar(this);
             titleBar.addClass(TITLE_BAR_CLASS);
-            titleBar.restoreButton.element.style.display = "none";
+            titleBar.restoreButton.hide();
+            titleBar.restoreButton.clicked.connect(this.restore, this);
+            titleBar.maximizeButton.clicked.connect(this.maximize, this);
+            titleBar.minimizeButton.clicked.connect(this.minimize, this);
+            titleBar.closeButton.clicked.connect(this.close, this);
+            titleBar.label.element.innerHTML = "The Window Title";
+
             children.push(titleBar);
 
             this.append.apply(this, children);
 
-            this._layoutItem.setMinimumSize({ width: 192, height: 192 });
-            this._layoutItem.setGeometry(new Rect(50, 50, 200, 200));
+            this.bind("mousedown", this.onMouseDown);
 
-            this.bind("mousedown", this._onMouseDown);
+            globalNormalWindowStack.add(this);
         }
 
         destroy(): void {
+            globalNormalWindowStack.remove(this);
             super.destroy()
             this._titleBar = null;
             this._body = null;
@@ -73,41 +76,64 @@ module porcelain {
             return this._layoutItem;
         }
 
-        get zIndex(): number {
-            return parseInt(this.element.style.zIndex) || 0;
-        }
-
-        set zIndex(z: number) {
-            this.element.style.zIndex = z ? z.toString() : "";
-        }
-
         sizeHint(): Size {
+            return new Size(192, 192);
+        }
+
+        minimumSizeHint(): Size {
+            return this.sizeHint();
+        }
+
+        maximumSizeHint(): Size {
             return new Size();
         }
 
         setVisible(visible: boolean): void {
             super.setVisible(visible);
             if (visible && !this.element.parentNode) {
-                windowStack.add(this);
                 var body = document.getElementsByTagName("body")[0];
                 body.appendChild(this.element);
             }
         }
 
         raise(): void {
-            windowStack.raise(this);
+            globalNormalWindowStack.raise(this);
         }
 
         lower(): void {
-            windowStack.lower(this);
+            globalNormalWindowStack.lower(this);
         }
 
-        private _onMouseDown(event: MouseEvent): void {
+        onMouseDown(event: MouseEvent): void {
             this.raise();
         }
 
+        maximize(): void {
+            var titleBar = this._titleBar;
+            titleBar.maximizeButton.hide();
+            titleBar.restoreButton.show();
+            console.log("maximize me");
+        }
+
+        restore(): void {
+            var titleBar = this._titleBar;
+            titleBar.restoreButton.hide();
+            titleBar.maximizeButton.show();
+            console.log("restore me");
+        }
+
+        minimize(): void {
+            console.log("minimize me");
+        }
+
+        close(): void {
+            console.log("close me");
+            this.hide();
+            this.destroy();
+        }
+
         private _body: Item;
-        private _titleBar: Item;
+        private _titleBar: TitleBar;
         private _layoutItem: LayoutItem;
     }
 

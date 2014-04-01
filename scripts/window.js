@@ -32,8 +32,6 @@ var porcelain;
         7 /* BottomRight */
     ];
 
-    var windowStack = new porcelain.ZStack(1000);
-
     var Window = (function (_super) {
         __extends(Window, _super);
         function Window() {
@@ -54,19 +52,25 @@ var porcelain;
                 children.push(grip);
             });
 
-            var titleBar = this._titleBar = new porcelain.TitleBar(this._layoutItem);
+            var titleBar = this._titleBar = new porcelain.TitleBar(this);
             titleBar.addClass(TITLE_BAR_CLASS);
-            titleBar.restoreButton.element.style.display = "none";
+            titleBar.restoreButton.hide();
+            titleBar.restoreButton.clicked.connect(this.restore, this);
+            titleBar.maximizeButton.clicked.connect(this.maximize, this);
+            titleBar.minimizeButton.clicked.connect(this.minimize, this);
+            titleBar.closeButton.clicked.connect(this.close, this);
+            titleBar.label.element.innerHTML = "The Window Title";
+
             children.push(titleBar);
 
             this.append.apply(this, children);
 
-            this._layoutItem.setMinimumSize({ width: 192, height: 192 });
-            this._layoutItem.setGeometry(new porcelain.Rect(50, 50, 200, 200));
+            this.bind("mousedown", this.onMouseDown);
 
-            this.bind("mousedown", this._onMouseDown);
+            porcelain.globalNormalWindowStack.add(this);
         }
         Window.prototype.destroy = function () {
+            porcelain.globalNormalWindowStack.remove(this);
             _super.prototype.destroy.call(this);
             this._titleBar = null;
             this._body = null;
@@ -80,41 +84,60 @@ var porcelain;
             configurable: true
         });
 
-        Object.defineProperty(Window.prototype, "zIndex", {
-            get: function () {
-                return parseInt(this.element.style.zIndex) || 0;
-            },
-            set: function (z) {
-                this.element.style.zIndex = z ? z.toString() : "";
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         Window.prototype.sizeHint = function () {
+            return new porcelain.Size(192, 192);
+        };
+
+        Window.prototype.minimumSizeHint = function () {
+            return this.sizeHint();
+        };
+
+        Window.prototype.maximumSizeHint = function () {
             return new porcelain.Size();
         };
 
         Window.prototype.setVisible = function (visible) {
             _super.prototype.setVisible.call(this, visible);
             if (visible && !this.element.parentNode) {
-                windowStack.add(this);
                 var body = document.getElementsByTagName("body")[0];
                 body.appendChild(this.element);
             }
         };
 
         Window.prototype.raise = function () {
-            windowStack.raise(this);
+            porcelain.globalNormalWindowStack.raise(this);
         };
 
         Window.prototype.lower = function () {
-            windowStack.lower(this);
+            porcelain.globalNormalWindowStack.lower(this);
         };
 
-        Window.prototype._onMouseDown = function (event) {
+        Window.prototype.onMouseDown = function (event) {
             this.raise();
+        };
+
+        Window.prototype.maximize = function () {
+            var titleBar = this._titleBar;
+            titleBar.maximizeButton.hide();
+            titleBar.restoreButton.show();
+            console.log("maximize me");
+        };
+
+        Window.prototype.restore = function () {
+            var titleBar = this._titleBar;
+            titleBar.restoreButton.hide();
+            titleBar.maximizeButton.show();
+            console.log("restore me");
+        };
+
+        Window.prototype.minimize = function () {
+            console.log("minimize me");
+        };
+
+        Window.prototype.close = function () {
+            console.log("close me");
+            this.hide();
+            this.destroy();
         };
         return Window;
     })(porcelain.Widget);
