@@ -47,7 +47,7 @@ module porcelain {
      *
      * @class
      */
-    export class Signal implements ISignal {
+    export class Signal implements ISignal, IComponentExtra {
 
         /**
          * Connect a slot to the signal.
@@ -120,7 +120,25 @@ module porcelain {
             }
         }
 
+        /**
+         * IComponentExtra interface.
+         *
+         * This should not be called directly by user code.
+         */
+        destroy(): void {
+            this._connections = null;
+        }
+
+        /**
+         * IComponentExtra interface. Prototype property.
+         *
+         * This should not be manipulated directly by user code.
+         */
+        porcelain_ComponentExtra: boolean;
+
         private _connections: IConnection[] = null;
     }
+
+    Signal.prototype.porcelain_ComponentExtra = true;
 
 }

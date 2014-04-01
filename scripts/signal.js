@@ -91,8 +91,19 @@ var porcelain;
                 conn.slot.apply(conn.context, arguments);
             }
         };
+
+        /**
+        * IComponentExtra interface.
+        *
+        * This should not be called directly by user code.
+        */
+        Signal.prototype.destroy = function () {
+            this._connections = null;
+        };
         return Signal;
     })();
     porcelain.Signal = Signal;
+
+    Signal.prototype.porcelain_ComponentExtra = true;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=signal.js.map
