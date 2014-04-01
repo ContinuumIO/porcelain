@@ -47,14 +47,13 @@ module porcelain {
          *
          * @readonly
          */
-        destroyed: Signal;
+        destroyed = new Signal();
 
         /**
          * Construct a new Component.
          */
         constructor() {
             this._element = this.createElement();
-            this.destroyed = new Signal();
             this.addClass(COMPONENT_CLASS);
         }
 
@@ -179,6 +178,7 @@ module porcelain {
         set id(id: string) {
             this._element.id = id;
         }
+
         /**
          * Add a name or names to the element's CSS class name.
          *

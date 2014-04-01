@@ -24,10 +24,15 @@ var porcelain;
         * Construct a new Component.
         */
         function Component() {
+            /**
+            * A signal emitted when the component is destroyed.
+            *
+            * @readonly
+            */
+            this.destroyed = new porcelain.Signal();
             this._parent = null;
             this._children = null;
             this._element = this.createElement();
-            this.destroyed = new porcelain.Signal();
             this.addClass(COMPONENT_CLASS);
         }
         /**
