@@ -18,19 +18,20 @@
     <script src="scripts/widget.js"></script>
     <script src="scripts/button.js"></script>
     <script src="scripts/viewport.js"></script>
+    <script src="scripts/move_grip.js"></script>
     <script src="scripts/title_bar.js"></script>
     <script src="scripts/size_grip.js"></script>
     <script src="scripts/window.js"></script>
     <script type="text/javascript">
         window.onload = function () {
-            var w1 = new porcelain.Window();
-            w1.show();
-            var w2 = new porcelain.Window();
-            w2.show();
-            var w3 = new porcelain.Window();
-            w3.show();
-            var w4 = new porcelain.Window();
-            w4.show();
+            for (var i = 0; i < 30; ++i) {
+                var col = i % 5;
+                var row = Math.floor(i / 5);
+                var w = new porcelain.Window();
+                var p = { x: 50 + 200 * col, y: 50 + row * 200 };
+                w.layoutItem.move(p);
+                w.show();
+            }
         };
     </script>
 </head>
