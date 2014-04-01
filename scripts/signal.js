@@ -23,9 +23,19 @@ var porcelain;
     * @class
     */
     var Signal = (function () {
+        /**
+        * Construct a new Signal.
+        */
         function Signal() {
             this._connections = null;
         }
+        /**
+        * Destroy the Signal.
+        */
+        Signal.prototype.destroy = function () {
+            this._connections = null;
+        };
+
         /**
         * Connect a slot to the signal.
         *
@@ -91,19 +101,15 @@ var porcelain;
                 conn.slot.apply(conn.context, arguments);
             }
         };
-
-        /**
-        * IComponentExtra interface.
-        *
-        * This should not be called directly by user code.
-        */
-        Signal.prototype.destroy = function () {
-            this._connections = null;
-        };
         return Signal;
     })();
     porcelain.Signal = Signal;
 
+    /**
+    * IComponentExtra interface.
+    *
+    * This should not be manipulated directly by user code.
+    */
     Signal.prototype.porcelain_ComponentExtra = true;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=signal.js.map

@@ -28,6 +28,14 @@
     */
     class Signal implements ISignal, IComponentExtra {
         /**
+        * Construct a new Signal.
+        */
+        constructor();
+        /**
+        * Destroy the Signal.
+        */
+        public destroy(): void;
+        /**
         * Connect a slot to the signal.
         *
         * The slot will be invoked when the signal is emitted. The
@@ -57,15 +65,7 @@
         */
         public emit(...args: any[]): void;
         /**
-        * IComponentExtra interface.
-        *
-        * This should not be called directly by user code.
-        */
-        public destroy(): void;
-        /**
         * IComponentExtra interface. Prototype property.
-        *
-        * This should not be manipulated directly by user code.
         */
         public porcelain_ComponentExtra: boolean;
         private _connections;

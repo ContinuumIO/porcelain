@@ -50,6 +50,18 @@ module porcelain {
     export class Signal implements ISignal, IComponentExtra {
 
         /**
+         * Construct a new Signal.
+         */
+        constructor() { }
+
+        /**
+         * Destroy the Signal.
+         */
+        destroy(): void {
+            this._connections = null;
+        }
+
+        /**
          * Connect a slot to the signal.
          *
          * The slot will be invoked when the signal is emitted. The 
@@ -121,24 +133,18 @@ module porcelain {
         }
 
         /**
-         * IComponentExtra interface.
-         *
-         * This should not be called directly by user code.
-         */
-        destroy(): void {
-            this._connections = null;
-        }
-
-        /**
          * IComponentExtra interface. Prototype property.
-         *
-         * This should not be manipulated directly by user code.
          */
         porcelain_ComponentExtra: boolean;
 
         private _connections: IConnection[] = null;
     }
 
+    /**
+     * IComponentExtra interface.
+     *
+     * This should not be manipulated directly by user code.
+     */
     Signal.prototype.porcelain_ComponentExtra = true;
 
 }
