@@ -16,7 +16,7 @@ module porcelain {
     /**
      * A base class for creating interactive porcelain widgets.
      *
-     * The Widget class adds support for events and signals.
+     * The Widget class adds the methods required for procedural layout.
      *
      * @class
      */
@@ -31,118 +31,88 @@ module porcelain {
         }
 
         /**
-         * Destroy the widget and disconnect all listeners.
+         * Show the underlying DOM element.
+         *
+         * This is a convenience for setVisible(true);
          */
-        destroy(): void {
-            super.destroy();
-            this._destroyBinders();
-            this._destroySignals();
+        show(): void {
+            this.setVisible(true);
         }
 
         /**
-         * Bind a listener to the specified event.
+         * Hide the underlying div element.
          *
-         * The listener will be removed when the widget is destroyed.
-         *
-         * @param type The string type of the event to bind.
-         * @param listener The event listener to bind to the target.
-         * @param [target] The event target. The default is the widget div.
-         * @param [context] The listener context. The default is the widget.
+         * This is a convenience for setVisible(false);
          */
-        bind(
-            type: string,
-            listener: EventListener,
-            target: EventTarget = this.element,
-            context: any = this): void
-        {
-            var binders = this._binders
-            if (!binders) {
-                binders = this._binders = [];
-            }
-            var binder = new EventBinder(target, type, listener, context);
-            for (var i = 0, n = binders.length; i < n; ++i) {
-                if (binder.equals(binders[i])) {
-                    return;
-                }
-            }
-            binder.attach();
-            binders.push(binder);
+        hide(): void {
+            this.setVisible(false);
         }
 
         /**
-         * Unbind a listener from the specified event.
+         * Set the visibility of the underlying div element.
          *
-         * @param type The string type of the event.
-         * @param listener The event listener which was bound.
-         * @param [target] The event target. The default is the widget div.
-         * @param [context] The listener context. The default is the widget.
+         * The default implementation of this method sets and clears
+         * the display property of the element style. This may be
+         * reimplemented by subclasses which require more control.
          */
-        unbind(
-            type: string,
-            listener: EventListener,
-            target: EventTarget = this.element,
-            context: any = this): void
-        {
-            var binders = this._binders;
-            if (!binders) {
-                return;
-            }
-            var binder = new EventBinder(target, type, listener, context);
-            for (var i = 0, n = binders.length; i < n; ++i) {
-                if (binder.equals(binders[i])) {
-                    binders[i].destroy();
-                    binders.splice(i, 1);
-                    return;
-                }
+        setVisible(visible: boolean): void {
+            var style = this.element.style;
+            if (visible) {
+                style.removeProperty("display");
+            } else {
+                style.display = "none";
             }
         }
 
         /**
-         * Create a new Signal with a lifetime bound to the widget.
+         * The preferred size of the widget.
+         *
+         * When using the procedural layout system, this value is used
+         * to take into account the preferred size of the widget. It
+         * is ignored when using CSS layout. 
+         * 
+         * An invalid size will be ignored by the layout system.
+         *
+         * @protected
          */
-        createSignal(): Signal {
-            if (!this._signals) {
-                this._signals = [];
-            }
-            var signal = new Signal();
-            this._signals.push(signal);
-            return signal;
+        sizeHint(): Size {
+            return new Size();
         }
 
         /**
-         * A helper method for destroying the event binders.
+         * The suggested minimum size of the widget.
          *
-         * @private
-         */
-        private _destroyBinders(): void {
-            var binders = this._binders;
-            if (!binders) {
-                return;
-            }
-            this._binders = null;
-            for (var i = 0, n = binders.length; i < n; ++i) {
-                binders[i].destroy();
-            }
-        }
-     
-        /**
-         * A helper method for destroying the widget signals.
+         * When using the procedural layout system, this value is used
+         * to take into account the preferred minimum size of the widget.
+         * It is ignored when using CSS layout. 
+         * 
+         * An invalid size will be ignored by the layout system. If the
+         * user has specified a concrete minimum size, this hint will
+         * have no effect.
          *
-         * @private
+         * @protected
          */
-        private _destroySignals(): void {
-            var signals = this._signals;
-            if (!signals) {
-                return;
-            }
-            this._signals = null;
-            for (var i = 0, n = signals.length; i < n; ++i) {
-                signals[i].disconnect();
-            }
+        minimumSizeHint(): Size {
+            return new Size();
         }
 
-        private _binders: EventBinder[] = null;
-        private _signals: Signal[] = null;
+        /**
+         * The suggested maximum size of the element.
+         *
+         * When using the procedural layout system, this value is used
+         * to take into account the preferred minimum size of the widget.
+         * It is ignored when using CSS layout. 
+         * 
+         * An invalid size will be ignored by the layout system. If the
+         * user has specified a concrete maximum size, this hint will
+         * have no effect.
+         *
+         * @protected
+         */
+        maximumSizeHint(): Size {
+            return new Size();
+        }
+
     }
 
 }

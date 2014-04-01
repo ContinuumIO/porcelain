@@ -2,7 +2,7 @@
     /**
     * A base class for creating interactive porcelain widgets.
     *
-    * The Widget class adds support for events and signals.
+    * The Widget class adds the methods required for procedural layout.
     *
     * @class
     */
@@ -12,46 +12,64 @@
         */
         constructor();
         /**
-        * Destroy the widget and disconnect all listeners.
-        */
-        public destroy(): void;
-        /**
-        * Bind a listener to the specified event.
+        * Show the underlying DOM element.
         *
-        * The listener will be removed when the widget is destroyed.
-        *
-        * @param type The string type of the event to bind.
-        * @param listener The event listener to bind to the target.
-        * @param [target] The event target. The default is the widget div.
-        * @param [context] The listener context. The default is the widget.
+        * This is a convenience for setVisible(true);
         */
-        public bind(type: string, listener: EventListener, target?: EventTarget, context?: any): void;
+        public show(): void;
         /**
-        * Unbind a listener from the specified event.
+        * Hide the underlying div element.
         *
-        * @param type The string type of the event.
-        * @param listener The event listener which was bound.
-        * @param [target] The event target. The default is the widget div.
-        * @param [context] The listener context. The default is the widget.
+        * This is a convenience for setVisible(false);
         */
-        public unbind(type: string, listener: EventListener, target?: EventTarget, context?: any): void;
+        public hide(): void;
         /**
-        * Create a new Signal with a lifetime bound to the widget.
-        */
-        public createSignal(): Signal;
-        /**
-        * A helper method for destroying the event binders.
+        * Set the visibility of the underlying div element.
         *
-        * @private
+        * The default implementation of this method sets and clears
+        * the display property of the element style. This may be
+        * reimplemented by subclasses which require more control.
         */
-        private _destroyBinders();
+        public setVisible(visible: boolean): void;
         /**
-        * A helper method for destroying the widget signals.
+        * The preferred size of the widget.
         *
-        * @private
+        * When using the procedural layout system, this value is used
+        * to take into account the preferred size of the widget. It
+        * is ignored when using CSS layout.
+        *
+        * An invalid size will be ignored by the layout system.
+        *
+        * @protected
         */
-        private _destroySignals();
-        private _binders;
-        private _signals;
+        public sizeHint(): Size;
+        /**
+        * The suggested minimum size of the widget.
+        *
+        * When using the procedural layout system, this value is used
+        * to take into account the preferred minimum size of the widget.
+        * It is ignored when using CSS layout.
+        *
+        * An invalid size will be ignored by the layout system. If the
+        * user has specified a concrete minimum size, this hint will
+        * have no effect.
+        *
+        * @protected
+        */
+        public minimumSizeHint(): Size;
+        /**
+        * The suggested maximum size of the element.
+        *
+        * When using the procedural layout system, this value is used
+        * to take into account the preferred minimum size of the widget.
+        * It is ignored when using CSS layout.
+        *
+        * An invalid size will be ignored by the layout system. If the
+        * user has specified a concrete maximum size, this hint will
+        * have no effect.
+        *
+        * @protected
+        */
+        public maximumSizeHint(): Size;
     }
 }

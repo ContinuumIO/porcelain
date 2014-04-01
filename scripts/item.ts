@@ -16,7 +16,9 @@ module porcelain {
     /**
      * The most base class of visible porcelain objects.
      *
-     * Instances are represented by a single <div> element.
+     * The Item class supports basic functionality for creating the
+     * underlying DOM node, events, signals, and setting the node
+     * classes and id. It also implements the parent-children tree.
      *
      * @class
      */
@@ -35,13 +37,15 @@ module porcelain {
          */
         destroy(): void {
             this._detachElement();
+            this._destroyBinders();
+            this._destroySignals();
             this._destroyChildren();
             this._deparent();
             this._element = null;
         }
 
         /**
-         * The item's div element.
+         * The item's internal DOM element.
          *
          * @readonly
          */
@@ -50,7 +54,7 @@ module porcelain {
         }
 
         /**
-         * The id of the underlying div element.
+         * The id of the underlying DOM element.
          */
         get id(): string {
             return this._element.id
@@ -148,41 +152,8 @@ module porcelain {
                 this._children = leading.concat(children, trailing);
                 this._element.insertBefore(fragment, before._element);
             }
-        }   
-
-        /**
-         * Show the underlying div element.
-         *
-         * This is a convenience for setVisible(true);
-         */
-        show(): void {
-            this.setVisible(true);
         }
 
-        /**
-         * Hide the underlying div element.
-         *
-         * This is a convenience for setVisible(false);
-         */
-        hide(): void {
-            this.setVisible(false);
-        }
-
-        /**
-         * Set the visibility of the underlying div element.
-         *
-         * The default implementation of this method sets and clears
-         * the display property of the element style.
-         */
-        setVisible(visible: boolean): void {
-            var style = this._element.style;
-            if (visible) {
-                style.removeProperty("display");
-            } else {
-                style.display = "none";
-            }
-        }
-          
         /**
          * Add a name or names to the element's CSS class name.
          *
@@ -218,6 +189,76 @@ module porcelain {
         }
 
         /**
+         * Bind a listener to the specified event.
+         *
+         * The listener will be removed when the item is destroyed.
+         *
+         * @param type The string type of the event to bind.
+         * @param listener The event listener to bind to the target.
+         * @param [target] The event target. The default is the item element.
+         * @param [context] The listener context. The default is the item.
+         */
+        bind(
+            type: string,
+            listener: EventListener,
+            target: EventTarget = this.element,
+            context: any = this): void
+        {
+            var binders = this._binders
+            if (!binders) {
+                binders = this._binders = [];
+            }
+            var binder = new EventBinder(target, type, listener, context);
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                if (binder.equals(binders[i])) {
+                    return;
+                }
+            }
+            binder.attach();
+            binders.push(binder);
+        }
+
+        /**
+         * Unbind a listener from the specified event.
+         *
+         * @param type The string type of the event.
+         * @param listener The event listener which was bound.
+         * @param [target] The event target. The default is the item element.
+         * @param [context] The listener context. The default is the item.
+         */
+        unbind(
+            type: string,
+            listener: EventListener,
+            target: EventTarget = this.element,
+            context: any = this): void
+        {
+            var binders = this._binders;
+            if (!binders) {
+                return;
+            }
+            var binder = new EventBinder(target, type, listener, context);
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                if (binder.equals(binders[i])) {
+                    binders[i].destroy();
+                    binders.splice(i, 1);
+                    return;
+                }
+            }
+        }
+
+        /**
+         * Create a new Signal with a lifetime bound to the item.
+         */
+        createSignal(): Signal {
+            if (!this._signals) {
+                this._signals = [];
+            }
+            var signal = new Signal();
+            this._signals.push(signal);
+            return signal;
+        }
+
+        /**
          * Create the underlying element for the item.
          *
          * The default implementation of this method creates a div.
@@ -229,7 +270,23 @@ module porcelain {
         }
 
         /**
-         * A helper method to detach the div element.
+         * A helper method for preparing children to be inserted.
+         *
+         * @private 
+         */
+        private _prepareChildren(children: Item[]): DocumentFragment {
+            var fragment = document.createDocumentFragment();
+            for (var i = 0, n = children.length; i < n; ++i) {
+                var child = children[i];
+                child._deparent();
+                child._parent = this;
+                fragment.appendChild(child._element);
+            }
+            return fragment;
+        }
+
+        /**
+         * A helper method to detach the DOM element.
          * 
          * @private
          */
@@ -238,6 +295,38 @@ module porcelain {
             var parentNode = element.parentNode;
             if (parentNode) {
                 parentNode.removeChild(element);
+            }
+        }
+
+        /**
+         * A helper method for destroying the event binders.
+         *
+         * @private
+         */
+        private _destroyBinders(): void {
+            var binders = this._binders;
+            if (!binders) {
+                return;
+            }
+            this._binders = null;
+            for (var i = 0, n = binders.length; i < n; ++i) {
+                binders[i].destroy();
+            }
+        }
+
+        /**
+         * A helper method for destroying the item signals.
+         *
+         * @private
+         */
+        private _destroySignals(): void {
+            var signals = this._signals;
+            if (!signals) {
+                return;
+            }
+            this._signals = null;
+            for (var i = 0, n = signals.length; i < n; ++i) {
+                signals[i].disconnect();
             }
         }
 
@@ -275,25 +364,11 @@ module porcelain {
             _.pull(siblings, this);
         }
 
-        /**
-         * A helper method for preparing children to be inserted.
-         *
-         * @private 
-         */
-        private  _prepareChildren(children: Item[]): DocumentFragment {
-            var fragment = document.createDocumentFragment();
-            for (var i = 0, n = children.length; i < n; ++i) {
-                var child = children[i];
-                child._deparent();
-                child._parent = this;
-                fragment.appendChild(child._element);
-            }
-            return fragment;
-        }
-
         private _element: HTMLElement;
         private _parent: Item = null;
         private _children: Item[] = null;
+        private _binders: EventBinder[] = null;
+        private _signals: Signal[] = null;
     }
 
 }
