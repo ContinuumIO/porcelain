@@ -10,7 +10,7 @@ module porcelain {
     /**
      * The maximimum allowed width or height of an item.
      */
-    export var MAX_ITEM_DIM = (1 << 16) - 1;
+    export var MAX_ITEM_DIM = 1073741823;  // (1 << 30) - 1; 
 
     /** 
      * The minimum allowed size of an item.
@@ -36,7 +36,7 @@ module porcelain {
         /**
          * Set the object's geometry to the given rect.
          */
-        setGeometry(rect: IRect);
+        setGeometry(rect: Rect);
 
         /**
          * Returns the minimum allowed size of the object.
@@ -56,177 +56,91 @@ module porcelain {
 
 
     /**
-     * An interface for objects adjusted by a layout item.
-     */
-    export interface IAdjustable {
-
-        /**
-         * The layout item to use for adjusting the object.
-         *
-         * @readonly
-         */
-        layoutItem: ILayoutItem;
-    }
-
-
-    /**
-     * An interface describing the target of a layout item.
-     */
-    export interface ILayoutTarget {
-
-        /** 
-         * The HTML element positioned by the item.
-         *
-         * @readonly
-         */
-        element: HTMLElement;
-
-        /**
-         * The preferred size of the element.
-         *
-         * An invalid size will be ignored. Expensive hints 
-         * should be cached by the target.
-         */
-        sizeHint(): Size;
-
-        /**
-         * The suggested minimum size of the element.
-         *
-         * An invalid size will be ignored. Expensive hints 
-         * should be cached by the target.
-         */
-        minimumSizeHint(): Size;
-
-        /**
-         * The suggested maximum size of the element.
-         *
-         * An invalid size will be ignored. Expensive hints 
-         * should be cached by the target.
-         */
-        maximumSizeHint(): Size;
-    }
-
-
-    /**
-     * An internal style geometry initializer.
-     */
-    function initStyleGeometry(style: CSSStyleDeclaration): void {
-        style.position = "absolute";
-        style.left = "0px";
-        style.top = "0px";
-        style.width = "0px";
-        style.height = "0px";
-    }
-
-
-    /**
-     * An internal style geometry updater.
-     */
-    function updateStyleGeometry(
-        style: CSSStyleDeclaration,
-        previous: Rect,
-        current: Rect): void
-    {
-        var left = current.left;
-        var top = current.top;
-        var width = current.width();
-        var height = current.height();
-        if (previous.left !== left) {
-            style.left = left + "px";
-        }
-        if (previous.top !== top) {
-            style.top = top + "px";
-        }
-        if (previous.width() !== width) {
-            style.width = width + "px";
-        }
-        if (previous.height() !== height) {
-            style.height = height + "px";
-        }
-    }
-
-
-    /**
-     * A class which manipulates the geometry of a layout target.
+     * A class which implements ILayoutItem for a Component.
      *
-     * The target element's style will be forced to absolute positioning.
+     * When a ComponentItem is instantiated an a Component, the
+     * component element is forced into 'absolute' positioning.
      *
      * @class
      */
-    export class LayoutItem implements ILayoutItem { 
+    export class ComponentItem implements ILayoutItem {
 
         /**
-         * Construct a new LayoutItem.
+         * Construct a new ComponentItem.
          *
-         * @param target The target layout object to manipulate.
+         * @param component The component to manipulate.
          */
-        constructor(target: ILayoutTarget) {
-            this._target = target;
-            initStyleGeometry(target.element.style);
-            this.resize(this.sizeHint());
+        constructor(component: Component) {
+            this._component = component;
+            this._initGeometry();
         }
 
         /**
-         * The layout target of this layout item.
+         * Destroy the ComponentItem.
+         */
+        destroy(): void {
+            this._component = null;
+        }
+
+        /**
+         * The component being manipulated by this item.
          *
          * @readonly
          */
-        get target(): ILayoutTarget {
-            return this._target;
+        get component(): Component {
+            return this._component;
         }
 
         /**
-         * Returns the position of the top-left corner of the item.
+         * Returns the top-left corner of the component.
          */
         pos(): Point {
             return this._geometry.topLeft();
         }
 
         /**
-         * Move the top-left corner of the item to the given position.
+         * Set the top-left corner of the component.
          */
-        move(point: IPoint): void {
+        move(point: Point): void {
             var geo = this.geometry();
             geo.moveTopLeft(point);
-            this.setGeometry(geo);
+            this._syncGeometry(geo);
         }
 
         /**
-         * Returns the current size of the item.
+         * Returns the size of the component.
          */
         size(): Size {
             return this._geometry.size();
         }
 
         /**
-         * Resize the item to the given size.
+         * Set the size of the component. 
          */
-        resize(size: ISize): void {
+        resize(size: Size): void {
+            size = size.boundedTo(this.maximumSize());
+            size = size.expandedTo(this.minimumSize()); 
             var geo = this.geometry();
             geo.setSize(size);
-            this.setGeometry(geo);
+            this._syncGeometry(geo);
         }
 
         /**
-         * Returns the current geometry of the item.
+         * Returns the current geometry of the component.
          */
         geometry(): Rect {
             return new Rect(this._geometry);
         }
 
         /**
-         * Set the geometry of the item.
+         * Set the geometry of the component.
          */
-        setGeometry(rect: IRect) {
-            var current = new Rect(rect);
-            var size = current.size();
+        setGeometry(rect: Rect) {
+            var size = rect.size();
             size = size.boundedTo(this.maximumSize());
             size = size.expandedTo(this.minimumSize());
-            current.setSize(size);
-            var previous = this._geometry;
-            this._geometry = current;
-            var style = this._target.element.style;
-            updateStyleGeometry(style, previous, current);
+            var geo = new Rect(rect.left, rect.top, size.width, size.height);
+            this._syncGeometry(geo);
         }
 
         /**
@@ -237,7 +151,7 @@ module porcelain {
             if (size.isValid()) {
                 return new Size(size);
             }
-            size = this._target.minimumSizeHint();
+            size = this._component.minimumSizeHint();
             if (!size.isValid()) {
                 return new Size(MIN_ITEM_SIZE);
             }
@@ -252,16 +166,15 @@ module porcelain {
          * This will override the target's minimumSizeHint. It can be
          * set to an ivalid size to reset the value to minimum hint.
          */
-        setMinimumSize(size: ISize): void {
-            var minSize = new Size(size);
-            if (minSize.isValid()) {
-                minSize = minSize.boundedTo(MAX_ITEM_SIZE);
-                minSize = minSize.expandedTo(MIN_ITEM_SIZE);
-                this._minimumSize = minSize;
+        setMinimumSize(size: Size): void {
+            if (size.isValid()) {
+                size = size.boundedTo(MAX_ITEM_SIZE);
+                size = size.expandedTo(MIN_ITEM_SIZE);
+                this._minimumSize = size;
             } else {
                 this._minimumSize = new Size();
             }
-            this.setGeometry(this._geometry);
+            this.resize(this.size());
         }
 
         /**
@@ -272,7 +185,7 @@ module porcelain {
             if (size.isValid()) {
                 return new Size(size);
             }
-            size = this._target.maximumSizeHint();
+            size = this._component.maximumSizeHint();
             if (!size.isValid()) {
                 return new Size(MAX_ITEM_SIZE);
             }
@@ -284,29 +197,71 @@ module porcelain {
         /**
          * Set the maximum allowed size of the item.
          */
-        setMaximumSize(size: ISize): void {
-            var maxSize = new Size(size);
-            if (maxSize.isValid()) {
-                maxSize = maxSize.boundedTo(MAX_ITEM_SIZE);
-                maxSize = maxSize.expandedTo(MIN_ITEM_SIZE);
-                this._maximumSize = maxSize;
+        setMaximumSize(size: Size): void {
+            if (size.isValid()) {
+                size = size.boundedTo(MAX_ITEM_SIZE);
+                size = size.expandedTo(MIN_ITEM_SIZE);
+                this._maximumSize = size;
             } else {
                 this._maximumSize = new Size();
             }
-            this.setGeometry(this._geometry);
+            this.resize(this.size());
         }
 
         /**
          * Returns the preferred size of the item.
          */
         sizeHint(): Size {
-            var size = this._target.sizeHint();
+            var size = this._component.sizeHint();
             size = size.boundedTo(this.maximumSize());
             size = size.expandedTo(this.minimumSize());
             return size;
         }
 
-        private _target: ILayoutTarget;
+        /**
+         * Initialize the component style geometry.
+         *
+         * @private
+         */
+        private _initGeometry(): void {
+            var style = this._component.element.style;
+            var size = this.sizeHint();
+            this._geometry.setSize(size);
+            style.position = "absolute";
+            style.left = "0px";
+            style.top = "0px";
+            style.width = size.width + "px";
+            style.height = size.height + "px";
+        }
+
+        /** 
+         * Synchronize the style geometry with the given rect.
+         *
+         * @private
+         */
+        private _syncGeometry(rect: Rect): void {
+            var left = rect.left;
+            var top = rect.top;
+            var width = rect.width();
+            var height = rect.height();
+            var style = this._component.element.style;
+            var current = this._geometry;
+            this._geometry = rect;
+            if (current.left !== left) {
+                style.left = left + "px";
+            }
+            if (current.top !== top) {
+                style.top = top + "px";
+            }
+            if (current.width() !== width) {
+                style.width = width + "px";
+            }
+            if (current.height() !== height) {
+                style.height = height + "px";
+            }
+        }
+
+        private _component: Component;
         private _geometry: Rect = new Rect();
         private _minimumSize: Size = new Size();
         private _maximumSize: Size = new Size();

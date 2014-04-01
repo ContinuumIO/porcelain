@@ -22,7 +22,7 @@
         /**
         * Set the object's geometry to the given rect.
         */
-        setGeometry(rect: IRect): any;
+        setGeometry(rect: Rect): any;
         /**
         * Returns the minimum allowed size of the object.
         */
@@ -37,92 +37,54 @@
         sizeHint(): Size;
     }
     /**
-    * An interface for objects adjusted by a layout item.
-    */
-    interface IAdjustable {
-        /**
-        * The layout item to use for adjusting the object.
-        *
-        * @readonly
-        */
-        layoutItem: ILayoutItem;
-    }
-    /**
-    * An interface describing the target of a layout item.
-    */
-    interface ILayoutTarget {
-        /**
-        * The HTML element positioned by the item.
-        *
-        * @readonly
-        */
-        element: HTMLElement;
-        /**
-        * The preferred size of the element.
-        *
-        * An invalid size will be ignored. Expensive hints
-        * should be cached by the target.
-        */
-        sizeHint(): Size;
-        /**
-        * The suggested minimum size of the element.
-        *
-        * An invalid size will be ignored. Expensive hints
-        * should be cached by the target.
-        */
-        minimumSizeHint(): Size;
-        /**
-        * The suggested maximum size of the element.
-        *
-        * An invalid size will be ignored. Expensive hints
-        * should be cached by the target.
-        */
-        maximumSizeHint(): Size;
-    }
-    /**
-    * A class which manipulates the geometry of a layout target.
+    * A class which implements ILayoutItem for a Component.
     *
-    * The target element's style will be forced to absolute positioning.
+    * When a ComponentItem is instantiated an a Component, the
+    * component element is forced into 'absolute' positioning.
     *
     * @class
     */
-    class LayoutItem implements ILayoutItem {
+    class ComponentItem implements ILayoutItem {
         /**
-        * Construct a new LayoutItem.
+        * Construct a new ComponentItem.
         *
-        * @param target The target layout object to manipulate.
+        * @param component The component to manipulate.
         */
-        constructor(target: ILayoutTarget);
+        constructor(component: Component);
         /**
-        * The layout target of this layout item.
+        * Destroy the ComponentItem.
+        */
+        public destroy(): void;
+        /**
+        * The component being manipulated by this item.
         *
         * @readonly
         */
-        public target : ILayoutTarget;
+        public component : Component;
         /**
-        * Returns the position of the top-left corner of the item.
+        * Returns the top-left corner of the component.
         */
         public pos(): Point;
         /**
-        * Move the top-left corner of the item to the given position.
+        * Set the top-left corner of the component.
         */
-        public move(point: IPoint): void;
+        public move(point: Point): void;
         /**
-        * Returns the current size of the item.
+        * Returns the size of the component.
         */
         public size(): Size;
         /**
-        * Resize the item to the given size.
+        * Set the size of the component.
         */
-        public resize(size: ISize): void;
+        public resize(size: Size): void;
         /**
-        * Returns the current geometry of the item.
+        * Returns the current geometry of the component.
         */
         public geometry(): Rect;
         /**
-        * Set the geometry of the item.
+        * Set the geometry of the component.
         */
-        public setGeometry(rect: IRect): void;
+        public setGeometry(rect: Rect): void;
         /**
         * Returns the minimum allowed size of the item.
         */
@@ -133,7 +95,7 @@
         * This will override the target's minimumSizeHint. It can be
         * set to an ivalid size to reset the value to minimum hint.
         */
-        public setMinimumSize(size: ISize): void;
+        public setMinimumSize(size: Size): void;
         /**
         * Returns the maximum allowed size of the item.
         */
@@ -141,12 +103,24 @@
         /**
         * Set the maximum allowed size of the item.
         */
-        public setMaximumSize(size: ISize): void;
+        public setMaximumSize(size: Size): void;
         /**
         * Returns the preferred size of the item.
         */
         public sizeHint(): Size;
-        private _target;
+        /**
+        * Initialize the component style geometry.
+        *
+        * @private
+        */
+        private _initGeometry();
+        /**
+        * Synchronize the style geometry with the given rect.
+        *
+        * @private
+        */
+        private _syncGeometry(rect);
+        private _component;
         private _geometry;
         private _minimumSize;
         private _maximumSize;
