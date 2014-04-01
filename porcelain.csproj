@@ -18,6 +18,7 @@
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="scripts\button.ts" />
+    <TypeScriptCompile Include="scripts\move_grip.ts" />
     <TypeScriptCompile Include="scripts\event_binder.ts" />
     <TypeScriptCompile Include="scripts\layout_item.ts" />
     <TypeScriptCompile Include="scripts\point.ts" />
