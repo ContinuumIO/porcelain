@@ -24,13 +24,10 @@ var porcelain;
         * Construct a new Component.
         */
         function Component() {
-            /**
-            * A signal emitted when the component is destroyed.
-            */
-            this.destroyed = new porcelain.Signal();
             this._parent = null;
             this._children = null;
             this._element = this.createElement();
+            this.destroyed = new porcelain.Signal();
             this.addClass(COMPONENT_CLASS);
         }
         /**
@@ -347,11 +344,11 @@ var porcelain;
         Component.prototype._destroyExtras = function () {
             var names = Object.getOwnPropertyNames(this);
             for (var i = 0, n = names.length; i < n; ++i) {
-                var name = names[i];
-                var value = this[name];
+                var key = names[i];
+                var value = this[key];
                 if (value && value.porcelain_ComponentExtra) {
+                    this[key] = null;
                     value.destroy();
-                    this[name] = null;
                 }
             }
         };

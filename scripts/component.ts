@@ -44,14 +44,17 @@ module porcelain {
 
         /** 
          * A signal emitted when the component is destroyed.
+         *
+         * @readonly
          */
-        destroyed = new Signal();
+        destroyed: Signal;
 
         /**
          * Construct a new Component.
          */
         constructor() {
             this._element = this.createElement();
+            this.destroyed = new Signal();
             this.addClass(COMPONENT_CLASS);
         }
 
@@ -340,11 +343,11 @@ module porcelain {
         private _destroyExtras(): void {
             var names = Object.getOwnPropertyNames(this);
             for (var i = 0, n = names.length; i < n; ++i) {
-                var name = names[i];
-                var value = this[name];
+                var key = names[i];
+                var value = this[key];
                 if (value && value.porcelain_ComponentExtra) {
+                    this[key] = null;
                     (<IComponentExtra>value).destroy();
-                    this[name] = null;
                 }
             }
         }

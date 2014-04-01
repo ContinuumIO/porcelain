@@ -25,6 +25,8 @@
     class Component {
         /**
         * A signal emitted when the component is destroyed.
+        *
+        * @readonly
         */
         public destroyed: Signal;
         /**
