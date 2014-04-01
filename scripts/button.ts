@@ -25,28 +25,35 @@ module porcelain {
      * A basic button class.
      *
      * A Button provides the basic behavior of a simple push button. 
-     * This class is intented to be subclassed to provide features
-     * such as button text and default visual styling, but it is 
-     * useful on its own when decorated with custom CSS styling.
      *
      * @class
      */
-    export class Button extends Widget {
+    export class Button extends Component {
 
         /**
          * A signal emitted when the button is clicked.
          */
-        clicked = this.createSignal();
+        clicked = new Signal();
 
         /**
          * A signal emitted when the button is pressed.
          */
-        pressed = this.createSignal();
+        pressed = new Signal();
 
         /**
          * A signal emitted when the button is released.
          */
-        released = this.createSignal();
+        released = new Signal();
+
+        /** 
+         * The mousedown event binder.
+         */
+        mousedown = new EventBinder("mousedown", this.element);
+
+        /**
+         * The mouseup event binder.
+         */
+        mouseup = new EventBinder("mouseup", document);
 
         /**
          * Construct a new Button instance.
@@ -54,7 +61,7 @@ module porcelain {
         constructor() {
             super();
             this.addClass(BUTTON_CLASS);
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
         }
 
         /**
@@ -66,7 +73,7 @@ module porcelain {
             if (event.button === 0) {
                 event.preventDefault();
                 this.addClass(PRESSED_CLASS);
-                this.bind("mouseup", this.onMouseUp, document);
+                this.mouseup.bind(this.onMouseUp, this);
                 this.pressed.emit();
             }
         }
@@ -79,7 +86,7 @@ module porcelain {
         onMouseUp(event: MouseEvent): void {
             if (event.button === 0) {
                 this.removeClass(PRESSED_CLASS);
-                this.unbind("mouseup", this.onMouseUp, document);
+                this.mouseup.unbind(this.onMouseUp, this);
                 this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();

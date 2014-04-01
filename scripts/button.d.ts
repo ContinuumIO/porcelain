@@ -3,13 +3,10 @@
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
-    * This class is intented to be subclassed to provide features
-    * such as button text and default visual styling, but it is
-    * useful on its own when decorated with custom CSS styling.
     *
     * @class
     */
-    class Button extends Widget {
+    class Button extends Component {
         /**
         * A signal emitted when the button is clicked.
         */
@@ -22,6 +19,14 @@
         * A signal emitted when the button is released.
         */
         public released: Signal;
+        /**
+        * The mousedown event binder.
+        */
+        public mousedown: EventBinder;
+        /**
+        * The mouseup event binder.
+        */
+        public mouseup: EventBinder;
         /**
         * Construct a new Button instance.
         */

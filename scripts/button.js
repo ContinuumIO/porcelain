@@ -30,9 +30,6 @@ var porcelain;
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
-    * This class is intented to be subclassed to provide features
-    * such as button text and default visual styling, but it is
-    * useful on its own when decorated with custom CSS styling.
     *
     * @class
     */
@@ -46,17 +43,25 @@ var porcelain;
             /**
             * A signal emitted when the button is clicked.
             */
-            this.clicked = this.createSignal();
+            this.clicked = new porcelain.Signal();
             /**
             * A signal emitted when the button is pressed.
             */
-            this.pressed = this.createSignal();
+            this.pressed = new porcelain.Signal();
             /**
             * A signal emitted when the button is released.
             */
-            this.released = this.createSignal();
+            this.released = new porcelain.Signal();
+            /**
+            * The mousedown event binder.
+            */
+            this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            /**
+            * The mouseup event binder.
+            */
+            this.mouseup = new porcelain.EventBinder("mouseup", document);
             this.addClass(BUTTON_CLASS);
-            this.bind("mousedown", this.onMouseDown);
+            this.mousedown.bind(this.onMouseDown, this);
         }
         /**
         * The mousedown event handler.
@@ -67,7 +72,7 @@ var porcelain;
             if (event.button === 0) {
                 event.preventDefault();
                 this.addClass(PRESSED_CLASS);
-                this.bind("mouseup", this.onMouseUp, document);
+                this.mouseup.bind(this.onMouseUp, this);
                 this.pressed.emit();
             }
         };
@@ -80,7 +85,7 @@ var porcelain;
         Button.prototype.onMouseUp = function (event) {
             if (event.button === 0) {
                 this.removeClass(PRESSED_CLASS);
-                this.unbind("mouseup", this.onMouseUp, document);
+                this.mouseup.unbind(this.onMouseUp, this);
                 this.released.emit();
                 if (event.target === this.element) {
                     event.preventDefault();
@@ -89,7 +94,7 @@ var porcelain;
             }
         };
         return Button;
-    })(porcelain.Widget);
+    })(porcelain.Component);
     porcelain.Button = Button;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=button.js.map
