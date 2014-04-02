@@ -70,6 +70,37 @@ module porcelain {
         }
 
         /**
+         * The component's internal DOM element.
+         *
+         * @readonly
+         */
+        get element(): HTMLElement {
+            return this._element;
+        }
+
+        /**
+         * The id of the component's DOM element.
+         */
+        get id(): string {
+            return this._element.id
+        }
+
+        set id(id: string) {
+            this._element.id = id;
+        }
+
+        /**
+         * The display value of the component's DOM element.
+         */
+        get display(): string {
+            return this._element.style.display;
+        }
+
+        set display(value: string) {
+            this._element.style.display = value;
+        }
+
+        /**
          * The parent Component of this component.
          *
          * @readonly
@@ -160,26 +191,6 @@ module porcelain {
         }
 
         /**
-         * The component's internal DOM element.
-         *
-         * @readonly
-         */
-        get element(): HTMLElement {
-            return this._element;
-        }
-
-        /**
-         * The id of the component's DOM element.
-         */
-        get id(): string {
-            return this._element.id
-        }
-
-        set id(id: string) {
-            this._element.id = id;
-        }
-
-        /**
          * Add a name or names to the element's CSS class name.
          *
          * Multiple names should be separated by whitespace.
@@ -216,46 +227,161 @@ module porcelain {
         /**
          * Show the underlying DOM element.
          *
-         * This is a convenience for setVisible(true);
+         * This is a convenience for `this.display = ""`;
          */
         show(): void {
-            this.setVisible(true);
+            this.display = "";
         }
 
         /**
          * Hide the underlying DOM element.
          *
-         * This is a convenience for setVisible(false);
+         * This is a convenience for `this.display = "none"`;
          */
         hide(): void {
-            this.setVisible(false);
+            this.display = "none";
         }
 
         /**
-         * Set the visibility of the underlying DOM element.
+         * The current position of the component.
          *
-         * The default implementation of this method sets and clears
-         * the display property of the element style. This may be
-         * reimplemented by subclasses which require more control.
+         * This is the value as stored in the computed style. It
+         * will typically only have semantic meaning when using 
+         * absolute positioning on the component element.
          */
-        setVisible(visible: boolean): void {
-            var style = this.element.style;
-            if (visible) {
-                style.removeProperty("display");
+        get position(): Point {
+            var style = window.getComputedStyle(this._element);
+            var x = parseInt(style.left);
+            var y = parseInt(style.top);
+            if (x !== x || y !== y) {  // fast isNaN
+                return new Point();
+            }
+            return new Point(x, y);
+        }
+
+        set position(point: Point) {
+            var style = this._element.style;
+            style.left = point.x + "px";
+            style.top = point.y + "px";
+        }
+        
+        /**
+         * The current size of the component.
+         *
+         * This is the value as stored in the computed style. It
+         * will typically only have semantic meaning when using 
+         * absolute positioning on the component element.
+         */
+        get size(): Size {
+            var style = window.getComputedStyle(this._element);
+            var w = parseInt(style.width)
+            var h = parseInt(style.height)
+            if (w !== w || h !== h) {  // fast isNaN
+                return new Size();
+            }
+            return new Size(w, h);
+        }
+
+        set size(size: Size) {
+            var style = this._element.style;
+            if (size.isValid()) {
+                style.width = size.width + "px";
+                style.height = size.height + "px";
             } else {
-                style.display = "none";
+                style.width = "";
+                style.height = "";
             }
         }
 
         /**
-         * Create the underlying element for the component.
+         * The current geometry of the component.
          *
-         * The default implementation creates a div.
-         *
-         * @protected.
+         * This is the value as stored in the computed style. It
+         * will typically only have semantic meaning when using 
+         * absolute positioning on the component element.
          */
-        createElement(): HTMLElement {
-            return document.createElement("div");
+        get geometry(): Rect {
+            var style = window.getComputedStyle(this._element);
+            var x = parseInt(style.left);
+            var y = parseInt(style.top);
+            var w = parseInt(style.width);
+            var h = parseInt(style.height);
+            if (x !== x || y !== y || w !== w || h !== h) {  // fast isNaN
+                return new Rect();
+            }
+            return new Rect(x, y, w, h);
+        }
+
+        set geometry(rect: Rect) {
+            var style = this._element.style;
+            console.log(rect.left, " ", rect.top, " ", rect.width(), " ", rect.height());
+            if (rect.isValid()) {
+                style.left = rect.left + "px";
+                style.top = rect.top + "px";
+                style.width = rect.width() + "px";
+                style.height = rect.height() + "px";
+            } else {
+                style.left = "";
+                style.top = "";
+                style.width = "";
+                style.height = "";
+            }
+        }
+
+        /**
+         * The minimum size of the component.
+         *
+         * This is the value as stored in the computed style. It
+         * will typically only have semantic meaning when using 
+         * absolute positioning on the component element.
+         */
+        get minimumSize(): Size {
+            var style = window.getComputedStyle(this._element);
+            var w = parseInt(style.minWidth)
+            var h = parseInt(style.minHeight)
+            if (w !== w || h !== h) {  // fast isNaN
+                return new Size();
+            }
+            return new Size(w, h);
+        }
+
+        set minimumSize(size: Size) {
+            var style = this._element.style;
+            if (size.isValid()) {
+                style.minWidth = size.width + "px";
+                style.minHeight = size.height + "px";
+            } else {
+                style.minWidth = "";
+                style.minHeight = "";
+            }
+        }
+
+        /**
+         * The maximum size of the component.
+         *
+         * This is the value as stored in the computed style. It
+         * will typically only have semantic meaning when using 
+         * absolute positioning on the component element.
+         */
+        get maximumSize(): Size {
+            var style = window.getComputedStyle(this._element);
+            var w = parseInt(style.maxWidth)
+            var h = parseInt(style.maxHeight)
+            if (w !== w || h !== h) {  // fast isNaN
+                return new Size();
+            }
+            return new Size(w, h);
+        }
+
+        set maximumSize(size: Size) {
+            var style = this._element.style;
+            if (size.isValid()) {
+                style.maxWidth = size.width + "px";
+                style.maxHeight = size.height + "px";
+            } else {
+                style.maxWidth = "";
+                style.maxHeight = "";
+            }
         }
 
         /**
@@ -265,8 +391,8 @@ module porcelain {
          * the preferred layout size of the component. It is ignored 
          * when using CSS to position the element.
          *
-         * This should be reimplemented by subclasses. The default 
-         * implementation returns an invalid size.
+         * The default implementation of this method returns an invalid
+         * size. It should be reimplemented by subclasses.
          * 
          * @protected
          */
@@ -279,10 +405,10 @@ module porcelain {
          *
          * This value is used by procedural layout systems to retrieve
          * the preferred minimum layout size of the component. It is 
-         * ignored when using CSS to position the element. 
+         * ignored when using CSS to position the element.
          *
-         * This should be reimplemented by subclasses. The default 
-         * implementation returns an invalid size.
+         * The default implementation of this method returns an invalid
+         * size. It should be reimplemented by subclasses.
          * 
          * @protected
          */
@@ -304,6 +430,17 @@ module porcelain {
          */
         maximumSizeHint(): Size {
             return new Size();
+        }
+
+        /**
+         * Create the underlying element for the component.
+         *
+         * The default implementation creates a div.
+         *
+         * @protected.
+         */
+        createElement(): HTMLElement {
+            return document.createElement("div");
         }
 
         /**

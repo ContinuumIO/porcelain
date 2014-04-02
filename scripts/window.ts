@@ -33,7 +33,6 @@ module porcelain {
 
         constructor() {
             super();
-            this._layoutItem = new ComponentItem(this);
             this.addClass(WINDOW_CLASS);
 
             var children: Component[] = [];
@@ -44,12 +43,12 @@ module porcelain {
 
             var self = this;
             GRIP_AREAS.forEach(function (area) {
-                var grip = new SizeGrip(area, self._layoutItem);
+                var grip = new SizeGrip(area, self);
                 grip.addClass(SIZE_GRIP_CLASS);
                 children.push(grip);
             });
 
-            var titleBar = this._titleBar = new TitleBar(this._layoutItem);
+            var titleBar = this._titleBar = new TitleBar(self);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.hide();
             titleBar.restoreButton.clicked.connect(this.restore, this);
@@ -65,6 +64,9 @@ module porcelain {
             this.mousedown.bind(this.onMouseDown, this);
 
             globalNormalWindowStack.add(this);
+
+            this.element.style.position = "absolute";
+            this.size = this.sizeHint();
         }
 
         destroy(): void {
@@ -72,10 +74,6 @@ module porcelain {
             super.destroy()
             this._titleBar = null;
             this._body = null;
-        }
-
-        get layoutItem(): ILayoutItem {
-            return this._layoutItem;
         }
 
         sizeHint(): Size {
@@ -90,12 +88,11 @@ module porcelain {
             return new Size();
         }
 
-        setVisible(visible: boolean): void {
-            super.setVisible(visible);
-            if (visible && !this.element.parentNode) {
-                var body = document.getElementsByTagName("body")[0];
-                body.appendChild(this.element);
+        attach(elem?: HTMLElement): void {
+            if (!elem) {
+                elem = document.getElementsByTagName("body")[0];
             }
+            elem.appendChild(this.element);
         }
 
         raise(): void {
@@ -136,7 +133,6 @@ module porcelain {
 
         private _body: Component;
         private _titleBar: TitleBar;
-        private _layoutItem: ILayoutItem;
     }
 
 }

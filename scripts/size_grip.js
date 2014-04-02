@@ -49,7 +49,7 @@ var porcelain;
         * Construct a new SizeGrip.
         *
         * @param gripArea The grip area defining the size grip behavior.
-        * @param target The adjustable object to be resized by the grip.
+        * @param target The component to resize with the grip.
         */
         function SizeGrip(gripArea, target) {
             _super.call(this);
@@ -68,7 +68,7 @@ var porcelain;
             this._offsetX = 0;
             this._offsetY = 0;
             this._gripArea = gripArea;
-            this._target = target;
+            this._item = new porcelain.ComponentItem(target);
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
             this.mousedown.bind(this.onMouseDown, this);
@@ -78,7 +78,8 @@ var porcelain;
         */
         SizeGrip.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._target = null;
+            this._item.component = null;
+            this._item = null;
         };
 
         Object.defineProperty(SizeGrip.prototype, "gripArea", {
@@ -96,12 +97,12 @@ var porcelain;
 
         Object.defineProperty(SizeGrip.prototype, "target", {
             /**
-            * The target object of the size grip.
+            * The target component resized by the size grip.
             *
             * @readonly
             */
             get: function () {
-                return this._target;
+                return this._item.component;
             },
             enumerable: true,
             configurable: true
@@ -116,11 +117,10 @@ var porcelain;
             if (event.button !== 0) {
                 return;
             }
-            console.log(this);
             event.preventDefault();
             this.mouseup.bind(this.onMouseUp, this);
             this.mousemove.bind(this.onMouseMove, this);
-            var geo = this._target.geometry();
+            var geo = this._item.geometry();
             switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
@@ -173,7 +173,7 @@ var porcelain;
         SizeGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
             var vp = porcelain.viewport;
-            var item = this._target;
+            var item = this._item;
             var geo = item.geometry();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();

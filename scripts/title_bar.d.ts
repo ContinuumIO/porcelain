@@ -11,9 +11,9 @@
         /**
         * Construct a new TitleBar
         *
-        * @param target The adjustable item moved by the title bar.
+        * @param target The component to move with the title bar.
         */
-        constructor(target: ILayoutItem);
+        constructor(target: Component);
         /**
         * Destroy the title bar.
         */

@@ -23,13 +23,19 @@
         /**
         * Construct a new MoveGrip.
         *
-        * @param target The adjustable object moved by the grip.
+        * @param target The component to move with the grip.
         */
-        constructor(target: ILayoutItem);
+        constructor(target: Component);
         /**
         * Destroy the title bar.
         */
         public destroy(): void;
+        /**
+        * The target component moved by the grip.
+        *
+        * @readonly
+        */
+        public target(): Component;
         /**
         * The mousedown handler.
         *

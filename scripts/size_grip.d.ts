@@ -34,9 +34,9 @@
         * Construct a new SizeGrip.
         *
         * @param gripArea The grip area defining the size grip behavior.
-        * @param target The adjustable object to be resized by the grip.
+        * @param target The component to resize with the grip.
         */
-        constructor(gripArea: GripArea, target: ILayoutItem);
+        constructor(gripArea: GripArea, target: Component);
         /**
         * Destroy the edge grip.
         */
@@ -48,11 +48,11 @@
         */
         public gripArea : GripArea;
         /**
-        * The target object of the size grip.
+        * The target component resized by the size grip.
         *
         * @readonly
         */
-        public target : ILayoutItem;
+        public target : Component;
         /**
         * The mousedown handler.
         *
@@ -72,7 +72,7 @@
         */
         public onMouseMove(event: MouseEvent): void;
         private _gripArea;
-        private _target;
+        private _item;
         private _offsetX;
         private _offsetY;
     }

@@ -38,6 +38,20 @@
         */
         public destroy(): void;
         /**
+        * The component's internal DOM element.
+        *
+        * @readonly
+        */
+        public element : HTMLElement;
+        /**
+        * The id of the component's DOM element.
+        */
+        public id : string;
+        /**
+        * The display value of the component's DOM element.
+        */
+        public display : string;
+        /**
         * The parent Component of this component.
         *
         * @readonly
@@ -84,16 +98,6 @@
         */
         public detach(): void;
         /**
-        * The component's internal DOM element.
-        *
-        * @readonly
-        */
-        public element : HTMLElement;
-        /**
-        * The id of the component's DOM element.
-        */
-        public id : string;
-        /**
         * Add a name or names to the element's CSS class name.
         *
         * Multiple names should be separated by whitespace.
@@ -112,31 +116,55 @@
         /**
         * Show the underlying DOM element.
         *
-        * This is a convenience for setVisible(true);
+        * This is a convenience for `this.display = ""`;
         */
         public show(): void;
         /**
         * Hide the underlying DOM element.
         *
-        * This is a convenience for setVisible(false);
+        * This is a convenience for `this.display = "none"`;
         */
         public hide(): void;
         /**
-        * Set the visibility of the underlying DOM element.
+        * The current position of the component.
         *
-        * The default implementation of this method sets and clears
-        * the display property of the element style. This may be
-        * reimplemented by subclasses which require more control.
+        * This is the value as stored in the computed style. It
+        * will typically only have semantic meaning when using
+        * absolute positioning on the component element.
         */
-        public setVisible(visible: boolean): void;
+        public position : Point;
         /**
-        * Create the underlying element for the component.
+        * The current size of the component.
         *
-        * The default implementation creates a div.
-        *
-        * @protected.
+        * This is the value as stored in the computed style. It
+        * will typically only have semantic meaning when using
+        * absolute positioning on the component element.
         */
-        public createElement(): HTMLElement;
+        public size : Size;
+        /**
+        * The current geometry of the component.
+        *
+        * This is the value as stored in the computed style. It
+        * will typically only have semantic meaning when using
+        * absolute positioning on the component element.
+        */
+        public geometry : Rect;
+        /**
+        * The minimum size of the component.
+        *
+        * This is the value as stored in the computed style. It
+        * will typically only have semantic meaning when using
+        * absolute positioning on the component element.
+        */
+        public minimumSize : Size;
+        /**
+        * The maximum size of the component.
+        *
+        * This is the value as stored in the computed style. It
+        * will typically only have semantic meaning when using
+        * absolute positioning on the component element.
+        */
+        public maximumSize : Size;
         /**
         * The preferred size of the component.
         *
@@ -144,8 +172,8 @@
         * the preferred layout size of the component. It is ignored
         * when using CSS to position the element.
         *
-        * This should be reimplemented by subclasses. The default
-        * implementation returns an invalid size.
+        * The default implementation of this method returns an invalid
+        * size. It should be reimplemented by subclasses.
         *
         * @protected
         */
@@ -157,8 +185,8 @@
         * the preferred minimum layout size of the component. It is
         * ignored when using CSS to position the element.
         *
-        * This should be reimplemented by subclasses. The default
-        * implementation returns an invalid size.
+        * The default implementation of this method returns an invalid
+        * size. It should be reimplemented by subclasses.
         *
         * @protected
         */
@@ -176,6 +204,14 @@
         * @protected
         */
         public maximumSizeHint(): Size;
+        /**
+        * Create the underlying element for the component.
+        *
+        * The default implementation creates a div.
+        *
+        * @protected.
+        */
+        public createElement(): HTMLElement;
         /**
         * A helper method for preparing children to be inserted.
         *

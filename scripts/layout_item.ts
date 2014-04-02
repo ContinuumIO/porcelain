@@ -34,24 +34,24 @@ module porcelain {
         geometry(): Rect;
 
         /**
-         * Set the object's geometry to the given rect.
-         */
-        setGeometry(rect: Rect);
-
-        /**
-         * Returns the minimum allowed size of the object.
+         * Returns the computed minimum size of the object.
          */
         minimumSize(): Size;
 
         /**
-         * Returns the maximum allowed size of the object.
+         * Returns the computed maximum size of the object.
          */
         maximumSize(): Size;
 
         /** 
-         * Returns the preferred size of the object.
+         * Returns the computed preferred size of the object.
          */
         sizeHint(): Size;
+
+        /**
+         * Set the objects geometry to the given rect.
+         */
+        setGeometry(rect: Rect);
     }
 
 
@@ -70,201 +70,71 @@ module porcelain {
          *
          * @param component The component to manipulate.
          */
-        constructor(component: Component) {
-            this._component = component;
-            this._initGeometry();
-        }
-
-        /**
-         * Destroy the ComponentItem.
-         */
-        destroy(): void {
-            this._component = null;
-        }
-
-        /**
-         * The component being manipulated by this item.
-         *
-         * @readonly
-         */
-        get component(): Component {
-            return this._component;
-        }
-
-        /**
-         * Returns the top-left corner of the component.
-         */
-        pos(): Point {
-            return this._geometry.topLeft();
-        }
-
-        /**
-         * Set the top-left corner of the component.
-         */
-        move(point: Point): void {
-            var geo = this.geometry();
-            geo.moveTopLeft(point);
-            this._syncGeometry(geo);
-        }
-
-        /**
-         * Returns the size of the component.
-         */
-        size(): Size {
-            return this._geometry.size();
-        }
-
-        /**
-         * Set the size of the component. 
-         */
-        resize(size: Size): void {
-            size = size.boundedTo(this.maximumSize());
-            size = size.expandedTo(this.minimumSize()); 
-            var geo = this.geometry();
-            geo.setSize(size);
-            this._syncGeometry(geo);
-        }
+        constructor(public component: Component) { }
 
         /**
          * Returns the current geometry of the component.
          */
         geometry(): Rect {
-            return new Rect(this._geometry);
+            return this.component.geometry;
         }
 
         /**
-         * Set the geometry of the component.
-         */
-        setGeometry(rect: Rect) {
-            var size = rect.size();
-            size = size.boundedTo(this.maximumSize());
-            size = size.expandedTo(this.minimumSize());
-            var geo = new Rect(rect.left, rect.top, size.width, size.height);
-            this._syncGeometry(geo);
-        }
-
-        /**
-         * Returns the minimum allowed size of the item.
+         * Compute the minimum size of the component.
          */
         minimumSize(): Size {
-            var size = this._minimumSize;
-            if (size.isValid()) {
-                return new Size(size);
+            var component = this.component;
+            var size = component.minimumSize;
+            if (size.isValid() && !size.isNull()) {
+                size = size.boundedTo(MAX_ITEM_SIZE);
+                size = size.expandedTo(MIN_ITEM_SIZE);
+                return size;
             }
-            size = this._component.minimumSizeHint();
-            if (!size.isValid()) {
-                return new Size(MIN_ITEM_SIZE);
-            }
-            size = size.boundedTo(MAX_ITEM_SIZE);
-            size = size.expandedTo(MIN_ITEM_SIZE);
-            return size;
-        }
-
-        /**
-         * Set the minimum allowed size of the item.
-         *
-         * This will override the target's minimumSizeHint. It can be
-         * set to an ivalid size to reset the value to minimum hint.
-         */
-        setMinimumSize(size: Size): void {
+            size = component.minimumSizeHint();
             if (size.isValid()) {
                 size = size.boundedTo(MAX_ITEM_SIZE);
                 size = size.expandedTo(MIN_ITEM_SIZE);
-                this._minimumSize = size;
-            } else {
-                this._minimumSize = new Size();
+                return size;
             }
-            this.resize(this.size());
+            return new Size(MIN_ITEM_SIZE);
         }
 
         /**
-         * Returns the maximum allowed size of the item.
+         * Compute the maximum size of the component.
          */
         maximumSize(): Size {
-            var size = this._maximumSize;
-            if (size.isValid()) {
-                return new Size(size);
-            }
-            size = this._component.maximumSizeHint();
-            if (!size.isValid()) {
-                return new Size(MAX_ITEM_SIZE);
-            }
-            size = size.boundedTo(MAX_ITEM_SIZE);
-            size = size.expandedTo(MIN_ITEM_SIZE);
-            return size;
-        }
-
-        /**
-         * Set the maximum allowed size of the item.
-         */
-        setMaximumSize(size: Size): void {
+            var component = this.component;
+            var size = component.maximumSize;
             if (size.isValid()) {
                 size = size.boundedTo(MAX_ITEM_SIZE);
                 size = size.expandedTo(MIN_ITEM_SIZE);
-                this._maximumSize = size;
-            } else {
-                this._maximumSize = new Size();
+                return size;
             }
-            this.resize(this.size());
+            size = component.maximumSizeHint();
+            if (size.isValid()) {
+                size = size.boundedTo(MAX_ITEM_SIZE);
+                size = size.expandedTo(MIN_ITEM_SIZE);
+                return size;
+            }
+            return new Size(MAX_ITEM_SIZE);
         }
 
         /**
-         * Returns the preferred size of the item.
+         * Compute the preferred size of the component.
          */
         sizeHint(): Size {
-            var size = this._component.sizeHint();
+            var size = this.component.sizeHint();
             size = size.boundedTo(this.maximumSize());
             size = size.expandedTo(this.minimumSize());
             return size;
         }
 
         /**
-         * Initialize the component style geometry.
-         *
-         * @private
+         * Set the current geometry of the component.
          */
-        private _initGeometry(): void {
-            var style = this._component.element.style;
-            var size = this.sizeHint();
-            this._geometry.setSize(size);
-            style.position = "absolute";
-            style.left = "0px";
-            style.top = "0px";
-            style.width = size.width + "px";
-            style.height = size.height + "px";
+        setGeometry(rect: Rect) {
+            this.component.geometry = rect;
         }
-
-        /** 
-         * Synchronize the style geometry with the given rect.
-         *
-         * @private
-         */
-        private _syncGeometry(rect: Rect): void {
-            var left = rect.left;
-            var top = rect.top;
-            var width = rect.width();
-            var height = rect.height();
-            var style = this._component.element.style;
-            var current = this._geometry;
-            this._geometry = rect;
-            if (current.left !== left) {
-                style.left = left + "px";
-            }
-            if (current.top !== top) {
-                style.top = top + "px";
-            }
-            if (current.width() !== width) {
-                style.width = width + "px";
-            }
-            if (current.height() !== height) {
-                style.height = height + "px";
-            }
-        }
-
-        private _component: Component;
-        private _geometry: Rect = new Rect();
-        private _minimumSize: Size = new Size();
-        private _maximumSize: Size = new Size();
     }
 
 }

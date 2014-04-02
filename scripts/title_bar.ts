@@ -75,9 +75,9 @@ module porcelain {
         /** 
          * Construct a new TitleBar
          *
-         * @param target The adjustable item moved by the title bar.
+         * @param target The component to move with the title bar.
          */
-        constructor(target: ILayoutItem) {
+        constructor(target: Component) {
             super(target);
             this.addClass(TITLE_BAR_CLASS);
 
@@ -191,8 +191,8 @@ module porcelain {
             if (event.button !== 0) {
                 return;
             }
-            var btnBox = this._subItems.buttonBox;
-            var rect = new Rect(btnBox.element.getBoundingClientRect());
+            var elem = this._subItems.buttonBox.element;
+            var rect = new Rect(elem.getBoundingClientRect());
             var point = { x: event.clientX, y: event.clientY };
             if (rect.contains(point)) {
                 return;

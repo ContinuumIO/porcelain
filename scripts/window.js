@@ -37,7 +37,6 @@ var porcelain;
         function Window() {
             _super.call(this);
             this.mousedown = new porcelain.EventBinder("mousedown", this.element);
-            this._layoutItem = new porcelain.ComponentItem(this);
             this.addClass(WINDOW_CLASS);
 
             var children = [];
@@ -48,12 +47,12 @@ var porcelain;
 
             var self = this;
             GRIP_AREAS.forEach(function (area) {
-                var grip = new porcelain.SizeGrip(area, self._layoutItem);
+                var grip = new porcelain.SizeGrip(area, self);
                 grip.addClass(SIZE_GRIP_CLASS);
                 children.push(grip);
             });
 
-            var titleBar = this._titleBar = new porcelain.TitleBar(this._layoutItem);
+            var titleBar = this._titleBar = new porcelain.TitleBar(self);
             titleBar.addClass(TITLE_BAR_CLASS);
             titleBar.restoreButton.hide();
             titleBar.restoreButton.clicked.connect(this.restore, this);
@@ -69,6 +68,9 @@ var porcelain;
             this.mousedown.bind(this.onMouseDown, this);
 
             porcelain.globalNormalWindowStack.add(this);
+
+            this.element.style.position = "absolute";
+            this.size = this.sizeHint();
         }
         Window.prototype.destroy = function () {
             porcelain.globalNormalWindowStack.remove(this);
@@ -76,14 +78,6 @@ var porcelain;
             this._titleBar = null;
             this._body = null;
         };
-
-        Object.defineProperty(Window.prototype, "layoutItem", {
-            get: function () {
-                return this._layoutItem;
-            },
-            enumerable: true,
-            configurable: true
-        });
 
         Window.prototype.sizeHint = function () {
             return new porcelain.Size(192, 192);
@@ -97,12 +91,11 @@ var porcelain;
             return new porcelain.Size();
         };
 
-        Window.prototype.setVisible = function (visible) {
-            _super.prototype.setVisible.call(this, visible);
-            if (visible && !this.element.parentNode) {
-                var body = document.getElementsByTagName("body")[0];
-                body.appendChild(this.element);
+        Window.prototype.attach = function (elem) {
+            if (!elem) {
+                elem = document.getElementsByTagName("body")[0];
             }
+            elem.appendChild(this.element);
         };
 
         Window.prototype.raise = function () {

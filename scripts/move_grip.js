@@ -31,7 +31,7 @@ var porcelain;
         /**
         * Construct a new MoveGrip.
         *
-        * @param target The adjustable object moved by the grip.
+        * @param target The component to move with the grip.
         */
         function MoveGrip(target) {
             _super.call(this);
@@ -62,6 +62,15 @@ var porcelain;
         };
 
         /**
+        * The target component moved by the grip.
+        *
+        * @readonly
+        */
+        MoveGrip.prototype.target = function () {
+            return this._target;
+        };
+
+        /**
         * The mousedown handler.
         *
         * @protected
@@ -73,9 +82,9 @@ var porcelain;
             event.preventDefault();
             this.mouseup.bind(this.onMouseUp, this);
             this.mousemove.bind(this.onMouseMove, this);
-            var geo = this._target.geometry();
-            this._offsetX = event.pageX - geo.left;
-            this._offsetY = event.pageY - geo.top;
+            var pos = this._target.position;
+            this._offsetX = event.pageX - pos.x;
+            this._offsetY = event.pageY - pos.y;
         };
 
         /**
@@ -104,11 +113,8 @@ var porcelain;
             var vp = porcelain.viewport;
             var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
             var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
-            var origin = { x: x - this._offsetX, y: y - this._offsetY };
-            var item = this._target;
-            var rect = item.geometry();
-            rect.moveTopLeft(origin);
-            item.setGeometry(rect);
+            var origin = new porcelain.Point(x - this._offsetX, y - this._offsetY);
+            this._target.position = origin;
         };
         return MoveGrip;
     })(porcelain.Component);

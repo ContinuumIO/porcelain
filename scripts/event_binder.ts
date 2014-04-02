@@ -127,7 +127,6 @@ module porcelain {
                 if (p.listener === listener && p.context === context) {
                     // workaround http://typescript.codeplex.com/workitem/45
                     this._target.removeEventListener(this._type, <any>p);  
-                    console.log("removed");
                     this._proxies.splice(i, 1);
                     return;
                 }

@@ -68,7 +68,7 @@ var porcelain;
         /**
         * Construct a new TitleBar
         *
-        * @param target The adjustable item moved by the title bar.
+        * @param target The component to move with the title bar.
         */
         function TitleBar(target) {
             _super.call(this, target);
@@ -207,8 +207,8 @@ var porcelain;
             if (event.button !== 0) {
                 return;
             }
-            var btnBox = this._subItems.buttonBox;
-            var rect = new porcelain.Rect(btnBox.element.getBoundingClientRect());
+            var elem = this._subItems.buttonBox.element;
+            var rect = new porcelain.Rect(elem.getBoundingClientRect());
             var point = { x: event.clientX, y: event.clientY };
             if (rect.contains(point)) {
                 return;

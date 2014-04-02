@@ -59,12 +59,12 @@ module porcelain {
          * Construct a new SizeGrip.
          *
          * @param gripArea The grip area defining the size grip behavior.
-         * @param target The adjustable object to be resized by the grip.
+         * @param target The component to resize with the grip.
          */
-        constructor(gripArea: GripArea, target: ILayoutItem) {
+        constructor(gripArea: GripArea, target: Component) {
             super();
             this._gripArea = gripArea;
-            this._target = target;
+            this._item = new ComponentItem(target);
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
             this.mousedown.bind(this.onMouseDown, this);
@@ -75,7 +75,8 @@ module porcelain {
          */
         destroy(): void {
             super.destroy();
-            this._target = null;
+            this._item.component = null;
+            this._item = null;
         }
 
         /**
@@ -88,12 +89,12 @@ module porcelain {
         }
 
         /**
-         * The target object of the size grip.
+         * The target component resized by the size grip.
          *
          * @readonly
          */
-        get target(): ILayoutItem {
-            return this._target;
+        get target(): Component {
+            return this._item.component;
         }
 
         /**
@@ -105,11 +106,10 @@ module porcelain {
             if (event.button !== 0) {
                 return;
             }
-            console.log(this);
             event.preventDefault();
             this.mouseup.bind(this.onMouseUp, this);
             this.mousemove.bind(this.onMouseMove, this);
-            var geo = this._target.geometry();
+            var geo = this._item.geometry();
             switch (this._gripArea) {
                 case GripArea.Left:
                 case GripArea.TopLeft:
@@ -162,7 +162,7 @@ module porcelain {
         onMouseMove(event: MouseEvent): void {
             event.preventDefault();
             var vp = viewport;
-            var item = this._target;
+            var item = this._item;
             var geo = item.geometry();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
@@ -212,7 +212,7 @@ module porcelain {
         }
 
         private _gripArea: GripArea;
-        private _target: ILayoutItem;
+        private _item: ComponentItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }

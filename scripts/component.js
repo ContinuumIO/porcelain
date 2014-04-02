@@ -47,6 +47,49 @@ var porcelain;
             this._element = null;
         };
 
+        Object.defineProperty(Component.prototype, "element", {
+            /**
+            * The component's internal DOM element.
+            *
+            * @readonly
+            */
+            get: function () {
+                return this._element;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Component.prototype, "id", {
+            /**
+            * The id of the component's DOM element.
+            */
+            get: function () {
+                return this._element.id;
+            },
+            set: function (id) {
+                this._element.id = id;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Component.prototype, "display", {
+            /**
+            * The display value of the component's DOM element.
+            */
+            get: function () {
+                return this._element.style.display;
+            },
+            set: function (value) {
+                this._element.style.display = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         Object.defineProperty(Component.prototype, "parent", {
             /**
             * The parent Component of this component.
@@ -157,34 +200,6 @@ var porcelain;
             this._deparent();
         };
 
-        Object.defineProperty(Component.prototype, "element", {
-            /**
-            * The component's internal DOM element.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._element;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Component.prototype, "id", {
-            /**
-            * The id of the component's DOM element.
-            */
-            get: function () {
-                return this._element.id;
-            },
-            set: function (id) {
-                this._element.id = id;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         /**
         * Add a name or names to the element's CSS class name.
         *
@@ -222,47 +237,182 @@ var porcelain;
         /**
         * Show the underlying DOM element.
         *
-        * This is a convenience for setVisible(true);
+        * This is a convenience for `this.display = ""`;
         */
         Component.prototype.show = function () {
-            this.setVisible(true);
+            this.display = "";
         };
 
         /**
         * Hide the underlying DOM element.
         *
-        * This is a convenience for setVisible(false);
+        * This is a convenience for `this.display = "none"`;
         */
         Component.prototype.hide = function () {
-            this.setVisible(false);
+            this.display = "none";
         };
 
-        /**
-        * Set the visibility of the underlying DOM element.
-        *
-        * The default implementation of this method sets and clears
-        * the display property of the element style. This may be
-        * reimplemented by subclasses which require more control.
-        */
-        Component.prototype.setVisible = function (visible) {
-            var style = this.element.style;
-            if (visible) {
-                style.removeProperty("display");
-            } else {
-                style.display = "none";
-            }
-        };
+        Object.defineProperty(Component.prototype, "position", {
+            /**
+            * The current position of the component.
+            *
+            * This is the value as stored in the computed style. It
+            * will typically only have semantic meaning when using
+            * absolute positioning on the component element.
+            */
+            get: function () {
+                var style = window.getComputedStyle(this._element);
+                var x = parseInt(style.left);
+                var y = parseInt(style.top);
+                if (x !== x || y !== y) {
+                    return new porcelain.Point();
+                }
+                return new porcelain.Point(x, y);
+            },
+            set: function (point) {
+                var style = this._element.style;
+                style.left = point.x + "px";
+                style.top = point.y + "px";
+            },
+            enumerable: true,
+            configurable: true
+        });
 
-        /**
-        * Create the underlying element for the component.
-        *
-        * The default implementation creates a div.
-        *
-        * @protected.
-        */
-        Component.prototype.createElement = function () {
-            return document.createElement("div");
-        };
+
+        Object.defineProperty(Component.prototype, "size", {
+            /**
+            * The current size of the component.
+            *
+            * This is the value as stored in the computed style. It
+            * will typically only have semantic meaning when using
+            * absolute positioning on the component element.
+            */
+            get: function () {
+                var style = window.getComputedStyle(this._element);
+                var w = parseInt(style.width);
+                var h = parseInt(style.height);
+                if (w !== w || h !== h) {
+                    return new porcelain.Size();
+                }
+                return new porcelain.Size(w, h);
+            },
+            set: function (size) {
+                var style = this._element.style;
+                if (size.isValid()) {
+                    style.width = size.width + "px";
+                    style.height = size.height + "px";
+                } else {
+                    style.width = "";
+                    style.height = "";
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Component.prototype, "geometry", {
+            /**
+            * The current geometry of the component.
+            *
+            * This is the value as stored in the computed style. It
+            * will typically only have semantic meaning when using
+            * absolute positioning on the component element.
+            */
+            get: function () {
+                var style = window.getComputedStyle(this._element);
+                var x = parseInt(style.left);
+                var y = parseInt(style.top);
+                var w = parseInt(style.width);
+                var h = parseInt(style.height);
+                if (x !== x || y !== y || w !== w || h !== h) {
+                    return new porcelain.Rect();
+                }
+                return new porcelain.Rect(x, y, w, h);
+            },
+            set: function (rect) {
+                var style = this._element.style;
+                console.log(rect.left, " ", rect.top, " ", rect.width(), " ", rect.height());
+                if (rect.isValid()) {
+                    style.left = rect.left + "px";
+                    style.top = rect.top + "px";
+                    style.width = rect.width() + "px";
+                    style.height = rect.height() + "px";
+                } else {
+                    style.left = "";
+                    style.top = "";
+                    style.width = "";
+                    style.height = "";
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Component.prototype, "minimumSize", {
+            /**
+            * The minimum size of the component.
+            *
+            * This is the value as stored in the computed style. It
+            * will typically only have semantic meaning when using
+            * absolute positioning on the component element.
+            */
+            get: function () {
+                var style = window.getComputedStyle(this._element);
+                var w = parseInt(style.minWidth);
+                var h = parseInt(style.minHeight);
+                if (w !== w || h !== h) {
+                    return new porcelain.Size();
+                }
+                return new porcelain.Size(w, h);
+            },
+            set: function (size) {
+                var style = this._element.style;
+                if (size.isValid()) {
+                    style.minWidth = size.width + "px";
+                    style.minHeight = size.height + "px";
+                } else {
+                    style.minWidth = "";
+                    style.minHeight = "";
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Component.prototype, "maximumSize", {
+            /**
+            * The maximum size of the component.
+            *
+            * This is the value as stored in the computed style. It
+            * will typically only have semantic meaning when using
+            * absolute positioning on the component element.
+            */
+            get: function () {
+                var style = window.getComputedStyle(this._element);
+                var w = parseInt(style.maxWidth);
+                var h = parseInt(style.maxHeight);
+                if (w !== w || h !== h) {
+                    return new porcelain.Size();
+                }
+                return new porcelain.Size(w, h);
+            },
+            set: function (size) {
+                var style = this._element.style;
+                if (size.isValid()) {
+                    style.maxWidth = size.width + "px";
+                    style.maxHeight = size.height + "px";
+                } else {
+                    style.maxWidth = "";
+                    style.maxHeight = "";
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         /**
         * The preferred size of the component.
@@ -271,8 +421,8 @@ var porcelain;
         * the preferred layout size of the component. It is ignored
         * when using CSS to position the element.
         *
-        * This should be reimplemented by subclasses. The default
-        * implementation returns an invalid size.
+        * The default implementation of this method returns an invalid
+        * size. It should be reimplemented by subclasses.
         *
         * @protected
         */
@@ -287,8 +437,8 @@ var porcelain;
         * the preferred minimum layout size of the component. It is
         * ignored when using CSS to position the element.
         *
-        * This should be reimplemented by subclasses. The default
-        * implementation returns an invalid size.
+        * The default implementation of this method returns an invalid
+        * size. It should be reimplemented by subclasses.
         *
         * @protected
         */
@@ -310,6 +460,17 @@ var porcelain;
         */
         Component.prototype.maximumSizeHint = function () {
             return new porcelain.Size();
+        };
+
+        /**
+        * Create the underlying element for the component.
+        *
+        * The default implementation creates a div.
+        *
+        * @protected.
+        */
+        Component.prototype.createElement = function () {
+            return document.createElement("div");
         };
 
         /**
