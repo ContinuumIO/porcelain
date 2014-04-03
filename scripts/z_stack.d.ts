@@ -8,78 +8,78 @@
         /**
         * Construct a new ZStack.
         *
-        * @param minZ The Z-index to use for the bottom of the stack.
+        * @param minIndex The minimum Z-index of the stack.
         */
-        constructor(minZ: number);
+        constructor(minIndex: number);
         /**
-        * The item on the top of the stack.
+        * The component on the top of the stack.
         *
         * @readonly
         */
         public top : Component;
         /**
-        * The item on the bottom of the stack.
+        * The component on the bottom of the stack.
         *
         * @readonly
         */
         public bottom : Component;
         /**
-        * Returns true if the stack contains the item.
+        * Returns true if the stack contains the given component.
         *
-        * @param item The item of interest.
+        * @param component The component of interest.
         */
-        public contains(item: Component): boolean;
+        public contains(component: Component): boolean;
         /**
-        * Add an item to the top of the stack.
+        * Add a component to the top of the stack.
         *
-        * If the stack already contains the item, this is a no-op.
+        * If the stack already contains the component, this is a no-op.
         *
-        * @param item The item to add to the stack.
+        * @param component The component to add to the stack.
         */
-        public add(item: Component): void;
+        public add(component: Component): void;
         /**
-        * Remove an item from the stack and clear its Z-index.
+        * Remove a component from the stack and clear its Z-index.
         *
-        * If the stack does not contain the item, this is a no-op.
+        * If the stack does not contain the component, this is a no-op.
         */
-        public remove(item: Component): void;
+        public remove(component: Component): void;
         /**
-        * Raise the specified items to the top of the stack.
+        * Raise the specified components to the top of the stack.
         *
-        * The relative stacking order of the items will be maintained.
+        * The relative stacking order of the components will be maintained.
         */
-        public raise(...items: Component[]): void;
+        public raise(...components: Component[]): void;
         /**
-        * Lower the specified items to the bottom of the stack.
+        * Lower the specified components to the bottom of the stack.
         *
-        * The relative stacking order of the items will be maintained.
+        * The relative stacking order of the components will be maintained.
         */
-        public lower(...items: Component[]): void;
+        public lower(...components: Component[]): void;
         /**
-        * Classify the given items and current items into old and new.
+        * Classify the given and current components into old and new.
         *
         * @private
         */
-        private _classify(items);
+        private _classify(components);
         /**
-        * Update the Z-indices for the current stack items.
+        * Update the Z-indices for the current stack components.
         *
         * @private
         */
         private _updateIndices();
+        private _minIndex;
         private _stack;
-        private _minZ;
     }
     /**
-    * A predefinined Z-stack for normal window items.
+    * A predefinined Z-stack for normal window components.
     */
-    var globalNormalWindowStack: ZStack;
+    var normalWindowStack: ZStack;
     /**
-    * A predefined Z-stack for top-most Window items.
+    * A predefined Z-stack for top-most window components.
     */
-    var globalTopMostWindowStack: ZStack;
+    var topMostWindowStack: ZStack;
     /**
-    * A predefined Z-stack for popup window items.
+    * A predefined Z-stack for popup window components.
     */
-    var globalPopupWindowStack: ZStack;
+    var popupWindowStack: ZStack;
 }

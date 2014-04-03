@@ -10,30 +10,6 @@ var porcelain;
     
 
     /**
-    * Get the z-index of an item.
-    */
-    function getZIndex(item) {
-        var style = item.element.style;
-        return parseInt(style.zIndex) || 0;
-    }
-
-    /**
-    * Set the z-index of an item.
-    */
-    function setZIndex(item, index) {
-        var style = item.element.style;
-        style.zIndex = index.toString();
-    }
-
-    /**
-    * Clear the z-index on an item.
-    */
-    function clearZIndex(item) {
-        var style = item.element.style;
-        style.removeProperty("z-index");
-    }
-
-    /**
     * A class for managing the Z-order of a collection of Items.
     *
     * @class
@@ -42,15 +18,15 @@ var porcelain;
         /**
         * Construct a new ZStack.
         *
-        * @param minZ The Z-index to use for the bottom of the stack.
+        * @param minIndex The minimum Z-index of the stack.
         */
-        function ZStack(minZ) {
+        function ZStack(minIndex) {
             this._stack = [];
-            this._minZ = minZ;
+            this._minIndex = minIndex;
         }
         Object.defineProperty(ZStack.prototype, "top", {
             /**
-            * The item on the top of the stack.
+            * The component on the top of the stack.
             *
             * @readonly
             */
@@ -66,7 +42,7 @@ var porcelain;
 
         Object.defineProperty(ZStack.prototype, "bottom", {
             /**
-            * The item on the bottom of the stack.
+            * The component on the bottom of the stack.
             *
             * @readonly
             */
@@ -81,113 +57,113 @@ var porcelain;
         });
 
         /**
-        * Returns true if the stack contains the item.
+        * Returns true if the stack contains the given component.
         *
-        * @param item The item of interest.
+        * @param component The component of interest.
         */
-        ZStack.prototype.contains = function (item) {
-            return this._stack.indexOf(item) !== -1;
+        ZStack.prototype.contains = function (component) {
+            return this._stack.indexOf(component) !== -1;
         };
 
         /**
-        * Add an item to the top of the stack.
+        * Add a component to the top of the stack.
         *
-        * If the stack already contains the item, this is a no-op.
+        * If the stack already contains the component, this is a no-op.
         *
-        * @param item The item to add to the stack.
+        * @param component The component to add to the stack.
         */
-        ZStack.prototype.add = function (item) {
-            if (!item || this.contains(item)) {
+        ZStack.prototype.add = function (component) {
+            if (!component || this.contains(component)) {
                 return;
             }
-            var index = this._minZ + this._stack.length;
-            this._stack.push(item);
-            setZIndex(item, index);
+            var index = this._minIndex + this._stack.length;
+            this._stack.push(component);
+            component.zIndex = index;
         };
 
         /**
-        * Remove an item from the stack and clear its Z-index.
+        * Remove a component from the stack and clear its Z-index.
         *
-        * If the stack does not contain the item, this is a no-op.
+        * If the stack does not contain the component, this is a no-op.
         */
-        ZStack.prototype.remove = function (item) {
-            var index = this._stack.indexOf(item);
+        ZStack.prototype.remove = function (component) {
+            var index = this._stack.indexOf(component);
             if (index >= 0) {
                 this._stack.splice(index, 1);
-                clearZIndex(item);
+                component.zIndex = 0;
                 this._updateIndices();
             }
         };
 
         /**
-        * Raise the specified items to the top of the stack.
+        * Raise the specified components to the top of the stack.
         *
-        * The relative stacking order of the items will be maintained.
+        * The relative stacking order of the components will be maintained.
         */
         ZStack.prototype.raise = function () {
-            var items = [];
+            var components = [];
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                items[_i] = arguments[_i + 0];
+                components[_i] = arguments[_i + 0];
             }
-            if (items.length === 1 && items[0] === this.top) {
+            if (components.length === 1 && components[0] === this.top) {
                 return;
             }
-            var cr = this._classify(items);
-            this._stack = cr.oldItems.concat(cr.newItems);
+            var cr = this._classify(components);
+            this._stack = cr.oldComps.concat(cr.newComps);
             this._updateIndices();
         };
 
         /**
-        * Lower the specified items to the bottom of the stack.
+        * Lower the specified components to the bottom of the stack.
         *
-        * The relative stacking order of the items will be maintained.
+        * The relative stacking order of the components will be maintained.
         */
         ZStack.prototype.lower = function () {
-            var items = [];
+            var components = [];
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                items[_i] = arguments[_i + 0];
+                components[_i] = arguments[_i + 0];
             }
-            if (items.length === 1 && items[0] === this.bottom) {
+            if (components.length === 1 && components[0] === this.bottom) {
                 return;
             }
-            var cr = this._classify(items);
-            this._stack = cr.newItems.concat(cr.oldItems);
+            var cr = this._classify(components);
+            this._stack = cr.newComps.concat(cr.oldComps);
             this._updateIndices();
         };
 
         /**
-        * Classify the given items and current items into old and new.
+        * Classify the given and current components into old and new.
         *
         * @private
         */
-        ZStack.prototype._classify = function (items) {
-            var oldItems = [];
-            var newItems = [];
+        ZStack.prototype._classify = function (components) {
+            var oldComps = [];
+            var newComps = [];
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                var item = stack[i];
-                if (items.indexOf(item) === -1) {
-                    oldItems.push(item);
+                var component = stack[i];
+                if (components.indexOf(component) === -1) {
+                    oldComps.push(component);
                 } else {
-                    newItems.push(item);
+                    newComps.push(component);
                 }
             }
-            newItems.sort(function (a, b) {
-                return getZIndex(a) - getZIndex(b);
+            newComps.sort(function (a, b) {
+                return a.zIndex - b.zIndex;
             });
-            return { oldItems: oldItems, newItems: newItems };
+            return { oldComps: oldComps, newComps: newComps };
         };
 
         /**
-        * Update the Z-indices for the current stack items.
+        * Update the Z-indices for the current stack components.
         *
         * @private
         */
         ZStack.prototype._updateIndices = function () {
-            var minZ = this._minZ;
+            var minIndex = this._minIndex;
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                setZIndex(stack[i], i + minZ);
+                stack[i].zIndex = i + minIndex;
             }
         };
         return ZStack;
@@ -195,18 +171,18 @@ var porcelain;
     porcelain.ZStack = ZStack;
 
     /**
-    * A predefinined Z-stack for normal window items.
+    * A predefinined Z-stack for normal window components.
     */
-    porcelain.globalNormalWindowStack = new ZStack(10000);
+    porcelain.normalWindowStack = new ZStack(10000);
 
     /**
-    * A predefined Z-stack for top-most Window items.
+    * A predefined Z-stack for top-most window components.
     */
-    porcelain.globalTopMostWindowStack = new ZStack(20000);
+    porcelain.topMostWindowStack = new ZStack(20000);
 
     /**
-    * A predefined Z-stack for popup window items.
+    * A predefined Z-stack for popup window components.
     */
-    porcelain.globalPopupWindowStack = new ZStack(30000);
+    porcelain.popupWindowStack = new ZStack(30000);
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=z_stack.js.map
