@@ -48,9 +48,13 @@
         */
         public id : string;
         /**
-        * The display value of the component's DOM element.
+        * The CSS display value of the component's DOM element.
         */
         public display : string;
+        /**
+        * The CSS position value of the component's DOM element.
+        */
+        public position : string;
         /**
         * The parent Component of this component.
         *
@@ -126,54 +130,37 @@
         */
         public hide(): void;
         /**
-        * The current position of the component.
+        * The offset position of the component.
         *
-        * This is the value as stored in the computed style. It
-        * will typically only have semantic meaning when using
-        * absolute positioning on the component element.
+        * This should only be set when position is "absolute".
         */
-        public position : Point;
+        public offsetPos : Point;
         /**
-        * The current size of the component.
+        * The offset size of the component.
         *
-        * This is the value as stored in the computed style. It
-        * will typically only have semantic meaning when using
-        * absolute positioning on the component element.
+        * This should only be set when position is "absolute".
         */
-        public size : Size;
+        public offsetSize : Size;
         /**
-        * The current geometry of the component.
+        * The offset rect of the component.
         *
-        * This is the value as stored in the computed style. It
-        * will typically only have semantic meaning when using
-        * absolute positioning on the component element.
+        * This should only be set when position is "absolute".
         */
-        public geometry : Rect;
+        public offsetRect : Rect;
         /**
         * The minimum size of the component.
-        *
-        * This is the value as stored in the computed style. It
-        * will typically only have semantic meaning when using
-        * absolute positioning on the component element.
         */
         public minimumSize : Size;
         /**
         * The maximum size of the component.
-        *
-        * This is the value as stored in the computed style. It
-        * will typically only have semantic meaning when using
-        * absolute positioning on the component element.
         */
         public maximumSize : Size;
         /**
         * The preferred size of the component.
         *
-        * This value is used by procedural layout systems to retrieve
-        * the preferred layout size of the component. It is ignored
-        * when using CSS to position the element.
-        *
-        * The default implementation of this method returns an invalid
-        * size. It should be reimplemented by subclasses.
+        * This computes the natural size of the component and is used
+        * by the procedural layout system. The default implementation
+        * of this method returns an invalid size.
         *
         * @protected
         */
@@ -181,12 +168,9 @@
         /**
         * The preferred minimum size of the component.
         *
-        * This value is used by procedural layout systems to retrieve
-        * the preferred minimum layout size of the component. It is
-        * ignored when using CSS to position the element.
-        *
-        * The default implementation of this method returns an invalid
-        * size. It should be reimplemented by subclasses.
+        * This computes the minimal size of the component and is used
+        * by the procedural layout system. The default implementation
+        * of this method returns an invalid size.
         *
         * @protected
         */
@@ -194,12 +178,9 @@
         /**
         * The preferred maximum size of the component.
         *
-        * This value is used by procedural layout systems to retrieve
-        * the preferred maximum layout size of the component. It is
-        * ignored when using CSS to position the element.
-        *
-        * This should be reimplemented by subclasses. The default
-        * implementation returns an invalid size.
+        * This computes the maximal size of the component and is used
+        * by the procedural layout system. The default implementation
+        * of this method returns an invalid size.
         *
         * @protected
         */

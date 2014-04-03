@@ -77,13 +77,28 @@ var porcelain;
 
         Object.defineProperty(Component.prototype, "display", {
             /**
-            * The display value of the component's DOM element.
+            * The CSS display value of the component's DOM element.
             */
             get: function () {
-                return this._element.style.display;
+                return window.getComputedStyle(this._element).display;
             },
             set: function (value) {
                 this._element.style.display = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(Component.prototype, "position", {
+            /**
+            * The CSS position value of the component's DOM element.
+            */
+            get: function () {
+                return window.getComputedStyle(this._element).position;
+            },
+            set: function (value) {
+                this._element.style.position = value;
             },
             enumerable: true,
             configurable: true
@@ -252,21 +267,16 @@ var porcelain;
             this.display = "none";
         };
 
-        Object.defineProperty(Component.prototype, "position", {
+        Object.defineProperty(Component.prototype, "offsetPos", {
             /**
-            * The current position of the component.
+            * The offset position of the component.
             *
-            * This is the value as stored in the computed style. It
-            * will typically only have semantic meaning when using
-            * absolute positioning on the component element.
+            * This should only be set when position is "absolute".
             */
             get: function () {
-                var style = window.getComputedStyle(this._element);
-                var x = parseInt(style.left);
-                var y = parseInt(style.top);
-                if (x !== x || y !== y) {
-                    return new porcelain.Point();
-                }
+                var elem = this._element;
+                var x = elem.offsetLeft;
+                var y = elem.offsetTop;
                 return new porcelain.Point(x, y);
             },
             set: function (point) {
@@ -279,21 +289,16 @@ var porcelain;
         });
 
 
-        Object.defineProperty(Component.prototype, "size", {
+        Object.defineProperty(Component.prototype, "offsetSize", {
             /**
-            * The current size of the component.
+            * The offset size of the component.
             *
-            * This is the value as stored in the computed style. It
-            * will typically only have semantic meaning when using
-            * absolute positioning on the component element.
+            * This should only be set when position is "absolute".
             */
             get: function () {
-                var style = window.getComputedStyle(this._element);
-                var w = parseInt(style.width);
-                var h = parseInt(style.height);
-                if (w !== w || h !== h) {
-                    return new porcelain.Size();
-                }
+                var elem = this._element;
+                var w = elem.offsetWidth;
+                var h = elem.offsetHeight;
                 return new porcelain.Size(w, h);
             },
             set: function (size) {
@@ -311,28 +316,22 @@ var porcelain;
         });
 
 
-        Object.defineProperty(Component.prototype, "geometry", {
+        Object.defineProperty(Component.prototype, "offsetRect", {
             /**
-            * The current geometry of the component.
+            * The offset rect of the component.
             *
-            * This is the value as stored in the computed style. It
-            * will typically only have semantic meaning when using
-            * absolute positioning on the component element.
+            * This should only be set when position is "absolute".
             */
             get: function () {
-                var style = window.getComputedStyle(this._element);
-                var x = parseInt(style.left);
-                var y = parseInt(style.top);
-                var w = parseInt(style.width);
-                var h = parseInt(style.height);
-                if (x !== x || y !== y || w !== w || h !== h) {
-                    return new porcelain.Rect();
-                }
+                var elem = this._element;
+                var x = elem.offsetLeft;
+                var y = elem.offsetTop;
+                var w = elem.offsetWidth;
+                var h = elem.offsetHeight;
                 return new porcelain.Rect(x, y, w, h);
             },
             set: function (rect) {
                 var style = this._element.style;
-                console.log(rect.left, " ", rect.top, " ", rect.width(), " ", rect.height());
                 if (rect.isValid()) {
                     style.left = rect.left + "px";
                     style.top = rect.top + "px";
@@ -353,10 +352,6 @@ var porcelain;
         Object.defineProperty(Component.prototype, "minimumSize", {
             /**
             * The minimum size of the component.
-            *
-            * This is the value as stored in the computed style. It
-            * will typically only have semantic meaning when using
-            * absolute positioning on the component element.
             */
             get: function () {
                 var style = window.getComputedStyle(this._element);
@@ -385,10 +380,6 @@ var porcelain;
         Object.defineProperty(Component.prototype, "maximumSize", {
             /**
             * The maximum size of the component.
-            *
-            * This is the value as stored in the computed style. It
-            * will typically only have semantic meaning when using
-            * absolute positioning on the component element.
             */
             get: function () {
                 var style = window.getComputedStyle(this._element);
@@ -417,12 +408,9 @@ var porcelain;
         /**
         * The preferred size of the component.
         *
-        * This value is used by procedural layout systems to retrieve
-        * the preferred layout size of the component. It is ignored
-        * when using CSS to position the element.
-        *
-        * The default implementation of this method returns an invalid
-        * size. It should be reimplemented by subclasses.
+        * This computes the natural size of the component and is used
+        * by the procedural layout system. The default implementation
+        * of this method returns an invalid size.
         *
         * @protected
         */
@@ -433,12 +421,9 @@ var porcelain;
         /**
         * The preferred minimum size of the component.
         *
-        * This value is used by procedural layout systems to retrieve
-        * the preferred minimum layout size of the component. It is
-        * ignored when using CSS to position the element.
-        *
-        * The default implementation of this method returns an invalid
-        * size. It should be reimplemented by subclasses.
+        * This computes the minimal size of the component and is used
+        * by the procedural layout system. The default implementation
+        * of this method returns an invalid size.
         *
         * @protected
         */
@@ -449,12 +434,9 @@ var porcelain;
         /**
         * The preferred maximum size of the component.
         *
-        * This value is used by procedural layout systems to retrieve
-        * the preferred maximum layout size of the component. It is
-        * ignored when using CSS to position the element.
-        *
-        * This should be reimplemented by subclasses. The default
-        * implementation returns an invalid size.
+        * This computes the maximal size of the component and is used
+        * by the procedural layout system. The default implementation
+        * of this method returns an invalid size.
         *
         * @protected
         */
