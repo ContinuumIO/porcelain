@@ -101,7 +101,7 @@ module porcelain {
 
             var btnBox = new Component();
             btnBox.addClass(BUTTON_BOX_CLASS);
-            btnBox.append(minBtn, maxBtn, rstBtn, clsBtn);
+            btnBox.append(minBtn, rstBtn, maxBtn, clsBtn);
 
             this._subItems = {
                 icon: icon,
