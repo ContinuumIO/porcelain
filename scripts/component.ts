@@ -112,6 +112,18 @@ module porcelain {
         }
 
         /**
+         * The CSS Z-index of the component's DOM element.
+         */
+        get zIndex(): number {
+            var style = window.getComputedStyle(this._element);
+            return parseInt(style.zIndex) || 0;
+        }
+
+        set zIndex(index: number) {
+            this._element.style.zIndex = index ? index.toString() : "";
+        }
+
+        /**
          * The parent Component of this component.
          *
          * @readonly

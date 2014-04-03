@@ -105,6 +105,22 @@ var porcelain;
         });
 
 
+        Object.defineProperty(Component.prototype, "zIndex", {
+            /**
+            * The CSS Z-index of the component's DOM element.
+            */
+            get: function () {
+                var style = window.getComputedStyle(this._element);
+                return parseInt(style.zIndex) || 0;
+            },
+            set: function (index) {
+                this._element.style.zIndex = index ? index.toString() : "";
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
         Object.defineProperty(Component.prototype, "parent", {
             /**
             * The parent Component of this component.

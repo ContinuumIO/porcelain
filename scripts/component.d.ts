@@ -56,6 +56,10 @@
         */
         public position : string;
         /**
+        * The CSS Z-index of the component's DOM element.
+        */
+        public zIndex : number;
+        /**
         * The parent Component of this component.
         *
         * @readonly
