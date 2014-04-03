@@ -53,7 +53,7 @@ module porcelain {
      */
     interface ITitleBarSubItems {
         icon: Component;
-        label: Component;
+        label: Label;
         minimizeButton: Button;
         maximizeButton: Button;
         restoreButton: Button;
@@ -84,7 +84,7 @@ module porcelain {
             var icon = new Component();
             icon.addClass(ICON_CLASS);
 
-            var label = new Component();
+            var label = new Label();
             label.addClass(LABEL_CLASS);
 
             var minBtn = new Button();
@@ -139,7 +139,7 @@ module porcelain {
          *
          * @readonly
          */
-        get label(): Component {
+        get label(): Label {
             return this._subItems.label;
         }
 

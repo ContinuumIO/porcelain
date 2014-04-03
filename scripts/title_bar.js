@@ -77,7 +77,7 @@ var porcelain;
             var icon = new porcelain.Component();
             icon.addClass(ICON_CLASS);
 
-            var label = new porcelain.Component();
+            var label = new porcelain.Label();
             label.addClass(LABEL_CLASS);
 
             var minBtn = new porcelain.Button();

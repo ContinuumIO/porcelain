@@ -29,7 +29,7 @@
         *
         * @readonly
         */
-        public label : Component;
+        public label : Label;
         /**
         * The close button attached to the title bar.
         *
