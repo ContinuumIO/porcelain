@@ -13,117 +13,233 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
+    /**
+    * The class added to a Window instance.
+    */
     var WINDOW_CLASS = "p-Window";
 
+    /**
+    * The class added to the body div of a Window.
+    */
     var BODY_CLASS = "p-Window-body";
 
+    /**
+    * The class added to a size grip on a Window.
+    */
     var SIZE_GRIP_CLASS = "p-Window-sizeGrip";
 
+    /**
+    * The class added a Window title bar.
+    */
     var TITLE_BAR_CLASS = "p-Window-titleBar";
 
-    var GRIP_AREAS = [
-        0 /* Left */,
-        1 /* Top */,
-        2 /* Right */,
-        3 /* Bottom */,
-        4 /* TopLeft */,
-        5 /* TopRight */,
-        6 /* BottomLeft */,
-        7 /* BottomRight */
-    ];
+    
 
+    /**
+    * An enum defining the window state.
+    */
+    var WindowState;
+    (function (WindowState) {
+        WindowState[WindowState["Normal"] = 0] = "Normal";
+        WindowState[WindowState["Minimized"] = 1] = "Minimized";
+        WindowState[WindowState["Maximized"] = 2] = "Maximized";
+    })(WindowState || (WindowState = {}));
+
+    /**
+    * A top-level Window component.
+    *
+    * A Window looks and behaves much like its desktop counterpart.
+    * It should never be added as the child of another component.
+    */
     var Window = (function (_super) {
         __extends(Window, _super);
+        /**
+        * Construct a new Window.
+        */
         function Window() {
             _super.call(this);
+            /**
+            * The mousedown event handler.
+            */
             this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            this._windowState = 0 /* Normal */;
             this.addClass(WINDOW_CLASS);
 
+            // The children to be added to the window.
             var children = [];
 
-            var body = this._body = new porcelain.Component();
+            // The body component which holds the window content.
+            var body = new porcelain.Component();
             body.addClass(BODY_CLASS);
             children.push(body);
 
-            var self = this;
-            GRIP_AREAS.forEach(function (area) {
-                var grip = new porcelain.SizeGrip(area, self);
+            // The size grips for interactive window resizing.
+            var gripAreas = porcelain.enumValues(porcelain.GripArea);
+            for (var i = 0, n = gripAreas.length; i < n; ++i) {
+                var grip = new porcelain.SizeGrip(gripAreas[i], this);
                 grip.addClass(SIZE_GRIP_CLASS);
                 children.push(grip);
-            });
+            }
 
-            var titleBar = this._titleBar = new porcelain.TitleBar(self);
+            // The window title bar.
+            var titleBar = new porcelain.TitleBar(this);
             titleBar.addClass(TITLE_BAR_CLASS);
-            titleBar.restoreButton.hide();
+            children.push(titleBar);
+
+            // The restore button is hidden by default, and shown
+            // when the window is maximized.
+            titleBar.restoreButton.display = "none";
+
+            // Connect the title bar button clicked signals.
             titleBar.restoreButton.clicked.connect(this.restore, this);
             titleBar.maximizeButton.clicked.connect(this.maximize, this);
             titleBar.minimizeButton.clicked.connect(this.minimize, this);
             titleBar.closeButton.clicked.connect(this.close, this);
-            titleBar.label.element.innerHTML = "The Window Title";
 
-            children.push(titleBar);
-
-            this.append.apply(this, children);
-
+            // Bind the Window mousedown handler.
             this.mousedown.bind(this.onMouseDown, this);
 
+            // Add the window children.
+            this.append.apply(this, children);
+
+            // Set the positioning mode and initial size of the window.
             this.position = "absolute";
             this.offsetSize = this.minimumSizeHint();
 
-            porcelain.globalNormalWindowStack.add(this);
+            // Add the window to the global Z stack.
+            porcelain.normalWindowStack.add(this);
+
+            // Store the sub items for later use.
+            this._subItems = {
+                titleBar: titleBar,
+                body: body
+            };
         }
+        /**
+        * Destroy the Window component.
+        */
         Window.prototype.destroy = function () {
-            porcelain.globalNormalWindowStack.remove(this);
+            porcelain.normalWindowStack.remove(this);
             _super.prototype.destroy.call(this);
-            this._titleBar = null;
-            this._body = null;
+            this._subItems = null;
         };
 
+        Object.defineProperty(Window.prototype, "title", {
+            /**
+            * The title text in the Window title bar.
+            */
+            get: function () {
+                return this._subItems.titleBar.label.text;
+            },
+            set: function (value) {
+                this._subItems.titleBar.label.text = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        /**
+        * Attach the Window to the given DOM element.
+        *
+        * If not provided, it will be attached to the document body.
+        */
+        Window.prototype.attach = function (elem) {
+            (elem || document.body).appendChild(this.element);
+        };
+
+        /**
+        * Raise the window to the top of the Z order.
+        */
+        Window.prototype.raise = function () {
+            porcelain.normalWindowStack.raise(this);
+        };
+
+        /**
+        * Lower the window to the bottom of the Z order.
+        */
+        Window.prototype.lower = function () {
+            porcelain.normalWindowStack.lower(this);
+        };
+
+        /**
+        * Maximize the window to fit the browser page.
+        */
+        Window.prototype.maximize = function () {
+            console.log("maximize me");
+            this._setWindowState(2 /* Maximized */);
+        };
+
+        /**
+        * Restore the window to its normal size.
+        */
+        Window.prototype.restore = function () {
+            console.log("restore me");
+            this._setWindowState(0 /* Normal */);
+        };
+
+        /**
+        * Minimize the window to the task bar.
+        */
+        Window.prototype.minimize = function () {
+            console.log("minimize me");
+            this._setWindowState(1 /* Minimized */);
+        };
+
+        /**
+        * Close the window.
+        *
+        * This will hide the window and then destroy it.
+        */
+        Window.prototype.close = function () {
+            this.display = "none";
+            this.destroy();
+        };
+
+        /**
+        * A reimplemented parent class method.
+        *
+        * Returns the computed minimum size of the window.
+        *
+        * @protected
+        */
         Window.prototype.minimumSizeHint = function () {
             return new porcelain.Size(192, 192);
         };
 
-        Window.prototype.attach = function (elem) {
-            if (!elem) {
-                elem = document.getElementsByTagName("body")[0];
-            }
-            elem.appendChild(this.element);
-        };
-
-        Window.prototype.raise = function () {
-            porcelain.globalNormalWindowStack.raise(this);
-        };
-
-        Window.prototype.lower = function () {
-            porcelain.globalNormalWindowStack.lower(this);
-        };
-
+        /**
+        * The mousedown event handler.
+        *
+        * @protected
+        */
         Window.prototype.onMouseDown = function (event) {
             this.raise();
         };
 
-        Window.prototype.maximize = function () {
-            var titleBar = this._titleBar;
-            titleBar.maximizeButton.hide();
-            titleBar.restoreButton.show();
-            console.log("maximize me");
-        };
-
-        Window.prototype.restore = function () {
-            var titleBar = this._titleBar;
-            titleBar.restoreButton.hide();
-            titleBar.maximizeButton.show();
-            console.log("restore me");
-        };
-
-        Window.prototype.minimize = function () {
-            console.log("minimize me");
-        };
-
-        Window.prototype.close = function () {
-            console.log("close me");
-            this.hide();
-            this.destroy();
+        /**
+        * An internal helper method for setting the window state.
+        */
+        Window.prototype._setWindowState = function (state) {
+            if (state === this._windowState) {
+                return;
+            }
+            this._windowState = state;
+            var titleBar = this._subItems.titleBar;
+            var maxBtn = titleBar.maximizeButton;
+            var rstBtn = titleBar.restoreButton;
+            switch (state) {
+                case 0 /* Normal */:
+                case 1 /* Minimized */:
+                    rstBtn.display = "none";
+                    maxBtn.display = "";
+                    break;
+                case 2 /* Maximized */:
+                    maxBtn.display = "none";
+                    rstBtn.display = "";
+                    break;
+                default:
+                    break;
+            }
         };
         return Window;
     })(porcelain.Component);
