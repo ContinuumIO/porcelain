@@ -62,7 +62,7 @@ var porcelain;
 
         Object.defineProperty(Component.prototype, "id", {
             /**
-            * The id of the component's DOM element.
+            * The id of the component and its DOM element.
             */
             get: function () {
                 return this._element.id;
@@ -75,9 +75,35 @@ var porcelain;
         });
 
 
+        Object.defineProperty(Component.prototype, "style", {
+            /**
+            * The inline style object for the component element.
+            *
+            * @readonly
+            */
+            get: function () {
+                return this._element.style;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Component.prototype, "computedStyle", {
+            /**
+            * The computed style object for the component element.
+            *
+            * @readonly
+            */
+            get: function () {
+                return window.getComputedStyle(this._element);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(Component.prototype, "display", {
             /**
-            * The CSS display value of the component's DOM element.
+            * The CSS display value for the component element.
             */
             get: function () {
                 return window.getComputedStyle(this._element).display;
@@ -92,29 +118,13 @@ var porcelain;
 
         Object.defineProperty(Component.prototype, "position", {
             /**
-            * The CSS position value of the component's DOM element.
+            * The CSS position value for the component element.
             */
             get: function () {
                 return window.getComputedStyle(this._element).position;
             },
             set: function (value) {
                 this._element.style.position = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "zIndex", {
-            /**
-            * The CSS Z-index of the component's DOM element.
-            */
-            get: function () {
-                var style = window.getComputedStyle(this._element);
-                return parseInt(style.zIndex) || 0;
-            },
-            set: function (index) {
-                this._element.style.zIndex = index ? index.toString() : "";
             },
             enumerable: true,
             configurable: true
@@ -263,24 +273,6 @@ var porcelain;
             if (newName !== currName) {
                 this._element.className = newName;
             }
-        };
-
-        /**
-        * Show the underlying DOM element.
-        *
-        * This is a convenience for `this.display = ""`;
-        */
-        Component.prototype.show = function () {
-            this.display = "";
-        };
-
-        /**
-        * Hide the underlying DOM element.
-        *
-        * This is a convenience for `this.display = "none"`;
-        */
-        Component.prototype.hide = function () {
-            this.display = "none";
         };
 
         Object.defineProperty(Component.prototype, "offsetPos", {

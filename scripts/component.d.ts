@@ -44,21 +44,29 @@
         */
         public element : HTMLElement;
         /**
-        * The id of the component's DOM element.
+        * The id of the component and its DOM element.
         */
         public id : string;
         /**
-        * The CSS display value of the component's DOM element.
+        * The inline style object for the component element.
+        *
+        * @readonly
+        */
+        public style : CSSStyleDeclaration;
+        /**
+        * The computed style object for the component element.
+        *
+        * @readonly
+        */
+        public computedStyle : CSSStyleDeclaration;
+        /**
+        * The CSS display value for the component element.
         */
         public display : string;
         /**
-        * The CSS position value of the component's DOM element.
+        * The CSS position value for the component element.
         */
         public position : string;
-        /**
-        * The CSS Z-index of the component's DOM element.
-        */
-        public zIndex : number;
         /**
         * The parent Component of this component.
         *
@@ -121,18 +129,6 @@
         * @param className - the class name(s) to remove from the element.
         */
         public removeClass(className: string): void;
-        /**
-        * Show the underlying DOM element.
-        *
-        * This is a convenience for `this.display = ""`;
-        */
-        public show(): void;
-        /**
-        * Hide the underlying DOM element.
-        *
-        * This is a convenience for `this.display = "none"`;
-        */
-        public hide(): void;
         /**
         * The offset position of the component.
         *

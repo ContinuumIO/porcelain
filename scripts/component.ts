@@ -79,7 +79,7 @@ module porcelain {
         }
 
         /**
-         * The id of the component's DOM element.
+         * The id of the component and its DOM element.
          */
         get id(): string {
             return this._element.id
@@ -90,7 +90,25 @@ module porcelain {
         }
 
         /**
-         * The CSS display value of the component's DOM element.
+         * The inline style object for the component element.
+         * 
+         * @readonly
+         */
+        get style(): CSSStyleDeclaration {
+            return this._element.style;
+        }
+
+        /**
+         * The computed style object for the component element.
+         *
+         * @readonly
+         */
+        get computedStyle(): CSSStyleDeclaration {
+            return window.getComputedStyle(this._element);
+        }
+
+        /**
+         * The CSS display value for the component element.
          */
         get display(): string {
             return window.getComputedStyle(this._element).display;
@@ -101,7 +119,7 @@ module porcelain {
         }
 
         /**
-         * The CSS position value of the component's DOM element.
+         * The CSS position value for the component element.
          */
         get position(): string {
             return window.getComputedStyle(this._element).position;
@@ -109,18 +127,6 @@ module porcelain {
 
         set position(value: string) {
             this._element.style.position = value;
-        }
-
-        /**
-         * The CSS Z-index of the component's DOM element.
-         */
-        get zIndex(): number {
-            var style = window.getComputedStyle(this._element);
-            return parseInt(style.zIndex) || 0;
-        }
-
-        set zIndex(index: number) {
-            this._element.style.zIndex = index ? index.toString() : "";
         }
 
         /**
@@ -245,24 +251,6 @@ module porcelain {
             if (newName !== currName) {
                 this._element.className = newName;
             }
-        }
-
-        /**
-         * Show the underlying DOM element.
-         *
-         * This is a convenience for `this.display = ""`;
-         */
-        show(): void {
-            this.display = "";
-        }
-
-        /**
-         * Hide the underlying DOM element.
-         *
-         * This is a convenience for `this.display = "none"`;
-         */
-        hide(): void {
-            this.display = "none";
         }
 
         /**
