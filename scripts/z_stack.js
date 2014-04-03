@@ -10,6 +10,20 @@ var porcelain;
     
 
     /**
+    * Get the numeric Z-index of the given component.
+    */
+    function getZIndex(component) {
+        return parseInt(component.computedStyle.zIndex) || 0;
+    }
+
+    /**
+    * Set the numeric Z-index of the given component.
+    */
+    function setZIndex(component, index) {
+        component.style.zIndex = index ? index.toString() : "";
+    }
+
+    /**
     * A class for managing the Z-order of a collection of Items.
     *
     * @class
@@ -78,7 +92,7 @@ var porcelain;
             }
             var index = this._minIndex + this._stack.length;
             this._stack.push(component);
-            component.zIndex = index;
+            setZIndex(component, index);
         };
 
         /**
@@ -90,7 +104,7 @@ var porcelain;
             var index = this._stack.indexOf(component);
             if (index >= 0) {
                 this._stack.splice(index, 1);
-                component.zIndex = 0;
+                setZIndex(component, 0);
                 this._updateIndices();
             }
         };
@@ -149,7 +163,7 @@ var porcelain;
                 }
             }
             newComps.sort(function (a, b) {
-                return a.zIndex - b.zIndex;
+                return getZIndex(a) - getZIndex(b);
             });
             return { oldComps: oldComps, newComps: newComps };
         };
@@ -163,7 +177,7 @@ var porcelain;
             var minIndex = this._minIndex;
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                stack[i].zIndex = i + minIndex;
+                setZIndex(stack[i], minIndex + i);
             }
         };
         return ZStack;

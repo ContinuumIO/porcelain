@@ -15,6 +15,22 @@ module porcelain {
         newComps: Component[];
     }
 
+    
+    /** 
+     * Get the numeric Z-index of the given component.
+     */
+    function getZIndex(component: Component): number {
+        return parseInt(component.computedStyle.zIndex) || 0;
+    }
+
+
+    /**
+     * Set the numeric Z-index of the given component.
+     */
+    function setZIndex(component: Component, index: number): void {
+        component.style.zIndex = index ? index.toString() : "";
+    }
+
 
     /**
      * A class for managing the Z-order of a collection of Items.
@@ -78,7 +94,7 @@ module porcelain {
             }
             var index = this._minIndex + this._stack.length;
             this._stack.push(component);
-            component.zIndex = index;
+            setZIndex(component, index);
         }
 
         /**
@@ -90,7 +106,7 @@ module porcelain {
             var index = this._stack.indexOf(component);
             if (index >= 0) {
                 this._stack.splice(index, 1);
-                component.zIndex = 0;
+                setZIndex(component, 0);
                 this._updateIndices();
             }
         }
@@ -141,7 +157,7 @@ module porcelain {
                 }
             }
             newComps.sort(function (a, b) {
-                return a.zIndex - b.zIndex;
+                return getZIndex(a) - getZIndex(b);
             });
             return { oldComps: oldComps, newComps: newComps };
         }
@@ -155,7 +171,7 @@ module porcelain {
             var minIndex = this._minIndex;
             var stack = this._stack;
             for (var i = 0, n = stack.length; i < n; ++i) {
-                stack[i].zIndex = i + minIndex;
+                setZIndex(stack[i], minIndex + i);
             }
         }
 
