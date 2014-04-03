@@ -79,7 +79,7 @@ module porcelain {
             event.preventDefault();
             this.mouseup.bind(this.onMouseUp, this);
             this.mousemove.bind(this.onMouseMove, this);
-            var pos = this._target.position;
+            var pos = this._target.offsetPos;
             this._offsetX = event.pageX - pos.x;
             this._offsetY = event.pageY - pos.y;
         }
@@ -110,8 +110,8 @@ module porcelain {
             var vp = viewport;
             var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
             var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
-            var origin = new Point(x - this._offsetX, y - this._offsetY);
-            this._target.position = origin;
+            var pos = new Point(x - this._offsetX, y - this._offsetY);
+            this._target.offsetPos = pos;
         }
 
         private _target: Component;

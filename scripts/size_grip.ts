@@ -109,29 +109,29 @@ module porcelain {
             event.preventDefault();
             this.mouseup.bind(this.onMouseUp, this);
             this.mousemove.bind(this.onMouseMove, this);
-            var geo = this._item.geometry();
+            var rect = this._item.offsetRect();
             switch (this._gripArea) {
                 case GripArea.Left:
                 case GripArea.TopLeft:
                 case GripArea.BottomLeft:
-                    this._offsetX = event.pageX - geo.left;
+                    this._offsetX = event.pageX - rect.left;
                     break;
                 case GripArea.Right:
                 case GripArea.TopRight:
                 case GripArea.BottomRight:
-                    this._offsetX = event.pageX - geo.right;
+                    this._offsetX = event.pageX - rect.right;
                     break;
             }
             switch (this._gripArea) {
                 case GripArea.Top:
                 case GripArea.TopLeft:
                 case GripArea.TopRight:
-                    this._offsetY = event.pageY - geo.top;
+                    this._offsetY = event.pageY - rect.top;
                     break;
                 case GripArea.Bottom:
                 case GripArea.BottomLeft:
                 case GripArea.BottomRight:
-                    this._offsetY = event.pageY - geo.bottom;
+                    this._offsetY = event.pageY - rect.bottom;
                     break;
                 default:
                     break;
@@ -163,7 +163,7 @@ module porcelain {
             event.preventDefault();
             var vp = viewport;
             var item = this._item;
-            var geo = item.geometry();
+            var rect = item.offsetRect();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
             var x = event.pageX - this._offsetX;
@@ -175,16 +175,16 @@ module porcelain {
                 case GripArea.Left:
                 case GripArea.TopLeft:
                 case GripArea.BottomLeft:
-                    minX = geo.right - maxSize.width;
-                    maxX = geo.right - minSize.width;
-                    geo.left = Math.min(Math.max(minX, x), maxX);
+                    minX = rect.right - maxSize.width;
+                    maxX = rect.right - minSize.width;
+                    rect.left = Math.min(Math.max(minX, x), maxX);
                     break;
                 case GripArea.Right:
                 case GripArea.TopRight:
                 case GripArea.BottomRight:
-                    minX = geo.left + minSize.width;
-                    maxX = geo.left + maxSize.width;
-                    geo.right = Math.min(Math.max(minX, x), maxX);
+                    minX = rect.left + minSize.width;
+                    maxX = rect.left + maxSize.width;
+                    rect.right = Math.min(Math.max(minX, x), maxX);
                     break;
                 default:
                     break;
@@ -194,21 +194,21 @@ module porcelain {
                 case GripArea.Top:
                 case GripArea.TopLeft:
                 case GripArea.TopRight:
-                    minY = geo.bottom - maxSize.height;
-                    maxY = geo.bottom - minSize.height;
-                    geo.top = Math.min(Math.max(minY, y), maxY);
+                    minY = rect.bottom - maxSize.height;
+                    maxY = rect.bottom - minSize.height;
+                    rect.top = Math.min(Math.max(minY, y), maxY);
                     break;
                 case GripArea.Bottom:
                 case GripArea.BottomLeft:
                 case GripArea.BottomRight:
-                    minY = geo.top + minSize.height;
-                    maxY = geo.top + maxSize.height;
-                    geo.bottom = Math.min(Math.max(minY, y), maxY);
+                    minY = rect.top + minSize.height;
+                    maxY = rect.top + maxSize.height;
+                    rect.bottom = Math.min(Math.max(minY, y), maxY);
                     break;
                 default:
                     break;
             }
-            item.setGeometry(geo);
+            item.setOffsetRect(rect);
         }
 
         private _gripArea: GripArea;

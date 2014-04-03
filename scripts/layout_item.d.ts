@@ -16,10 +16,6 @@
     */
     interface ILayoutItem {
         /**
-        * Returns the object's geometry rect.
-        */
-        geometry(): Rect;
-        /**
         * Returns the computed minimum size of the object.
         */
         minimumSize(): Size;
@@ -32,15 +28,16 @@
         */
         sizeHint(): Size;
         /**
-        * Set the objects geometry to the given rect.
+        * Returns the object's offset rect.
         */
-        setGeometry(rect: Rect): any;
+        offsetRect(): Rect;
+        /**
+        * Sets the object's offset rect.
+        */
+        setOffsetRect(rect: Rect): any;
     }
     /**
     * A class which implements ILayoutItem for a Component.
-    *
-    * When a ComponentItem is instantiated an a Component, the
-    * component element is forced into 'absolute' positioning.
     *
     * @class
     */
@@ -52,10 +49,6 @@
         * @param component The component to manipulate.
         */
         constructor(component: Component);
-        /**
-        * Returns the current geometry of the component.
-        */
-        public geometry(): Rect;
         /**
         * Compute the minimum size of the component.
         */
@@ -69,8 +62,12 @@
         */
         public sizeHint(): Size;
         /**
-        * Set the current geometry of the component.
+        * Returns the offset rect of the component.
         */
-        public setGeometry(rect: Rect): void;
+        public offsetRect(): Rect;
+        /**
+        * Sets the offset rect of the component.
+        */
+        public setOffsetRect(rect: Rect): void;
     }
 }

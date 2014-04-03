@@ -29,11 +29,6 @@ module porcelain {
     export interface ILayoutItem {
 
         /**
-         * Returns the object's geometry rect.
-         */
-        geometry(): Rect;
-
-        /**
          * Returns the computed minimum size of the object.
          */
         minimumSize(): Size;
@@ -49,17 +44,19 @@ module porcelain {
         sizeHint(): Size;
 
         /**
-         * Set the objects geometry to the given rect.
+         * Returns the object's offset rect.
          */
-        setGeometry(rect: Rect);
+        offsetRect(): Rect;
+
+        /**
+         * Sets the object's offset rect.
+         */
+        setOffsetRect(rect: Rect);
     }
 
 
     /**
      * A class which implements ILayoutItem for a Component.
-     *
-     * When a ComponentItem is instantiated an a Component, the
-     * component element is forced into 'absolute' positioning.
      *
      * @class
      */
@@ -71,13 +68,6 @@ module porcelain {
          * @param component The component to manipulate.
          */
         constructor(public component: Component) { }
-
-        /**
-         * Returns the current geometry of the component.
-         */
-        geometry(): Rect {
-            return this.component.geometry;
-        }
 
         /**
          * Compute the minimum size of the component.
@@ -130,10 +120,17 @@ module porcelain {
         }
 
         /**
-         * Set the current geometry of the component.
+         * Returns the offset rect of the component.
          */
-        setGeometry(rect: Rect) {
-            this.component.geometry = rect;
+        offsetRect(): Rect {
+            return this.component.offsetRect;
+        }
+
+        /**
+         * Sets the offset rect of the component.
+         */
+        setOffsetRect(rect: Rect) {
+            this.component.offsetRect = rect;
         }
     }
 

@@ -120,29 +120,29 @@ var porcelain;
             event.preventDefault();
             this.mouseup.bind(this.onMouseUp, this);
             this.mousemove.bind(this.onMouseMove, this);
-            var geo = this._item.geometry();
+            var rect = this._item.offsetRect();
             switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
                 case 6 /* BottomLeft */:
-                    this._offsetX = event.pageX - geo.left;
+                    this._offsetX = event.pageX - rect.left;
                     break;
                 case 2 /* Right */:
                 case 5 /* TopRight */:
                 case 7 /* BottomRight */:
-                    this._offsetX = event.pageX - geo.right;
+                    this._offsetX = event.pageX - rect.right;
                     break;
             }
             switch (this._gripArea) {
                 case 1 /* Top */:
                 case 4 /* TopLeft */:
                 case 5 /* TopRight */:
-                    this._offsetY = event.pageY - geo.top;
+                    this._offsetY = event.pageY - rect.top;
                     break;
                 case 3 /* Bottom */:
                 case 6 /* BottomLeft */:
                 case 7 /* BottomRight */:
-                    this._offsetY = event.pageY - geo.bottom;
+                    this._offsetY = event.pageY - rect.bottom;
                     break;
                 default:
                     break;
@@ -174,7 +174,7 @@ var porcelain;
             event.preventDefault();
             var vp = porcelain.viewport;
             var item = this._item;
-            var geo = item.geometry();
+            var rect = item.offsetRect();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
             var x = event.pageX - this._offsetX;
@@ -186,16 +186,16 @@ var porcelain;
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
                 case 6 /* BottomLeft */:
-                    minX = geo.right - maxSize.width;
-                    maxX = geo.right - minSize.width;
-                    geo.left = Math.min(Math.max(minX, x), maxX);
+                    minX = rect.right - maxSize.width;
+                    maxX = rect.right - minSize.width;
+                    rect.left = Math.min(Math.max(minX, x), maxX);
                     break;
                 case 2 /* Right */:
                 case 5 /* TopRight */:
                 case 7 /* BottomRight */:
-                    minX = geo.left + minSize.width;
-                    maxX = geo.left + maxSize.width;
-                    geo.right = Math.min(Math.max(minX, x), maxX);
+                    minX = rect.left + minSize.width;
+                    maxX = rect.left + maxSize.width;
+                    rect.right = Math.min(Math.max(minX, x), maxX);
                     break;
                 default:
                     break;
@@ -205,21 +205,21 @@ var porcelain;
                 case 1 /* Top */:
                 case 4 /* TopLeft */:
                 case 5 /* TopRight */:
-                    minY = geo.bottom - maxSize.height;
-                    maxY = geo.bottom - minSize.height;
-                    geo.top = Math.min(Math.max(minY, y), maxY);
+                    minY = rect.bottom - maxSize.height;
+                    maxY = rect.bottom - minSize.height;
+                    rect.top = Math.min(Math.max(minY, y), maxY);
                     break;
                 case 3 /* Bottom */:
                 case 6 /* BottomLeft */:
                 case 7 /* BottomRight */:
-                    minY = geo.top + minSize.height;
-                    maxY = geo.top + maxSize.height;
-                    geo.bottom = Math.min(Math.max(minY, y), maxY);
+                    minY = rect.top + minSize.height;
+                    maxY = rect.top + maxSize.height;
+                    rect.bottom = Math.min(Math.max(minY, y), maxY);
                     break;
                 default:
                     break;
             }
-            item.setGeometry(geo);
+            item.setOffsetRect(rect);
         };
         return SizeGrip;
     })(porcelain.Component);

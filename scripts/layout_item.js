@@ -27,9 +27,6 @@ var porcelain;
     /**
     * A class which implements ILayoutItem for a Component.
     *
-    * When a ComponentItem is instantiated an a Component, the
-    * component element is forced into 'absolute' positioning.
-    *
     * @class
     */
     var ComponentItem = (function () {
@@ -41,13 +38,6 @@ var porcelain;
         function ComponentItem(component) {
             this.component = component;
         }
-        /**
-        * Returns the current geometry of the component.
-        */
-        ComponentItem.prototype.geometry = function () {
-            return this.component.geometry;
-        };
-
         /**
         * Compute the minimum size of the component.
         */
@@ -99,10 +89,17 @@ var porcelain;
         };
 
         /**
-        * Set the current geometry of the component.
+        * Returns the offset rect of the component.
         */
-        ComponentItem.prototype.setGeometry = function (rect) {
-            this.component.geometry = rect;
+        ComponentItem.prototype.offsetRect = function () {
+            return this.component.offsetRect;
+        };
+
+        /**
+        * Sets the offset rect of the component.
+        */
+        ComponentItem.prototype.setOffsetRect = function (rect) {
+            this.component.offsetRect = rect;
         };
         return ComponentItem;
     })();
