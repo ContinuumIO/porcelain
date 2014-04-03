@@ -28,7 +28,7 @@
                 var row = Math.floor(i / 5);
                 var w = new porcelain.Window();
                 var p = { x: 50 + 200 * col, y: 50 + row * 200 };
-                w.position = new porcelain.Point(p);
+                w.offsetPos = new porcelain.Point(p);
                 w.attach();
                 w.show();
             }

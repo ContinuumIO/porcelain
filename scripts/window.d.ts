@@ -3,9 +3,7 @@
         public mousedown: EventBinder;
         constructor();
         public destroy(): void;
-        public sizeHint(): Size;
         public minimumSizeHint(): Size;
-        public maximumSizeHint(): Size;
         public attach(elem?: HTMLElement): void;
         public raise(): void;
         public lower(): void;

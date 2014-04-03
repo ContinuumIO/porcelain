@@ -63,10 +63,10 @@ module porcelain {
 
             this.mousedown.bind(this.onMouseDown, this);
 
-            globalNormalWindowStack.add(this);
+            this.position = "absolute";
+            this.offsetSize = this.minimumSizeHint();
 
-            this.element.style.position = "absolute";
-            this.size = this.sizeHint();
+            globalNormalWindowStack.add(this);
         }
 
         destroy(): void {
@@ -76,16 +76,8 @@ module porcelain {
             this._body = null;
         }
 
-        sizeHint(): Size {
-            return new Size(192, 192);
-        }
-
         minimumSizeHint(): Size {
-            return this.sizeHint();
-        }
-
-        maximumSizeHint(): Size {
-            return new Size();
+            return new Size(192, 192);
         }
 
         attach(elem?: HTMLElement): void {

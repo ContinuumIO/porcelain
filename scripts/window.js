@@ -67,10 +67,10 @@ var porcelain;
 
             this.mousedown.bind(this.onMouseDown, this);
 
-            porcelain.globalNormalWindowStack.add(this);
+            this.position = "absolute";
+            this.offsetSize = this.minimumSizeHint();
 
-            this.element.style.position = "absolute";
-            this.size = this.sizeHint();
+            porcelain.globalNormalWindowStack.add(this);
         }
         Window.prototype.destroy = function () {
             porcelain.globalNormalWindowStack.remove(this);
@@ -79,16 +79,8 @@ var porcelain;
             this._body = null;
         };
 
-        Window.prototype.sizeHint = function () {
-            return new porcelain.Size(192, 192);
-        };
-
         Window.prototype.minimumSizeHint = function () {
-            return this.sizeHint();
-        };
-
-        Window.prototype.maximumSizeHint = function () {
-            return new porcelain.Size();
+            return new porcelain.Size(192, 192);
         };
 
         Window.prototype.attach = function (elem) {
