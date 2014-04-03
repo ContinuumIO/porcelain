@@ -4,9 +4,10 @@
     <title>Sample</title>
     <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
-    <link rel="stylesheet" href="css/item.css" type="text/css" />
+    <link rel="stylesheet" href="css/component.css" type="text/css" />
     <link rel="stylesheet" href="css/title_bar.css" type="text/css" />
     <link rel="stylesheet" href="css/window.css" type="text/css" />
+    <script src="scripts/utils.js"></script>
     <script src="scripts/point.js"></script>
     <script src="scripts/size.js"></script>
     <script src="scripts/rect.js"></script>
@@ -16,6 +17,7 @@
     <script src="scripts/signal.js"></script>
     <script src="scripts/component.js"></script>
     <script src="scripts/button.js"></script>
+    <script src="scripts/label.js"></script>
     <script src="scripts/viewport.js"></script>
     <script src="scripts/move_grip.js"></script>
     <script src="scripts/title_bar.js"></script>
@@ -28,9 +30,9 @@
                 var row = Math.floor(i / 5);
                 var w = new porcelain.Window();
                 var p = { x: 50 + 200 * col, y: 50 + row * 200 };
+                w.title = "Window Number " + (i + 1);
                 w.offsetPos = new porcelain.Point(p);
                 w.attach();
-                w.show();
             }
             window.theWindow = w;
         };

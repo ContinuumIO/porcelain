@@ -9,7 +9,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>0.9</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -28,7 +28,7 @@
     <TypeScriptCompile Include="scripts\rect.ts" />
     <TypeScriptCompile Include="scripts\signal.ts" />
     <Content Include="css\app.css" />
-    <Content Include="css\item.css" />
+    <Content Include="css\component.css" />
     <Content Include="css\title_bar.css" />
     <Content Include="css\window.css" />
     <TypeScriptCompile Include="scripts\title_bar.ts" />
@@ -37,6 +37,8 @@
     <Content Include="index.html" />
     <TypeScriptCompile Include="scripts\z_stack.ts" />
     <TypeScriptCompile Include="scripts\definitions\lodash.d.ts" />
+    <TypeScriptCompile Include="scripts\utils.ts" />
+    <TypeScriptCompile Include="scripts\label.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
