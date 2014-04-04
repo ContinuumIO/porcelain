@@ -29,6 +29,7 @@
     <TypeScriptCompile Include="scripts\signal.ts" />
     <Content Include="css\app.css" />
     <Content Include="css\component.css" />
+    <Content Include="css\resize_spy.css" />
     <Content Include="css\title_bar.css" />
     <Content Include="css\window.css" />
     <TypeScriptCompile Include="scripts\title_bar.ts" />
@@ -39,6 +40,7 @@
     <TypeScriptCompile Include="scripts\definitions\lodash.d.ts" />
     <TypeScriptCompile Include="scripts\utils.ts" />
     <TypeScriptCompile Include="scripts\label.ts" />
+    <TypeScriptCompile Include="scripts\resize_spy.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
