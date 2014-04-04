@@ -58,7 +58,7 @@ module porcelain {
         /** 
          * The mousedown event handler.
          */
-        mousedown = new EventBinder("mousedown", this.element);
+        evtMouseDown = new EventBinder("mousedown", this.element());
 
         /**
          * Construct a new Window.
@@ -90,32 +90,32 @@ module porcelain {
 
             // The restore button is hidden by default, and shown
             // when the window is maximized.
-            titleBar.restoreButton.display = "none";
+            titleBar.restoreButton().setDisplay("none");
 
             // Connect the title bar button clicked signals.
-            titleBar.restoreButton.clicked.connect(this.restore, this);
-            titleBar.maximizeButton.clicked.connect(this.maximize, this);
-            titleBar.minimizeButton.clicked.connect(this.minimize, this);
-            titleBar.closeButton.clicked.connect(this.close, this);
-
-            // Bind the Window mousedown handler.
-            this.mousedown.bind(this.onMouseDown, this);
-
-            // Add the window children.
-            this.append.apply(this, children);
-
-            // Set the positioning mode and initial size of the window.
-            this.position = "absolute";
-            this.offsetSize = this.minimumSizeHint();
-
-            // Add the window to the global Z stack.
-            normalWindowStack.add(this);
+            titleBar.restoreButton().clicked.connect(this.restore, this);
+            titleBar.maximizeButton().clicked.connect(this.maximize, this);
+            titleBar.minimizeButton().clicked.connect(this.minimize, this);
+            titleBar.closeButton().clicked.connect(this.close, this);
 
             // Store the sub items for later use.
             this._subItems = {
                 titleBar: titleBar,
                 body: body,
             };
+
+            // Add the window children.
+            this.append.apply(this, children);
+
+            // Set the positioning mode and initial size of the window.
+            this.setPosition("absolute");
+            this.setSize(this.minimumSizeHint());
+
+            // Bind the Window mousedown handler.
+            this.evtMouseDown.bind(this.onMouseDown, this);
+
+            // Add the window to the global Z stack.
+            normalWindowStack.add(this);
         }
 
         /**
@@ -128,14 +128,17 @@ module porcelain {
         }
 
         /**
-         * The title text in the Window title bar.
+         * Returns the title text in the Window title bar.
          */
-        get title(): string {
-            return this._subItems.titleBar.label.text;
+        title(): string {
+            return this._subItems.titleBar.label().text();
         }
 
-        set title(value: string) {
-            this._subItems.titleBar.label.text = value;
+        /**
+         * Set the title text in the Window title bar.
+         */
+        setTitle(value: string) {
+            this._subItems.titleBar.label().setText(value);
         }
 
         /**
@@ -144,7 +147,8 @@ module porcelain {
          * If not provided, it will be attached to the document body.
          */
         attach(elem?: HTMLElement): void {
-            (elem || document.body).appendChild(this.element);
+            (elem || document.body).appendChild(this.element());
+            this.afterAttach();
         }
 
         /**
@@ -191,7 +195,7 @@ module porcelain {
          * This will hide the window and then destroy it.
          */
         close(): void {
-            this.display = "none";
+            this.setDisplay("none");
             this.destroy();
         }
 
@@ -224,17 +228,17 @@ module porcelain {
             }
             this._windowState = state;
             var titleBar = this._subItems.titleBar;
-            var maxBtn = titleBar.maximizeButton;
-            var rstBtn = titleBar.restoreButton;
+            var maxBtn = titleBar.maximizeButton();
+            var rstBtn = titleBar.restoreButton();
             switch (state) {
                 case WindowState.Normal:
                 case WindowState.Minimized:
-                    rstBtn.display = "none";
-                    maxBtn.display = "";
+                    rstBtn.setDisplay("none");
+                    maxBtn.setDisplay("");
                     break;
                 case WindowState.Maximized:
-                    maxBtn.display = "none";
-                    rstBtn.display = "";
+                    maxBtn.setDisplay("none");
+                    rstBtn.setDisplay("");
                     break;
                 default:
                     break;

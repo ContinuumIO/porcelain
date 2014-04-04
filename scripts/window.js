@@ -61,7 +61,7 @@ var porcelain;
             /**
             * The mousedown event handler.
             */
-            this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
             this._windowState = 0 /* Normal */;
             this.addClass(WINDOW_CLASS);
 
@@ -88,32 +88,32 @@ var porcelain;
 
             // The restore button is hidden by default, and shown
             // when the window is maximized.
-            titleBar.restoreButton.display = "none";
+            titleBar.restoreButton().setDisplay("none");
 
             // Connect the title bar button clicked signals.
-            titleBar.restoreButton.clicked.connect(this.restore, this);
-            titleBar.maximizeButton.clicked.connect(this.maximize, this);
-            titleBar.minimizeButton.clicked.connect(this.minimize, this);
-            titleBar.closeButton.clicked.connect(this.close, this);
-
-            // Bind the Window mousedown handler.
-            this.mousedown.bind(this.onMouseDown, this);
-
-            // Add the window children.
-            this.append.apply(this, children);
-
-            // Set the positioning mode and initial size of the window.
-            this.position = "absolute";
-            this.offsetSize = this.minimumSizeHint();
-
-            // Add the window to the global Z stack.
-            porcelain.normalWindowStack.add(this);
+            titleBar.restoreButton().clicked.connect(this.restore, this);
+            titleBar.maximizeButton().clicked.connect(this.maximize, this);
+            titleBar.minimizeButton().clicked.connect(this.minimize, this);
+            titleBar.closeButton().clicked.connect(this.close, this);
 
             // Store the sub items for later use.
             this._subItems = {
                 titleBar: titleBar,
                 body: body
             };
+
+            // Add the window children.
+            this.append.apply(this, children);
+
+            // Set the positioning mode and initial size of the window.
+            this.setPosition("absolute");
+            this.setSize(this.minimumSizeHint());
+
+            // Bind the Window mousedown handler.
+            this.evtMouseDown.bind(this.onMouseDown, this);
+
+            // Add the window to the global Z stack.
+            porcelain.normalWindowStack.add(this);
         }
         /**
         * Destroy the Window component.
@@ -124,20 +124,19 @@ var porcelain;
             this._subItems = null;
         };
 
-        Object.defineProperty(Window.prototype, "title", {
-            /**
-            * The title text in the Window title bar.
-            */
-            get: function () {
-                return this._subItems.titleBar.label.text;
-            },
-            set: function (value) {
-                this._subItems.titleBar.label.text = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the title text in the Window title bar.
+        */
+        Window.prototype.title = function () {
+            return this._subItems.titleBar.label().text();
+        };
 
+        /**
+        * Set the title text in the Window title bar.
+        */
+        Window.prototype.setTitle = function (value) {
+            this._subItems.titleBar.label().setText(value);
+        };
 
         /**
         * Attach the Window to the given DOM element.
@@ -145,7 +144,8 @@ var porcelain;
         * If not provided, it will be attached to the document body.
         */
         Window.prototype.attach = function (elem) {
-            (elem || document.body).appendChild(this.element);
+            (elem || document.body).appendChild(this.element());
+            this.afterAttach();
         };
 
         /**
@@ -192,7 +192,7 @@ var porcelain;
         * This will hide the window and then destroy it.
         */
         Window.prototype.close = function () {
-            this.display = "none";
+            this.setDisplay("none");
             this.destroy();
         };
 
@@ -225,17 +225,17 @@ var porcelain;
             }
             this._windowState = state;
             var titleBar = this._subItems.titleBar;
-            var maxBtn = titleBar.maximizeButton;
-            var rstBtn = titleBar.restoreButton;
+            var maxBtn = titleBar.maximizeButton();
+            var rstBtn = titleBar.restoreButton();
             switch (state) {
                 case 0 /* Normal */:
                 case 1 /* Minimized */:
-                    rstBtn.display = "none";
-                    maxBtn.display = "";
+                    rstBtn.setDisplay("none");
+                    maxBtn.setDisplay("");
                     break;
                 case 2 /* Maximized */:
-                    maxBtn.display = "none";
-                    rstBtn.display = "";
+                    maxBtn.setDisplay("none");
+                    rstBtn.setDisplay("");
                     break;
                 default:
                     break;

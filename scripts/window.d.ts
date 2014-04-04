@@ -9,7 +9,7 @@
         /**
         * The mousedown event handler.
         */
-        public mousedown: EventBinder;
+        public evtMouseDown: EventBinder;
         /**
         * Construct a new Window.
         */
@@ -19,9 +19,13 @@
         */
         public destroy(): void;
         /**
-        * The title text in the Window title bar.
+        * Returns the title text in the Window title bar.
         */
-        public title : string;
+        public title(): string;
+        /**
+        * Set the title text in the Window title bar.
+        */
+        public setTitle(value: string): void;
         /**
         * Attach the Window to the given DOM element.
         *
