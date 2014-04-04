@@ -126,56 +126,44 @@ module porcelain {
         }
 
         /**
-         * The icon item attached to the title bar.
-         *
-         * @readonly
+         * Returns the icon item attached to the title bar.
          */
-        get icon(): Component {
+        icon(): Component {
             return this._subItems.icon;
         }
 
         /**
-         * The label item attached to the title bar.
-         *
-         * @readonly
+         * Returns the label item attached to the title bar.
          */
-        get label(): Label {
+        label(): Label {
             return this._subItems.label;
         }
 
         /**
-         * The close button attached to the title bar.
-         *
-         * @readonly
+         * Returns the close button attached to the title bar.
          */
-        get closeButton(): Button {
+        closeButton(): Button {
             return this._subItems.closeButton;
         }
 
         /**
-         * The restore button attached to the title bar.
-         *
-         * @readonly
+         * Returns the restore button attached to the title bar.
          */
-        get restoreButton(): Button {
+        restoreButton(): Button {
             return this._subItems.restoreButton;
         }
 
         /**
-         * The minimize button attached to the title bar.
-         *
-         * @readonly
+         * Returns the minimize button attached to the title bar.
          */
-        get minimizeButton(): Button {
+        minimizeButton(): Button {
             return this._subItems.minimizeButton;
         }
 
         /**
-         * The maximize button attached to the title bar.
-         *
-         * @readonly
+         * Returns the maximize button attached to the title bar.
          */
-        get maximizeButton(): Button {
+        maximizeButton(): Button {
             return this._subItems.maximizeButton;
         }
 
@@ -191,9 +179,9 @@ module porcelain {
             if (event.button !== 0) {
                 return;
             }
-            var elem = this._subItems.buttonBox.element;
+            var elem = this._subItems.buttonBox.element();
             var rect = new Rect(elem.getBoundingClientRect());
-            var point = { x: event.clientX, y: event.clientY };
+            var point = new Point(event.clientX, event.clientY);
             if (rect.contains(point)) {
                 return;
             }

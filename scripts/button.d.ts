@@ -9,24 +9,34 @@
     class Button extends Component {
         /**
         * A signal emitted when the button is clicked.
+        *
+        * @readonly
         */
         public clicked: Signal;
         /**
         * A signal emitted when the button is pressed.
+        *
+        * @readonly
         */
         public pressed: Signal;
         /**
         * A signal emitted when the button is released.
+        *
+        * @readonly
         */
         public released: Signal;
         /**
         * The mousedown event binder.
+        *
+        * @readonly
         */
-        public mousedown: EventBinder;
+        public evtMouseDown: EventBinder;
         /**
         * The mouseup event binder.
+        *
+        * @readonly
         */
-        public mouseup: EventBinder;
+        public evtMouseUp: EventBinder;
         /**
         * Construct a new Button instance.
         */

@@ -30,11 +30,11 @@
         /**
         * Returns the object's offset rect.
         */
-        offsetRect(): Rect;
+        rect(): Rect;
         /**
         * Sets the object's offset rect.
         */
-        setOffsetRect(rect: Rect): any;
+        setRect(rect: Rect): any;
     }
     /**
     * A class which implements ILayoutItem for a Component.
@@ -64,10 +64,10 @@
         /**
         * Returns the offset rect of the component.
         */
-        public offsetRect(): Rect;
+        public rect(): Rect;
         /**
         * Sets the offset rect of the component.
         */
-        public setOffsetRect(rect: Rect): void;
+        public setRect(rect: Rect): void;
     }
 }

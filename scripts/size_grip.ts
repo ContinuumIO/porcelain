@@ -43,17 +43,17 @@ module porcelain {
         /**
          * The mousedown event binder.
          */
-        mousedown = new EventBinder("mousedown", this.element);
+        evtMouseDown = new EventBinder("mousedown", this.element());
 
         /**
          * The mouseup event binder.
          */
-        mouseup = new EventBinder("mouseup", document);
+        evtMouseUp = new EventBinder("mouseup", document);
 
         /**
          * The mousemove event binder.
          */
-        mousemove = new EventBinder("mousemove", document);
+        evtMouseMove = new EventBinder("mousemove", document);
 
         /**
          * Construct a new SizeGrip.
@@ -67,7 +67,7 @@ module porcelain {
             this._item = new ComponentItem(target);
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
-            this.mousedown.bind(this.onMouseDown, this);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
 
         /**
@@ -80,20 +80,16 @@ module porcelain {
         }
 
         /**
-         * The grip area defining the size grip behavior.
-         *
-         * @readonly
+         * Returns the grip area defining the size grip behavior.
          */
-        get gripArea(): GripArea {
+        gripArea(): GripArea {
             return this._gripArea;
         }
 
         /**
-         * The target component resized by the size grip.
-         *
-         * @readonly
+         * Returns the target component resized by the size grip.
          */
-        get target(): Component {
+        target(): Component {
             return this._item.component;
         }
 
@@ -107,9 +103,9 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.mouseup.bind(this.onMouseUp, this);
-            this.mousemove.bind(this.onMouseMove, this);
-            var rect = this._item.offsetRect();
+            this.evtMouseUp.bind(this.onMouseUp, this);
+            this.evtMouseMove.bind(this.onMouseMove, this);
+            var rect = this._item.rect();
             switch (this._gripArea) {
                 case GripArea.Left:
                 case GripArea.TopLeft:
@@ -148,8 +144,8 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.mouseup.unbind(this.onMouseUp, this);
-            this.mousemove.unbind(this.onMouseMove, this);
+            this.evtMouseUp.unbind(this.onMouseUp, this);
+            this.evtMouseMove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         }
@@ -161,15 +157,15 @@ module porcelain {
          */
         onMouseMove(event: MouseEvent): void {
             event.preventDefault();
-            var vp = viewport;
+            var vp = Viewport;
             var item = this._item;
-            var rect = item.offsetRect();
+            var rect = item.rect();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
-            x = Math.min(Math.max(vp.left, x), vp.windowRight);
-            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+            x = Math.min(Math.max(vp.left(), x), vp.windowRight());
+            y = Math.min(Math.max(vp.top(), y), vp.windowBottom());
             var minX: number, maxX: number;
             switch (this._gripArea) {
                 case GripArea.Left:
@@ -208,7 +204,7 @@ module porcelain {
                 default:
                     break;
             }
-            item.setOffsetRect(rect);
+            item.setRect(rect);
         }
 
         private _gripArea: GripArea;

@@ -56,22 +56,22 @@ var porcelain;
             /**
             * The mousedown event binder.
             */
-            this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
             /**
             * The mouseup event binder.
             */
-            this.mouseup = new porcelain.EventBinder("mouseup", document);
+            this.evtMouseUp = new porcelain.EventBinder("mouseup", document);
             /**
             * The mousemove event binder.
             */
-            this.mousemove = new porcelain.EventBinder("mousemove", document);
+            this.evtMouseMove = new porcelain.EventBinder("mousemove", document);
             this._offsetX = 0;
             this._offsetY = 0;
             this._gripArea = gripArea;
             this._item = new porcelain.ComponentItem(target);
             this.addClass(SIZE_GRIP_CLASS);
             this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
-            this.mousedown.bind(this.onMouseDown, this);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
         /**
         * Destroy the edge grip.
@@ -82,31 +82,19 @@ var porcelain;
             this._item = null;
         };
 
-        Object.defineProperty(SizeGrip.prototype, "gripArea", {
-            /**
-            * The grip area defining the size grip behavior.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._gripArea;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the grip area defining the size grip behavior.
+        */
+        SizeGrip.prototype.gripArea = function () {
+            return this._gripArea;
+        };
 
-        Object.defineProperty(SizeGrip.prototype, "target", {
-            /**
-            * The target component resized by the size grip.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._item.component;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the target component resized by the size grip.
+        */
+        SizeGrip.prototype.target = function () {
+            return this._item.component;
+        };
 
         /**
         * The mousedown handler.
@@ -118,9 +106,9 @@ var porcelain;
                 return;
             }
             event.preventDefault();
-            this.mouseup.bind(this.onMouseUp, this);
-            this.mousemove.bind(this.onMouseMove, this);
-            var rect = this._item.offsetRect();
+            this.evtMouseUp.bind(this.onMouseUp, this);
+            this.evtMouseMove.bind(this.onMouseMove, this);
+            var rect = this._item.rect();
             switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
@@ -159,8 +147,8 @@ var porcelain;
                 return;
             }
             event.preventDefault();
-            this.mouseup.unbind(this.onMouseUp, this);
-            this.mousemove.unbind(this.onMouseMove, this);
+            this.evtMouseUp.unbind(this.onMouseUp, this);
+            this.evtMouseMove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         };
@@ -172,15 +160,15 @@ var porcelain;
         */
         SizeGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
-            var vp = porcelain.viewport;
+            var vp = porcelain.Viewport;
             var item = this._item;
-            var rect = item.offsetRect();
+            var rect = item.rect();
             var minSize = item.minimumSize();
             var maxSize = item.maximumSize();
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
-            x = Math.min(Math.max(vp.left, x), vp.windowRight);
-            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
+            x = Math.min(Math.max(vp.left(), x), vp.windowRight());
+            y = Math.min(Math.max(vp.top(), y), vp.windowBottom());
             var minX, maxX;
             switch (this._gripArea) {
                 case 0 /* Left */:
@@ -219,7 +207,7 @@ var porcelain;
                 default:
                     break;
             }
-            item.setOffsetRect(rect);
+            item.setRect(rect);
         };
         return SizeGrip;
     })(porcelain.Component);

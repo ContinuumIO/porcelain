@@ -1,25 +1,28 @@
 ﻿declare module porcelain {
     /**
-    * A widget which serves as move grip for an adjustable item.
-    *
-    * This can serve as a base class for more complex widgets
-    * like a window title bar.
+    * A component which serves as a move grip for a component.
     *
     * @class
     */
     class MoveGrip extends Component {
         /**
         * The mousedown event binder.
+        *
+        * @readonly
         */
-        public mousedown: EventBinder;
+        public evtMouseDown: EventBinder;
         /**
         * The mouseup event binder.
+        *
+        * @readonly
         */
-        public mouseup: EventBinder;
+        public evtMouseUp: EventBinder;
         /**
         * The mousemove event binder.
+        *
+        * @readonly
         */
-        public mousemove: EventBinder;
+        public evtMouseMove: EventBinder;
         /**
         * Construct a new MoveGrip.
         *
@@ -32,8 +35,6 @@
         public destroy(): void;
         /**
         * The target component moved by the grip.
-        *
-        * @readonly
         */
         public target(): Component;
         /**

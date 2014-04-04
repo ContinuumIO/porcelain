@@ -19,10 +19,7 @@ var porcelain;
     var MOVE_GRIP_CLASS = "p-MoveGrip";
 
     /**
-    * A widget which serves as move grip for an adjustable item.
-    *
-    * This can serve as a base class for more complex widgets
-    * like a window title bar.
+    * A component which serves as a move grip for a component.
     *
     * @class
     */
@@ -37,21 +34,27 @@ var porcelain;
             _super.call(this);
             /**
             * The mousedown event binder.
+            *
+            * @readonly
             */
-            this.mousedown = new porcelain.EventBinder("mousedown", this.element);
+            this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
             /**
             * The mouseup event binder.
+            *
+            * @readonly
             */
-            this.mouseup = new porcelain.EventBinder("mouseup", document);
+            this.evtMouseUp = new porcelain.EventBinder("mouseup", document);
             /**
             * The mousemove event binder.
+            *
+            * @readonly
             */
-            this.mousemove = new porcelain.EventBinder("mousemove", document);
+            this.evtMouseMove = new porcelain.EventBinder("mousemove", document);
             this._offsetX = 0;
             this._offsetY = 0;
             this._target = target;
             this.addClass(MOVE_GRIP_CLASS);
-            this.mousedown.bind(this.onMouseDown, this);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
         /**
         * Destroy the title bar.
@@ -63,8 +66,6 @@ var porcelain;
 
         /**
         * The target component moved by the grip.
-        *
-        * @readonly
         */
         MoveGrip.prototype.target = function () {
             return this._target;
@@ -80,9 +81,9 @@ var porcelain;
                 return;
             }
             event.preventDefault();
-            this.mouseup.bind(this.onMouseUp, this);
-            this.mousemove.bind(this.onMouseMove, this);
-            var pos = this._target.offsetPos;
+            this.evtMouseUp.bind(this.onMouseUp, this);
+            this.evtMouseMove.bind(this.onMouseMove, this);
+            var pos = this._target.pos();
             this._offsetX = event.pageX - pos.x;
             this._offsetY = event.pageY - pos.y;
         };
@@ -97,8 +98,8 @@ var porcelain;
                 return;
             }
             event.preventDefault();
-            this.mouseup.unbind(this.onMouseUp, this);
-            this.mousemove.unbind(this.onMouseMove, this);
+            this.evtMouseUp.unbind(this.onMouseUp, this);
+            this.evtMouseMove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         };
@@ -110,11 +111,11 @@ var porcelain;
         */
         MoveGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
-            var vp = porcelain.viewport;
-            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
-            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
+            var vp = porcelain.Viewport;
+            var x = Math.min(Math.max(vp.left(), event.pageX), vp.windowRight());
+            var y = Math.min(Math.max(vp.top(), event.pageY), vp.windowBottom());
             var pos = new porcelain.Point(x - this._offsetX, y - this._offsetY);
-            this._target.offsetPos = pos;
+            this._target.setPos(pos);
         };
         return MoveGrip;
     })(porcelain.Component);

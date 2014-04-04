@@ -14,10 +14,7 @@ module porcelain {
 
 
     /**
-     * A widget which serves as move grip for an adjustable item.
-     *
-     * This can serve as a base class for more complex widgets 
-     * like a window title bar.
+     * A component which serves as a move grip for a component.
      *
      * @class
      */
@@ -25,18 +22,24 @@ module porcelain {
 
         /**
          * The mousedown event binder.
+         *
+         * @readonly
          */
-        mousedown = new EventBinder("mousedown", this.element);
+        evtMouseDown = new EventBinder("mousedown", this.element());
 
         /**
          * The mouseup event binder.
+         *
+         * @readonly
          */
-        mouseup = new EventBinder("mouseup", document);
+        evtMouseUp = new EventBinder("mouseup", document);
 
         /**
          * The mousemove event binder.
+         *
+         * @readonly
          */
-        mousemove = new EventBinder("mousemove", document);
+        evtMouseMove = new EventBinder("mousemove", document);
 
         /** 
          * Construct a new MoveGrip.
@@ -47,7 +50,7 @@ module porcelain {
             super();
             this._target = target;
             this.addClass(MOVE_GRIP_CLASS);
-            this.mousedown.bind(this.onMouseDown, this);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
 
         /**
@@ -60,8 +63,6 @@ module porcelain {
 
         /**
          * The target component moved by the grip.
-         * 
-         * @readonly
          */
         target(): Component {
             return this._target;
@@ -77,9 +78,9 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.mouseup.bind(this.onMouseUp, this);
-            this.mousemove.bind(this.onMouseMove, this);
-            var pos = this._target.offsetPos;
+            this.evtMouseUp.bind(this.onMouseUp, this);
+            this.evtMouseMove.bind(this.onMouseMove, this);
+            var pos = this._target.pos();
             this._offsetX = event.pageX - pos.x;
             this._offsetY = event.pageY - pos.y;
         }
@@ -94,8 +95,8 @@ module porcelain {
                 return;
             }
             event.preventDefault();
-            this.mouseup.unbind(this.onMouseUp, this);
-            this.mousemove.unbind(this.onMouseMove, this);
+            this.evtMouseUp.unbind(this.onMouseUp, this);
+            this.evtMouseMove.unbind(this.onMouseMove, this);
             this._offsetX = 0;
             this._offsetY = 0;
         }
@@ -107,11 +108,11 @@ module porcelain {
          */
         onMouseMove(event: MouseEvent): void {
             event.preventDefault();
-            var vp = viewport;
-            var x = Math.min(Math.max(vp.left, event.pageX), vp.windowRight);
-            var y = Math.min(Math.max(vp.top, event.pageY), vp.windowBottom);
+            var vp = Viewport;
+            var x = Math.min(Math.max(vp.left(), event.pageX), vp.windowRight());
+            var y = Math.min(Math.max(vp.top(), event.pageY), vp.windowBottom());
             var pos = new Point(x - this._offsetX, y - this._offsetY);
-            this._target.offsetPos = pos;
+            this._target.setPos(pos);
         }
 
         private _target: Component;

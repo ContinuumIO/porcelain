@@ -6,8 +6,12 @@
     */
     class Label extends Component {
         /**
-        * The text displayed as the inner html of the label.
+        * Returns the text displayed as the inner html of the label.
         */
-        public text : string;
+        public text(): string;
+        /**
+        * Set the text displayed in the label.
+        */
+        public setText(value: string): void;
     }
 }

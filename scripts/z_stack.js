@@ -13,14 +13,14 @@ var porcelain;
     * Get the numeric Z-index of the given component.
     */
     function getZIndex(component) {
-        return parseInt(component.computedStyle.zIndex) || 0;
+        return parseInt(component.computedStyle().zIndex) || 0;
     }
 
     /**
     * Set the numeric Z-index of the given component.
     */
     function setZIndex(component, index) {
-        component.style.zIndex = index ? index.toString() : "";
+        component.style().zIndex = index ? index.toString() : "";
     }
 
     /**
@@ -38,37 +38,25 @@ var porcelain;
             this._stack = [];
             this._minIndex = minIndex;
         }
-        Object.defineProperty(ZStack.prototype, "top", {
-            /**
-            * The component on the top of the stack.
-            *
-            * @readonly
-            */
-            get: function () {
-                if (this._stack.length) {
-                    return this._stack[this._stack.length - 1];
-                }
-                return null;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the component on the top of the stack.
+        */
+        ZStack.prototype.top = function () {
+            if (this._stack.length) {
+                return this._stack[this._stack.length - 1];
+            }
+            return null;
+        };
 
-        Object.defineProperty(ZStack.prototype, "bottom", {
-            /**
-            * The component on the bottom of the stack.
-            *
-            * @readonly
-            */
-            get: function () {
-                if (this._stack.length) {
-                    return this._stack[0];
-                }
-                return null;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the component on the bottom of the stack.
+        */
+        ZStack.prototype.bottom = function () {
+            if (this._stack.length) {
+                return this._stack[0];
+            }
+            return null;
+        };
 
         /**
         * Returns true if the stack contains the given component.
@@ -119,7 +107,7 @@ var porcelain;
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
                 components[_i] = arguments[_i + 0];
             }
-            if (components.length === 1 && components[0] === this.top) {
+            if (components.length === 1 && components[0] === this.top()) {
                 return;
             }
             var cr = this._classify(components);
@@ -137,7 +125,7 @@ var porcelain;
             for (var _i = 0; _i < (arguments.length - 0); _i++) {
                 components[_i] = arguments[_i + 0];
             }
-            if (components.length === 1 && components[0] === this.bottom) {
+            if (components.length === 1 && components[0] === this.bottom()) {
                 return;
             }
             var cr = this._classify(components);

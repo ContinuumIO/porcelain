@@ -117,83 +117,47 @@ var porcelain;
             this._subItems = null;
         };
 
-        Object.defineProperty(TitleBar.prototype, "icon", {
-            /**
-            * The icon item attached to the title bar.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._subItems.icon;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the icon item attached to the title bar.
+        */
+        TitleBar.prototype.icon = function () {
+            return this._subItems.icon;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "label", {
-            /**
-            * The label item attached to the title bar.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._subItems.label;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the label item attached to the title bar.
+        */
+        TitleBar.prototype.label = function () {
+            return this._subItems.label;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "closeButton", {
-            /**
-            * The close button attached to the title bar.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._subItems.closeButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the close button attached to the title bar.
+        */
+        TitleBar.prototype.closeButton = function () {
+            return this._subItems.closeButton;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "restoreButton", {
-            /**
-            * The restore button attached to the title bar.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._subItems.restoreButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the restore button attached to the title bar.
+        */
+        TitleBar.prototype.restoreButton = function () {
+            return this._subItems.restoreButton;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "minimizeButton", {
-            /**
-            * The minimize button attached to the title bar.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._subItems.minimizeButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the minimize button attached to the title bar.
+        */
+        TitleBar.prototype.minimizeButton = function () {
+            return this._subItems.minimizeButton;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "maximizeButton", {
-            /**
-            * The maximize button attached to the title bar.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._subItems.maximizeButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the maximize button attached to the title bar.
+        */
+        TitleBar.prototype.maximizeButton = function () {
+            return this._subItems.maximizeButton;
+        };
 
         /**
         * The mousedown handler.
@@ -207,9 +171,9 @@ var porcelain;
             if (event.button !== 0) {
                 return;
             }
-            var elem = this._subItems.buttonBox.element;
+            var elem = this._subItems.buttonBox.element();
             var rect = new porcelain.Rect(elem.getBoundingClientRect());
-            var point = { x: event.clientX, y: event.clientY };
+            var point = new porcelain.Point(event.clientX, event.clientY);
             if (rect.contains(point)) {
                 return;
             }

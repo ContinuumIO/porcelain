@@ -56,31 +56,19 @@ var porcelain;
             this._proxies = null;
         };
 
-        Object.defineProperty(EventBinder.prototype, "type", {
-            /**
-            * Get the event type for the binder.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._type;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the event type for the binder.
+        */
+        EventBinder.prototype.type = function () {
+            return this._type;
+        };
 
-        Object.defineProperty(EventBinder.prototype, "target", {
-            /**
-            * Get the event target for the binder.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._target;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the event target for the binder.
+        */
+        EventBinder.prototype.target = function () {
+            return this._target;
+        };
 
         /**
         * Bind a listener to the event.

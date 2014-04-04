@@ -46,12 +46,12 @@ module porcelain {
         /**
          * Returns the object's offset rect.
          */
-        offsetRect(): Rect;
+        rect(): Rect;
 
         /**
          * Sets the object's offset rect.
          */
-        setOffsetRect(rect: Rect);
+        setRect(rect: Rect);
     }
 
 
@@ -74,7 +74,7 @@ module porcelain {
          */
         minimumSize(): Size {
             var component = this.component;
-            var size = component.minimumSize;
+            var size = component.minimumSize();
             if (size.isValid() && !size.isNull()) {
                 size = size.boundedTo(MAX_ITEM_SIZE);
                 size = size.expandedTo(MIN_ITEM_SIZE);
@@ -94,7 +94,7 @@ module porcelain {
          */
         maximumSize(): Size {
             var component = this.component;
-            var size = component.maximumSize;
+            var size = component.maximumSize();
             if (size.isValid()) {
                 size = size.boundedTo(MAX_ITEM_SIZE);
                 size = size.expandedTo(MIN_ITEM_SIZE);
@@ -122,15 +122,15 @@ module porcelain {
         /**
          * Returns the offset rect of the component.
          */
-        offsetRect(): Rect {
-            return this.component.offsetRect;
+        rect(): Rect {
+            return this.component.rect();
         }
 
         /**
          * Sets the offset rect of the component.
          */
-        setOffsetRect(rect: Rect) {
-            this.component.offsetRect = rect;
+        setRect(rect: Rect) {
+            this.component.setRect(rect);
         }
     }
 

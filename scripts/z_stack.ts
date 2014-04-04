@@ -20,7 +20,7 @@ module porcelain {
      * Get the numeric Z-index of the given component.
      */
     function getZIndex(component: Component): number {
-        return parseInt(component.computedStyle.zIndex) || 0;
+        return parseInt(component.computedStyle().zIndex) || 0;
     }
 
 
@@ -28,7 +28,7 @@ module porcelain {
      * Set the numeric Z-index of the given component.
      */
     function setZIndex(component: Component, index: number): void {
-        component.style.zIndex = index ? index.toString() : "";
+        component.style().zIndex = index ? index.toString() : "";
     }
 
 
@@ -49,11 +49,9 @@ module porcelain {
         }
 
         /**
-         * The component on the top of the stack.
-         *
-         * @readonly
+         * Returns the component on the top of the stack.
          */
-        get top(): Component {
+        top(): Component {
             if (this._stack.length) {
                 return this._stack[this._stack.length - 1];
             }
@@ -61,11 +59,9 @@ module porcelain {
         }
     
         /**
-         * The component on the bottom of the stack.
-         *
-         * @readonly
+         * Returns the component on the bottom of the stack.
          */
-        get bottom(): Component {
+        bottom(): Component {
             if (this._stack.length) {
                 return this._stack[0];
             }
@@ -117,7 +113,7 @@ module porcelain {
          * The relative stacking order of the components will be maintained.
          */
         raise(...components: Component[]): void {
-            if (components.length === 1 && components[0] === this.top) {
+            if (components.length === 1 && components[0] === this.top()) {
                 return;
             }
             var cr = this._classify(components);
@@ -131,7 +127,7 @@ module porcelain {
          * The relative stacking order of the components will be maintained.
          */
         lower(...components: Component[]): void {
-            if (components.length === 1 && components[0] === this.bottom) {
+            if (components.length === 1 && components[0] === this.bottom()) {
                 return;
             }
             var cr = this._classify(components);

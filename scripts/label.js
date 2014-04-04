@@ -28,20 +28,19 @@ var porcelain;
         function Label() {
             _super.apply(this, arguments);
         }
-        Object.defineProperty(Label.prototype, "text", {
-            /**
-            * The text displayed as the inner html of the label.
-            */
-            get: function () {
-                return this.element.innerHTML;
-            },
-            set: function (value) {
-                this.element.innerHTML = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the text displayed as the inner html of the label.
+        */
+        Label.prototype.text = function () {
+            return this.element().innerHTML;
+        };
 
+        /**
+        * Set the text displayed in the label.
+        */
+        Label.prototype.setText = function (value) {
+            this.element().innerHTML = value;
+        };
         return Label;
     })(porcelain.Component);
     porcelain.Label = Label;

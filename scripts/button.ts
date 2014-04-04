@@ -32,28 +32,38 @@ module porcelain {
 
         /**
          * A signal emitted when the button is clicked.
+         *
+         * @readonly
          */
         clicked = new Signal();
 
         /**
          * A signal emitted when the button is pressed.
+         *
+         * @readonly
          */
         pressed = new Signal();
 
         /**
          * A signal emitted when the button is released.
+         *
+         * @readonly
          */
         released = new Signal();
 
         /** 
          * The mousedown event binder.
+         *
+         * @readonly
          */
-        mousedown = new EventBinder("mousedown", this.element);
+        evtMouseDown = new EventBinder("mousedown", this.element());
 
         /**
          * The mouseup event binder.
+         *
+         * @readonly
          */
-        mouseup = new EventBinder("mouseup", document);
+        evtMouseUp = new EventBinder("mouseup", document);
 
         /**
          * Construct a new Button instance.
@@ -61,7 +71,7 @@ module porcelain {
         constructor() {
             super();
             this.addClass(BUTTON_CLASS);
-            this.mousedown.bind(this.onMouseDown, this);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
 
         /**
@@ -73,7 +83,7 @@ module porcelain {
             if (event.button === 0) {
                 event.preventDefault();
                 this.addClass(PRESSED_CLASS);
-                this.mouseup.bind(this.onMouseUp, this);
+                this.evtMouseUp.bind(this.onMouseUp, this);
                 this.pressed.emit();
             }
         }
@@ -86,9 +96,9 @@ module porcelain {
         onMouseUp(event: MouseEvent): void {
             if (event.button === 0) {
                 this.removeClass(PRESSED_CLASS);
-                this.mouseup.unbind(this.onMouseUp, this);
+                this.evtMouseUp.unbind(this.onMouseUp, this);
                 this.released.emit();
-                if (event.target === this.element) {
+                if (event.target === this.element()) {
                     event.preventDefault();
                     this.clicked.emit();
                 }

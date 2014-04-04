@@ -12,17 +12,13 @@
         */
         public destroy(): void;
         /**
-        * Get the event type for the binder.
-        *
-        * @readonly
+        * Returns the event type for the binder.
         */
-        public type : string;
+        public type(): string;
         /**
-        * Get the event target for the binder.
-        *
-        * @readonly
+        * Returns the event target for the binder.
         */
-        public target : EventTarget;
+        public target(): EventTarget;
         /**
         * Bind a listener to the event.
         *

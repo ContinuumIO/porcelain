@@ -57,20 +57,16 @@ module porcelain {
         }
 
         /**
-         * Get the event type for the binder.
-         *
-         * @readonly
+         * Returns the event type for the binder.
          */
-        get type(): string {
+        type(): string {
             return this._type;
         }
 
         /**
-         * Get the event target for the binder.
-         *
-         * @readonly
+         * Returns the event target for the binder.
          */
-        get target(): EventTarget {
+        target(): EventTarget {
             return this._target;
         }
 

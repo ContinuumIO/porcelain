@@ -21,15 +21,15 @@
         /**
         * The mousedown event binder.
         */
-        public mousedown: EventBinder;
+        public evtMouseDown: EventBinder;
         /**
         * The mouseup event binder.
         */
-        public mouseup: EventBinder;
+        public evtMouseUp: EventBinder;
         /**
         * The mousemove event binder.
         */
-        public mousemove: EventBinder;
+        public evtMouseMove: EventBinder;
         /**
         * Construct a new SizeGrip.
         *
@@ -42,17 +42,13 @@
         */
         public destroy(): void;
         /**
-        * The grip area defining the size grip behavior.
-        *
-        * @readonly
+        * Returns the grip area defining the size grip behavior.
         */
-        public gripArea : GripArea;
+        public gripArea(): GripArea;
         /**
-        * The target component resized by the size grip.
-        *
-        * @readonly
+        * Returns the target component resized by the size grip.
         */
-        public target : Component;
+        public target(): Component;
         /**
         * The mousedown handler.
         *

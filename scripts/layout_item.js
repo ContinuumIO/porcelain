@@ -43,7 +43,7 @@ var porcelain;
         */
         ComponentItem.prototype.minimumSize = function () {
             var component = this.component;
-            var size = component.minimumSize;
+            var size = component.minimumSize();
             if (size.isValid() && !size.isNull()) {
                 size = size.boundedTo(porcelain.MAX_ITEM_SIZE);
                 size = size.expandedTo(porcelain.MIN_ITEM_SIZE);
@@ -63,7 +63,7 @@ var porcelain;
         */
         ComponentItem.prototype.maximumSize = function () {
             var component = this.component;
-            var size = component.maximumSize;
+            var size = component.maximumSize();
             if (size.isValid()) {
                 size = size.boundedTo(porcelain.MAX_ITEM_SIZE);
                 size = size.expandedTo(porcelain.MIN_ITEM_SIZE);
@@ -91,15 +91,15 @@ var porcelain;
         /**
         * Returns the offset rect of the component.
         */
-        ComponentItem.prototype.offsetRect = function () {
-            return this.component.offsetRect;
+        ComponentItem.prototype.rect = function () {
+            return this.component.rect();
         };
 
         /**
         * Sets the offset rect of the component.
         */
-        ComponentItem.prototype.setOffsetRect = function (rect) {
-            this.component.offsetRect = rect;
+        ComponentItem.prototype.setRect = function (rect) {
+            this.component.setRect(rect);
         };
         return ComponentItem;
     })();

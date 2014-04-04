@@ -19,41 +19,29 @@
         */
         public destroy(): void;
         /**
-        * The icon item attached to the title bar.
-        *
-        * @readonly
+        * Returns the icon item attached to the title bar.
         */
-        public icon : Component;
+        public icon(): Component;
         /**
-        * The label item attached to the title bar.
-        *
-        * @readonly
+        * Returns the label item attached to the title bar.
         */
-        public label : Label;
+        public label(): Label;
         /**
-        * The close button attached to the title bar.
-        *
-        * @readonly
+        * Returns the close button attached to the title bar.
         */
-        public closeButton : Button;
+        public closeButton(): Button;
         /**
-        * The restore button attached to the title bar.
-        *
-        * @readonly
+        * Returns the restore button attached to the title bar.
         */
-        public restoreButton : Button;
+        public restoreButton(): Button;
         /**
-        * The minimize button attached to the title bar.
-        *
-        * @readonly
+        * Returns the minimize button attached to the title bar.
         */
-        public minimizeButton : Button;
+        public minimizeButton(): Button;
         /**
-        * The maximize button attached to the title bar.
-        *
-        * @readonly
+        * Returns the maximize button attached to the title bar.
         */
-        public maximizeButton : Button;
+        public maximizeButton(): Button;
         /**
         * The mousedown handler.
         *
