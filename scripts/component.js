@@ -47,119 +47,32 @@ var porcelain;
             this._element = null;
         };
 
-        Object.defineProperty(Component.prototype, "element", {
-            /**
-            * The component's internal DOM element.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._element;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the parent Component of this component.
+        */
+        Component.prototype.parent = function () {
+            return this._parent;
+        };
 
-        Object.defineProperty(Component.prototype, "id", {
-            /**
-            * The id of the component and its DOM element.
-            */
-            get: function () {
-                return this._element.id;
-            },
-            set: function (id) {
-                this._element.id = id;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "style", {
-            /**
-            * The inline style object for the component element.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._element.style;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Component.prototype, "computedStyle", {
-            /**
-            * The computed style object for the component element.
-            *
-            * @readonly
-            */
-            get: function () {
-                return window.getComputedStyle(this._element);
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Component.prototype, "display", {
-            /**
-            * The CSS display value for the component element.
-            */
-            get: function () {
-                return window.getComputedStyle(this._element).display;
-            },
-            set: function (value) {
-                this._element.style.display = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "position", {
-            /**
-            * The CSS position value for the component element.
-            */
-            get: function () {
-                return window.getComputedStyle(this._element).position;
-            },
-            set: function (value) {
-                this._element.style.position = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "parent", {
-            /**
-            * The parent Component of this component.
-            *
-            * @readonly
-            */
-            get: function () {
-                return this._parent;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Component.prototype, "children", {
-            /**
-            * The array of child Components of this component.
-            *
-            * @readonly
-            */
-            get: function () {
-                var children = this._children;
-                if (!children) {
-                    return [];
-                }
+        /**
+        * Returns the array of child Components of this component.
+        */
+        Component.prototype.children = function () {
+            var children = this._children;
+            if (children) {
                 return children.slice();
-            },
-            enumerable: true,
-            configurable: true
-        });
+            }
+            return [];
+        };
+
+        /**
+        * Unparent the Component and detach its element from the DOM.
+        *
+        */
+        Component.prototype.detach = function () {
+            this._detachElement();
+            this._deparent();
+        };
 
         /**
         * Append children to the end of this component.
@@ -233,12 +146,24 @@ var porcelain;
         };
 
         /**
-        * Unparent the Component and detach its element from the DOM.
-        *
+        * Returns the component's internal DOM element.
         */
-        Component.prototype.detach = function () {
-            this._detachElement();
-            this._deparent();
+        Component.prototype.element = function () {
+            return this._element;
+        };
+
+        /**
+        * Returns the id of the component and its DOM element.
+        */
+        Component.prototype.id = function () {
+            return this._element.id;
+        };
+
+        /**
+        * Set the id of the component and its DOM element.
+        */
+        Component.prototype.setId = function (id) {
+            this._element.id = id;
         };
 
         /**
@@ -275,146 +200,177 @@ var porcelain;
             }
         };
 
-        Object.defineProperty(Component.prototype, "offsetPos", {
-            /**
-            * The offset position of the component.
-            *
-            * This should only be set when position is "absolute".
-            */
-            get: function () {
-                var elem = this._element;
-                var x = elem.offsetLeft;
-                var y = elem.offsetTop;
-                return new porcelain.Point(x, y);
-            },
-            set: function (point) {
-                var style = this._element.style;
-                style.left = point.x + "px";
-                style.top = point.y + "px";
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "offsetSize", {
-            /**
-            * The offset size of the component.
-            *
-            * This should only be set when position is "absolute".
-            */
-            get: function () {
-                var elem = this._element;
-                var w = elem.offsetWidth;
-                var h = elem.offsetHeight;
-                return new porcelain.Size(w, h);
-            },
-            set: function (size) {
-                var style = this._element.style;
-                if (size.isValid()) {
-                    style.width = size.width + "px";
-                    style.height = size.height + "px";
-                } else {
-                    style.width = "";
-                    style.height = "";
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "offsetRect", {
-            /**
-            * The offset rect of the component.
-            *
-            * This should only be set when position is "absolute".
-            */
-            get: function () {
-                var elem = this._element;
-                var x = elem.offsetLeft;
-                var y = elem.offsetTop;
-                var w = elem.offsetWidth;
-                var h = elem.offsetHeight;
-                return new porcelain.Rect(x, y, w, h);
-            },
-            set: function (rect) {
-                var style = this._element.style;
-                if (rect.isValid()) {
-                    style.left = rect.left + "px";
-                    style.top = rect.top + "px";
-                    style.width = rect.width() + "px";
-                    style.height = rect.height() + "px";
-                } else {
-                    style.left = "";
-                    style.top = "";
-                    style.width = "";
-                    style.height = "";
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "minimumSize", {
-            /**
-            * The minimum size of the component.
-            */
-            get: function () {
-                var style = window.getComputedStyle(this._element);
-                var w = parseInt(style.minWidth);
-                var h = parseInt(style.minHeight);
-                if (w !== w || h !== h) {
-                    return new porcelain.Size();
-                }
-                return new porcelain.Size(w, h);
-            },
-            set: function (size) {
-                var style = this._element.style;
-                if (size.isValid()) {
-                    style.minWidth = size.width + "px";
-                    style.minHeight = size.height + "px";
-                } else {
-                    style.minWidth = "";
-                    style.minHeight = "";
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
-        Object.defineProperty(Component.prototype, "maximumSize", {
-            /**
-            * The maximum size of the component.
-            */
-            get: function () {
-                var style = window.getComputedStyle(this._element);
-                var w = parseInt(style.maxWidth);
-                var h = parseInt(style.maxHeight);
-                if (w !== w || h !== h) {
-                    return new porcelain.Size();
-                }
-                return new porcelain.Size(w, h);
-            },
-            set: function (size) {
-                var style = this._element.style;
-                if (size.isValid()) {
-                    style.maxWidth = size.width + "px";
-                    style.maxHeight = size.height + "px";
-                } else {
-                    style.maxWidth = "";
-                    style.maxHeight = "";
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-
+        /**
+        * Returns the inline style object for the component element.
+        */
+        Component.prototype.style = function () {
+            return this._element.style;
+        };
 
         /**
-        * The preferred size of the component.
+        * Returns the computed style object for the component element.
+        */
+        Component.prototype.computedStyle = function () {
+            return window.getComputedStyle(this._element);
+        };
+
+        /**
+        * Returns the CSS display value for the component element.
+        */
+        Component.prototype.display = function () {
+            return window.getComputedStyle(this._element).display;
+        };
+
+        /**
+        * Set the CSS display value for the component element.
+        */
+        Component.prototype.setDisplay = function (value) {
+            this._element.style.display = value;
+        };
+
+        /**
+        * Returns CSS position value for the component element.
+        */
+        Component.prototype.position = function () {
+            return window.getComputedStyle(this._element).position;
+        };
+
+        /**
+        * Set the CSS position value for the component element.
+        */
+        Component.prototype.setPosition = function (value) {
+            this._element.style.position = value;
+        };
+
+        /**
+        * Returns the offset position of the component.
+        */
+        Component.prototype.pos = function () {
+            var elem = this._element;
+            var x = elem.offsetLeft;
+            var y = elem.offsetTop;
+            return new porcelain.Point(x, y);
+        };
+
+        /**
+        * Set the offset position of the component.
+        */
+        Component.prototype.setPos = function (point) {
+            var style = this._element.style;
+            style.left = point.x + "px";
+            style.top = point.y + "px";
+        };
+
+        /**
+        * Returns the offset size of the component.
+        */
+        Component.prototype.size = function () {
+            var elem = this._element;
+            var w = elem.offsetWidth;
+            var h = elem.offsetHeight;
+            return new porcelain.Size(w, h);
+        };
+
+        /**
+        * Set the offset size of the component.
+        */
+        Component.prototype.setSize = function (size) {
+            var style = this._element.style;
+            if (size.isValid()) {
+                style.width = size.width + "px";
+                style.height = size.height + "px";
+            } else {
+                style.width = "";
+                style.height = "";
+            }
+        };
+
+        /**
+        * Returns the offset rect of the component.
+        */
+        Component.prototype.rect = function () {
+            var elem = this._element;
+            var x = elem.offsetLeft;
+            var y = elem.offsetTop;
+            var w = elem.offsetWidth;
+            var h = elem.offsetHeight;
+            return new porcelain.Rect(x, y, w, h);
+        };
+
+        /**
+        * Set the offset rect of the component.
+        */
+        Component.prototype.setRect = function (rect) {
+            var style = this._element.style;
+            if (rect.isValid()) {
+                style.left = rect.left + "px";
+                style.top = rect.top + "px";
+                style.width = rect.width() + "px";
+                style.height = rect.height() + "px";
+            } else {
+                style.left = "";
+                style.top = "";
+                style.width = "";
+                style.height = "";
+            }
+        };
+
+        /**
+        * Returns the minimum size of the component.
+        */
+        Component.prototype.minimumSize = function () {
+            var style = window.getComputedStyle(this._element);
+            var w = parseInt(style.minWidth);
+            var h = parseInt(style.minHeight);
+            if (w !== w || h !== h) {
+                return new porcelain.Size();
+            }
+            return new porcelain.Size(w, h);
+        };
+
+        /**
+        * Set the minimum size of the component.
+        */
+        Component.prototype.setMinimumSize = function (size) {
+            var style = this._element.style;
+            if (size.isValid()) {
+                style.minWidth = size.width + "px";
+                style.minHeight = size.height + "px";
+            } else {
+                style.minWidth = "";
+                style.minHeight = "";
+            }
+        };
+
+        /**
+        * Returns the maximum size of the component.
+        */
+        Component.prototype.maximumSize = function () {
+            var style = window.getComputedStyle(this._element);
+            var w = parseInt(style.maxWidth);
+            var h = parseInt(style.maxHeight);
+            if (w !== w || h !== h) {
+                return new porcelain.Size();
+            }
+            return new porcelain.Size(w, h);
+        };
+
+        /**
+        * Set the maximum size of the component.
+        */
+        Component.prototype.setMaximumSize = function (size) {
+            var style = this._element.style;
+            if (size.isValid()) {
+                style.maxWidth = size.width + "px";
+                style.maxHeight = size.height + "px";
+            } else {
+                style.maxWidth = "";
+                style.maxHeight = "";
+            }
+        };
+
+        /**
+        * Returns the preferred size of the component.
         *
         * This computes the natural size of the component and is used
         * by the procedural layout system. The default implementation
@@ -427,7 +383,7 @@ var porcelain;
         };
 
         /**
-        * The preferred minimum size of the component.
+        * Returns the preferred minimum size of the component.
         *
         * This computes the minimal size of the component and is used
         * by the procedural layout system. The default implementation
@@ -440,7 +396,7 @@ var porcelain;
         };
 
         /**
-        * The preferred maximum size of the component.
+        * Returns the preferred maximum size of the component.
         *
         * This computes the maximal size of the component and is used
         * by the procedural layout system. The default implementation
@@ -461,6 +417,25 @@ var porcelain;
         */
         Component.prototype.createElement = function () {
             return document.createElement("div");
+        };
+
+        /**
+        * Invoked by a root node when the tree is attached to the DOM.
+        *
+        * The default implementation of this method dispatches to its
+        * children in a bottom-up fashion. A component should not
+        * modify the tree structure during this method.
+        *
+        * @protected
+        */
+        Component.prototype.afterAttach = function () {
+            var children = this._children;
+            if (!children) {
+                return;
+            }
+            for (var i = 0, n = children.length; i < n; ++i) {
+                children[i].afterAttach();
+            }
         };
 
         /**

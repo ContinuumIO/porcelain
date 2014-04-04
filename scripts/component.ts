@@ -70,85 +70,30 @@ module porcelain {
         }
 
         /**
-         * The component's internal DOM element.
-         *
-         * @readonly
+         * Returns the parent Component of this component.
          */
-        get element(): HTMLElement {
-            return this._element;
-        }
-
-        /**
-         * The id of the component and its DOM element.
-         */
-        get id(): string {
-            return this._element.id
-        }
-
-        set id(id: string) {
-            this._element.id = id;
-        }
-
-        /**
-         * The inline style object for the component element.
-         * 
-         * @readonly
-         */
-        get style(): CSSStyleDeclaration {
-            return this._element.style;
-        }
-
-        /**
-         * The computed style object for the component element.
-         *
-         * @readonly
-         */
-        get computedStyle(): CSSStyleDeclaration {
-            return window.getComputedStyle(this._element);
-        }
-
-        /**
-         * The CSS display value for the component element.
-         */
-        get display(): string {
-            return window.getComputedStyle(this._element).display;
-        }
-
-        set display(value: string) {
-            this._element.style.display = value;
-        }
-
-        /**
-         * The CSS position value for the component element.
-         */
-        get position(): string {
-            return window.getComputedStyle(this._element).position;
-        }
-
-        set position(value: string) {
-            this._element.style.position = value;
-        }
-
-        /**
-         * The parent Component of this component.
-         *
-         * @readonly
-         */
-        get parent(): Component {
+        parent(): Component {
             return this._parent;
         }
 
         /**
-         * The array of child Components of this component.
-         *
-         * @readonly
+         * Returns the array of child Components of this component.
          */
-        get children(): Component[] {
+        children(): Component[] {
             var children = this._children;
-            if (!children) {
-                return [];
+            if (children) {
+                return children.slice();
             }
-            return children.slice();
+            return [];
+        }
+
+        /**
+         * Unparent the Component and detach its element from the DOM.
+         *
+         */
+        detach(): void {
+            this._detachElement();
+            this._deparent();
         }
 
         /**
@@ -211,12 +156,24 @@ module porcelain {
         }
 
         /**
-         * Unparent the Component and detach its element from the DOM.
-         *
+         * Returns the component's internal DOM element.
          */
-        detach(): void {
-            this._detachElement();
-            this._deparent();
+        element(): HTMLElement {
+            return this._element;
+        }
+
+        /**
+         * Returns the id of the component and its DOM element.
+         */
+        id(): string {
+            return this._element.id
+        }
+
+        /** 
+         * Set the id of the component and its DOM element.
+         */
+        setId(id: string) {
+            this._element.id = id;
         }
 
         /**
@@ -235,7 +192,7 @@ module porcelain {
                 this._element.className = newName;
             }
         }
-                
+
         /**
          * Remove a name or names from the element's CSS class name.
          *
@@ -254,36 +211,80 @@ module porcelain {
         }
 
         /**
-         * The offset position of the component.
-         *
-         * This should only be set when position is "absolute".
+         * Returns the inline style object for the component element.
          */
-        get offsetPos(): Point {
+        style(): CSSStyleDeclaration {
+            return this._element.style;
+        }
+
+        /**
+         * Returns the computed style object for the component element.
+         */
+        computedStyle(): CSSStyleDeclaration {
+            return window.getComputedStyle(this._element);
+        }
+
+        /**
+         * Returns the CSS display value for the component element.
+         */
+        display(): string {
+            return window.getComputedStyle(this._element).display;
+        }
+
+        /**
+         * Set the CSS display value for the component element.
+         */
+        setDisplay(value: string) {
+            this._element.style.display = value;
+        }
+
+        /**
+         * Returns CSS position value for the component element.
+         */
+        position(): string {
+            return window.getComputedStyle(this._element).position;
+        }
+
+        /**
+         * Set the CSS position value for the component element.
+         */
+        setPosition(value: string) {
+            this._element.style.position = value;
+        }
+
+        /**
+         * Returns the offset position of the component.
+         */
+        pos(): Point {
             var elem = this._element;
             var x = elem.offsetLeft;
             var y = elem.offsetTop;
             return new Point(x, y);
         }
 
-        set offsetPos(point: Point) {
+        /**
+         * Set the offset position of the component.
+         */
+        setPos(point: Point) {
             var style = this._element.style;
             style.left = point.x + "px";
             style.top = point.y + "px";
         }
-        
+
         /**
-         * The offset size of the component.
-         *
-         * This should only be set when position is "absolute".
+         * Returns the offset size of the component.
          */
-        get offsetSize(): Size {
+        size(): Size {
             var elem = this._element;
             var w = elem.offsetWidth;
             var h = elem.offsetHeight;
             return new Size(w, h);
         }
 
-        set offsetSize(size: Size) {
+        /**
+         * Set the offset size of the component.
+         */
+        setSize(size: Size) {
             var style = this._element.style;
             if (size.isValid()) {
                 style.width = size.width + "px";
@@ -295,11 +296,9 @@ module porcelain {
         }
 
         /**
-         * The offset rect of the component.
-         *
-         * This should only be set when position is "absolute".
+         * Returns the offset rect of the component.
          */
-        get offsetRect(): Rect {
+        rect(): Rect {
             var elem = this._element;
             var x = elem.offsetLeft;
             var y = elem.offsetTop;
@@ -308,7 +307,10 @@ module porcelain {
             return new Rect(x, y, w, h);
         }
         
-        set offsetRect(rect: Rect) {
+        /**
+         * Set the offset rect of the component.
+         */
+        setRect(rect: Rect) {
             var style = this._element.style;
             if (rect.isValid()) {
                 style.left = rect.left + "px";
@@ -324,9 +326,9 @@ module porcelain {
         }
 
         /**
-         * The minimum size of the component.
+         * Returns the minimum size of the component.
          */
-        get minimumSize(): Size {
+        minimumSize(): Size {
             var style = window.getComputedStyle(this._element);
             var w = parseInt(style.minWidth)
             var h = parseInt(style.minHeight)
@@ -336,7 +338,10 @@ module porcelain {
             return new Size(w, h);
         }
 
-        set minimumSize(size: Size) {
+        /** 
+         * Set the minimum size of the component.
+         */
+        setMinimumSize(size: Size) {
             var style = this._element.style;
             if (size.isValid()) {
                 style.minWidth = size.width + "px";
@@ -348,9 +353,9 @@ module porcelain {
         }
 
         /**
-         * The maximum size of the component.
+         * Returns the maximum size of the component.
          */
-        get maximumSize(): Size {
+        maximumSize(): Size {
             var style = window.getComputedStyle(this._element);
             var w = parseInt(style.maxWidth)
             var h = parseInt(style.maxHeight)
@@ -360,7 +365,10 @@ module porcelain {
             return new Size(w, h);
         }
 
-        set maximumSize(size: Size) {
+        /**
+         * Set the maximum size of the component.
+         */
+        setMaximumSize(size: Size) {
             var style = this._element.style;
             if (size.isValid()) {
                 style.maxWidth = size.width + "px";
@@ -372,7 +380,7 @@ module porcelain {
         }
 
         /**
-         * The preferred size of the component.
+         * Returns the preferred size of the component.
          *
          * This computes the natural size of the component and is used
          * by the procedural layout system. The default implementation 
@@ -385,7 +393,7 @@ module porcelain {
         }
 
         /**
-         * The preferred minimum size of the component.
+         * Returns the preferred minimum size of the component.
          *
          * This computes the minimal size of the component and is used
          * by the procedural layout system. The default implementation 
@@ -398,7 +406,7 @@ module porcelain {
         }
 
         /**
-         * The preferred maximum size of the component.
+         * Returns the preferred maximum size of the component.
          *
          * This computes the maximal size of the component and is used
          * by the procedural layout system. The default implementation 
@@ -419,6 +427,25 @@ module porcelain {
          */
         createElement(): HTMLElement {
             return document.createElement("div");
+        }
+
+        /**
+         * Invoked by a root node when the tree is attached to the DOM.
+         *
+         * The default implementation of this method dispatches to its
+         * children in a bottom-up fashion. A component should not 
+         * modify the tree structure during this method.
+         *
+         * @protected
+         */
+        afterAttach(): void {
+            var children = this._children;
+            if (!children) {
+                return;
+            }
+            for (var i = 0, n = children.length; i < n; ++i) {
+                children[i].afterAttach();
+            }
         }
 
         /**

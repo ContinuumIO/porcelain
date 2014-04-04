@@ -12,17 +12,13 @@
         */
         constructor(minIndex: number);
         /**
-        * The component on the top of the stack.
-        *
-        * @readonly
+        * Returns the component on the top of the stack.
         */
-        public top : Component;
+        public top(): Component;
         /**
-        * The component on the bottom of the stack.
-        *
-        * @readonly
+        * Returns the component on the bottom of the stack.
         */
-        public bottom : Component;
+        public bottom(): Component;
         /**
         * Returns true if the stack contains the given component.
         *

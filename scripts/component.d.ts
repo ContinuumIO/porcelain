@@ -38,47 +38,18 @@
         */
         public destroy(): void;
         /**
-        * The component's internal DOM element.
+        * Returns the parent Component of this component.
+        */
+        public parent(): Component;
+        /**
+        * Returns the array of child Components of this component.
+        */
+        public children(): Component[];
+        /**
+        * Unparent the Component and detach its element from the DOM.
         *
-        * @readonly
         */
-        public element : HTMLElement;
-        /**
-        * The id of the component and its DOM element.
-        */
-        public id : string;
-        /**
-        * The inline style object for the component element.
-        *
-        * @readonly
-        */
-        public style : CSSStyleDeclaration;
-        /**
-        * The computed style object for the component element.
-        *
-        * @readonly
-        */
-        public computedStyle : CSSStyleDeclaration;
-        /**
-        * The CSS display value for the component element.
-        */
-        public display : string;
-        /**
-        * The CSS position value for the component element.
-        */
-        public position : string;
-        /**
-        * The parent Component of this component.
-        *
-        * @readonly
-        */
-        public parent : Component;
-        /**
-        * The array of child Components of this component.
-        *
-        * @readonly
-        */
-        public children : Component[];
+        public detach(): void;
         /**
         * Append children to the end of this component.
         *
@@ -109,10 +80,17 @@
         */
         public insertBefore(before: Component, ...children: Component[]): void;
         /**
-        * Unparent the Component and detach its element from the DOM.
-        *
+        * Returns the component's internal DOM element.
         */
-        public detach(): void;
+        public element(): HTMLElement;
+        /**
+        * Returns the id of the component and its DOM element.
+        */
+        public id(): string;
+        /**
+        * Set the id of the component and its DOM element.
+        */
+        public setId(id: string): void;
         /**
         * Add a name or names to the element's CSS class name.
         *
@@ -130,33 +108,71 @@
         */
         public removeClass(className: string): void;
         /**
-        * The offset position of the component.
-        *
-        * This should only be set when position is "absolute".
+        * Returns the inline style object for the component element.
         */
-        public offsetPos : Point;
+        public style(): CSSStyleDeclaration;
         /**
-        * The offset size of the component.
-        *
-        * This should only be set when position is "absolute".
+        * Returns the computed style object for the component element.
         */
-        public offsetSize : Size;
+        public computedStyle(): CSSStyleDeclaration;
         /**
-        * The offset rect of the component.
-        *
-        * This should only be set when position is "absolute".
+        * Returns the CSS display value for the component element.
         */
-        public offsetRect : Rect;
+        public display(): string;
         /**
-        * The minimum size of the component.
+        * Set the CSS display value for the component element.
         */
-        public minimumSize : Size;
+        public setDisplay(value: string): void;
         /**
-        * The maximum size of the component.
+        * Returns CSS position value for the component element.
         */
-        public maximumSize : Size;
+        public position(): string;
         /**
-        * The preferred size of the component.
+        * Set the CSS position value for the component element.
+        */
+        public setPosition(value: string): void;
+        /**
+        * Returns the offset position of the component.
+        */
+        public pos(): Point;
+        /**
+        * Set the offset position of the component.
+        */
+        public setPos(point: Point): void;
+        /**
+        * Returns the offset size of the component.
+        */
+        public size(): Size;
+        /**
+        * Set the offset size of the component.
+        */
+        public setSize(size: Size): void;
+        /**
+        * Returns the offset rect of the component.
+        */
+        public rect(): Rect;
+        /**
+        * Set the offset rect of the component.
+        */
+        public setRect(rect: Rect): void;
+        /**
+        * Returns the minimum size of the component.
+        */
+        public minimumSize(): Size;
+        /**
+        * Set the minimum size of the component.
+        */
+        public setMinimumSize(size: Size): void;
+        /**
+        * Returns the maximum size of the component.
+        */
+        public maximumSize(): Size;
+        /**
+        * Set the maximum size of the component.
+        */
+        public setMaximumSize(size: Size): void;
+        /**
+        * Returns the preferred size of the component.
         *
         * This computes the natural size of the component and is used
         * by the procedural layout system. The default implementation
@@ -166,7 +182,7 @@
         */
         public sizeHint(): Size;
         /**
-        * The preferred minimum size of the component.
+        * Returns the preferred minimum size of the component.
         *
         * This computes the minimal size of the component and is used
         * by the procedural layout system. The default implementation
@@ -176,7 +192,7 @@
         */
         public minimumSizeHint(): Size;
         /**
-        * The preferred maximum size of the component.
+        * Returns the preferred maximum size of the component.
         *
         * This computes the maximal size of the component and is used
         * by the procedural layout system. The default implementation
@@ -193,6 +209,16 @@
         * @protected.
         */
         public createElement(): HTMLElement;
+        /**
+        * Invoked by a root node when the tree is attached to the DOM.
+        *
+        * The default implementation of this method dispatches to its
+        * children in a bottom-up fashion. A component should not
+        * modify the tree structure during this method.
+        *
+        * @protected
+        */
+        public afterAttach(): void;
         /**
         * A helper method for preparing children to be inserted.
         *
