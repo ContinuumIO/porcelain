@@ -10,7 +10,7 @@ var porcelain;
     
 
     /**
-    * An implementation of the IPoint interface.
+    * A class which represents a point in Cartesian space.
     *
     * @class
     */
@@ -34,13 +34,6 @@ var porcelain;
             }
         }
         /**
-        * Returns true if this point is equivalent to another.
-        */
-        Point.prototype.equals = function (other) {
-            return this.x == other.x && this.y == other.y;
-        };
-
-        /**
         * Returns true if both X AND Y coordinates are zero.
         */
         Point.prototype.isNull = function () {
@@ -55,10 +48,10 @@ var porcelain;
         };
 
         /**
-        * Return a new size with the X and Y values swapped.
+        * Returns true if this point is equivalent to another.
         */
-        Point.prototype.transpose = function () {
-            return new Point(this.x, this.y);
+        Point.prototype.equals = function (other) {
+            return this.x == other.x && this.y == other.y;
         };
 
         /**

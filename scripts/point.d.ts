@@ -1,13 +1,13 @@
 ﻿declare module porcelain {
     /**
-    * The interface for a point in Cartesian space.
+    * An interface defining point in Cartesian space.
     */
     interface IPoint {
         x: number;
         y: number;
     }
     /**
-    * An implementation of the IPoint interface.
+    * A class which represents a point in Cartesian space.
     *
     * @class
     */
@@ -27,10 +27,6 @@
         constructor(point: IPoint);
         constructor(x: number, y: number);
         /**
-        * Returns true if this point is equivalent to another.
-        */
-        public equals(other: IPoint): boolean;
-        /**
         * Returns true if both X AND Y coordinates are zero.
         */
         public isNull(): boolean;
@@ -39,17 +35,17 @@
         */
         public manhattanLength(): number;
         /**
-        * Return a new size with the X and Y values swapped.
+        * Returns true if this point is equivalent to another.
         */
-        public transpose(): Point;
+        public equals(other: Point): boolean;
         /**
         * Returns a new point which is the sum of the two points.
         */
-        public add(other: IPoint): Point;
+        public add(other: Point): Point;
         /**
         * Returns a new point which is the difference of the two points.
         */
-        public subtract(other: IPoint): Point;
+        public subtract(other: Point): Point;
         /**
         * Returns a new point scaled by the given factor.
         */

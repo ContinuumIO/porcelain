@@ -1,6 +1,6 @@
 ﻿declare module porcelain {
     /**
-    * The interface for defining a rectangle in terms of edges.
+    * An interface defining a rectangle in Cartesian space.
     */
     interface IRect {
         left: number;
@@ -9,7 +9,7 @@
         bottom: number;
     }
     /**
-    * An implementation of the IRect interface.
+    * A class represeting a rectangle in Cartesian space.
     *
     * @class
     */
@@ -82,7 +82,7 @@
         *
         * This will move the left and right edges.
         */
-        public setSize(size: ISize): void;
+        public setSize(size: Size): void;
         /**
         * Returns the top left corner of the rect.
         */
@@ -93,7 +93,7 @@
         * This will change the width and height, but will not change
         * change the right or bottom edges.
         */
-        public setTopLeft(point: IPoint): void;
+        public setTopLeft(point: Point): void;
         /**
         * Returns the top right corner of the rect.
         */
@@ -104,7 +104,7 @@
         * This will change the width and height, but will not change
         * the left or bottom edges.
         */
-        public setTopRight(point: IPoint): void;
+        public setTopRight(point: Point): void;
         /**
         * Returns bottom left corner of the rect.
         */
@@ -115,7 +115,7 @@
         * This will change the width and height, but will not change
         * the right or top edges.
         */
-        public setBottomLeft(point: IPoint): void;
+        public setBottomLeft(point: Point): void;
         /**
         * Returns bottom right corner of the rect.
         */
@@ -125,7 +125,7 @@
         * This will change the width and height, but will not change
         * the left or top edges.
         */
-        public setBottomRight(point: IPoint): void;
+        public setBottomRight(point: Point): void;
         /**
         * Returns the center point of the rect.
         */
@@ -163,35 +163,31 @@
         *
         * This is equivalent to moving the top and left edges.
         */
-        public moveTopLeft(point: IPoint): void;
+        public moveTopLeft(point: Point): void;
         /**
         * Move the top right corner of the rect.
         *
         * This is equivalent to moving the top and right edges.
         */
-        public moveTopRight(point: IPoint): void;
+        public moveTopRight(point: Point): void;
         /**
         * Move the bottom left corner of the rect.
         *
         * This is equivalent to moving the bottom and left edges.
         */
-        public moveBottomLeft(point: IPoint): void;
+        public moveBottomLeft(point: Point): void;
         /**
         * Move the bottom right corner of the rect.
         *
         * This is equivalent to moving the bottom and right edges.
         */
-        public moveBottomRight(point: IPoint): void;
+        public moveBottomRight(point: Point): void;
         /**
         * Move the center point of the rect.
         *
         * This will not change the width or height.
         */
-        public moveCenter(point: IPoint): void;
-        /**
-        * Returns true if this rect is equivalent to another.
-        */
-        public equals(other: IRect): boolean;
+        public moveCenter(point: Point): void;
         /**
         * Returns true if the width OR height is zero or negative.
         */
@@ -204,6 +200,10 @@
         * Returns true the width AND height are positive non-zero.
         */
         public isValid(): boolean;
+        /**
+        * Returns true if this rect is equivalent to another.
+        */
+        public equals(other: Rect): boolean;
         /**
         * Adjust the rect edges by the given deltas.
         */
@@ -231,18 +231,18 @@
         /**
         * Returns true if this rect contains the given point.
         */
-        public contains(point: IPoint): boolean;
+        public contains(point: Point): boolean;
         /**
         * Returns true if this rect intersects the given rect.
         */
-        public intersects(rect: IRect): boolean;
+        public intersects(rect: Rect): boolean;
         /**
         * Returns the bounding rect of this rect and the given rect.
         */
-        public intersection(rect: IRect): Rect;
+        public intersectected(rect: Rect): Rect;
         /**
         * Returns the bounding rect of this rect and the given rect.
         */
-        public union(rect: IRect): Rect;
+        public united(rect: Rect): Rect;
     }
 }

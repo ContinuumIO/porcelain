@@ -1,17 +1,17 @@
 ﻿declare module porcelain {
     /**
-    * The interface for a size defined by width and height.
+    * An interface defining a size in Cartesian space.
     */
     interface ISize {
         width: number;
         height: number;
     }
     /**
-    * An implementation of the ISize interface.
+    * A class representing a size in Cartesian space.
     *
     * @class
     */
-    class Size implements ISize {
+    class Size {
         /**
         * The width, in pixels.
         */
@@ -27,10 +27,6 @@
         constructor(size: ISize);
         constructor(width: number, height: number);
         /**
-        * Returns true if this size is equivalent to another.
-        */
-        public equals(other: ISize): boolean;
-        /**
         * Returns true if the width OR height is zero.
         */
         public isEmpty(): boolean;
@@ -45,23 +41,31 @@
         /**
         * Returns a new size limited in each dimension by another size.
         */
-        public boundedTo(other: ISize): Size;
+        public boundedTo(other: Size): Size;
         /**
         * Returns a new size expaned in each dimension to another size.
         */
-        public expandedTo(other: ISize): Size;
+        public expandedTo(other: Size): Size;
         /**
-        * Return a new size with the width and height values swapped.
+        * Swap the width and height values.
         */
-        public transpose(): Size;
+        public transpose(): void;
+        /**
+        * Returns a new size with width and height swapped.
+        */
+        public transposed(): Size;
+        /**
+        * Returns true if this size is equivalent to another.
+        */
+        public equals(other: Size): boolean;
         /**
         * Returns a new size which is the sum of two sizes.
         */
-        public add(other: ISize): Size;
+        public add(other: Size): Size;
         /**
         * Returns a new size which is the difference of two sizes.
         */
-        public subtract(other: ISize): Size;
+        public subtract(other: Size): Size;
         /**
         * Returns a new size scaled by the given factor.
         */

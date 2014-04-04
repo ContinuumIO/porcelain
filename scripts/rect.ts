@@ -8,7 +8,7 @@
 module porcelain {
 
     /**
-     * The interface for defining a rectangle in terms of edges.
+     * An interface defining a rectangle in Cartesian space. 
      */
     export interface IRect {
         left: number;
@@ -16,10 +16,10 @@ module porcelain {
         right: number;
         bottom: number;
     }
-    
+
 
     /**
-     * An implementation of the IRect interface.
+     * A class represeting a rectangle in Cartesian space. 
      *
      * @class
      */
@@ -143,7 +143,7 @@ module porcelain {
          * 
          * This will move the left and right edges.
          */
-        setSize(size: ISize) {
+        setSize(size: Size) {
             this.setWidth(size.width);
             this.setHeight(size.height);
         }
@@ -161,7 +161,7 @@ module porcelain {
          * This will change the width and height, but will not change
          * change the right or bottom edges.
          */
-        setTopLeft(point: IPoint) {
+        setTopLeft(point: Point) {
             this.left = point.x;
             this.top = point.y;
         }
@@ -179,7 +179,7 @@ module porcelain {
          * This will change the width and height, but will not change
          * the left or bottom edges.
          */
-        setTopRight(point: IPoint) {
+        setTopRight(point: Point) {
             this.right = point.x;
             this.top = point.y;
         }
@@ -197,7 +197,7 @@ module porcelain {
          * This will change the width and height, but will not change
          * the right or top edges.
          */
-        setBottomLeft(point: IPoint) {
+        setBottomLeft(point: Point) {
             this.left = point.x;
             this.bottom = point.y;
         }
@@ -214,7 +214,7 @@ module porcelain {
          * This will change the width and height, but will not change
          * the left or top edges.
          */
-        setBottomRight(point: IPoint) {
+        setBottomRight(point: Point) {
             this.right = point.x;
             this.bottom = point.y;
         }
@@ -277,7 +277,7 @@ module porcelain {
          *
          * This is equivalent to moving the top and left edges.
          */
-        moveTopLeft(point: IPoint): void {
+        moveTopLeft(point: Point): void {
             this.moveLeft(point.x);
             this.moveTop(point.y);
         }
@@ -287,7 +287,7 @@ module porcelain {
          *
          * This is equivalent to moving the top and right edges.
          */
-        moveTopRight(point: IPoint): void {
+        moveTopRight(point: Point): void {
             this.moveRight(point.x);
             this.moveTop(point.y);
         }
@@ -297,7 +297,7 @@ module porcelain {
          *
          * This is equivalent to moving the bottom and left edges.
          */
-        moveBottomLeft(point: IPoint): void {
+        moveBottomLeft(point: Point): void {
             this.moveLeft(point.x);
             this.moveBottom(point.y);
         }
@@ -307,7 +307,7 @@ module porcelain {
          *
          * This is equivalent to moving the bottom and right edges.
          */
-        moveBottomRight(point: IPoint): void {
+        moveBottomRight(point: Point): void {
             this.moveRight(point.x);
             this.moveBottom(point.y);
         }
@@ -317,19 +317,9 @@ module porcelain {
          *
          * This will not change the width or height.
          */
-        moveCenter(point: IPoint): void {
+        moveCenter(point: Point): void {
             this.moveLeft(point.x + Math.floor(this.width() / 2));
             this.moveTop(point.y + Math.floor(this.height() / 2));
-        }
-
-        /**
-         * Returns true if this rect is equivalent to another.
-         */
-        equals(other: IRect): boolean {
-            return this.left == other.left &&
-                this.top == other.top &&
-                this.right == other.right &&
-                this.bottom == other.bottom;
         }
 
         /**
@@ -351,6 +341,16 @@ module porcelain {
          */
         isValid(): boolean {
             return this.left < this.right && this.top < this.bottom;
+        }
+
+        /**
+         * Returns true if this rect is equivalent to another.
+         */
+        equals(other: Rect): boolean {
+            return this.left == other.left &&
+                this.top == other.top &&
+                this.right == other.right &&
+                this.bottom == other.bottom;
         }
 
         /**
@@ -420,7 +420,7 @@ module porcelain {
         /**
          * Returns true if this rect contains the given point.
          */
-        contains(point: IPoint): boolean {
+        contains(point: Point): boolean {
             if (this.isNull()) {
                 return false;
             }
@@ -453,13 +453,9 @@ module porcelain {
         /**
          * Returns true if this rect intersects the given rect.
          */
-        intersects(rect: IRect): boolean {
-            if (this.isNull()) {
+        intersects(rect: Rect): boolean {
+            if (this.isNull() || rect.isNull()) {
                 return false;
-            }
-            // inline isNull()
-            if (rect.left === rect.right && rect.top === rect.bottom) {
-                return;
             }
             var temp: number;
             var l1 = this.left;
@@ -502,13 +498,9 @@ module porcelain {
         /**
          * Returns the bounding rect of this rect and the given rect.
          */
-        intersection(rect: IRect): Rect {
-            if (this.isNull()) {
+        intersectected(rect: Rect): Rect {
+            if (this.isNull() || rect.isNull()) {
                 return new Rect();
-            }
-            // inline isNull()
-            if (rect.left === rect.right && rect.top === rect.bottom) {
-                return;
             }
             var temp: number;
             var l1 = this.left;
@@ -545,22 +537,22 @@ module porcelain {
             if (t1 >= b2 || t2 >= b1) {
                 return new Rect();
             }
-            var l = Math.max(l1, l2);
-            var t = Math.max(t1, t2);
-            var r = Math.min(r1, r2);
-            var b = Math.min(b1, b2);
-            return new Rect({ left: l, top: t, right: r, bottom: b });
+            var result = new Rect();
+            result.left = Math.max(l1, l2);
+            result.top = Math.max(t1, t2);
+            result.right = Math.min(r1, r2);
+            result.bottom = Math.min(b1, b2);
+            return result;
         }
         
         /**
          * Returns the bounding rect of this rect and the given rect.
          */
-        union(rect: IRect): Rect {
+        united(rect: Rect): Rect {
             if (this.isNull()) {
                 return new Rect(rect);;
             }
-            // inline isNull()
-            if (rect.left === rect.right && rect.top === rect.bottom) {
+            if (rect.isNull()) {
                 return new Rect(this);
             }
             var temp: number;
@@ -592,11 +584,12 @@ module porcelain {
                 t2 = b2;
                 b2 = temp;
             }
-            var l = Math.min(l1, l2);
-            var t = Math.min(t1, t2);
-            var r = Math.max(r1, r2);
-            var b = Math.max(b1, b2);
-            return new Rect({ left: l, top: t, right: r, bottom: b });
+            var result = new Rect();
+            result.left = Math.min(l1, l2);
+            result.top = Math.min(t1, t2);
+            result.right = Math.max(r1, r2);
+            result.bottom = Math.max(b1, b2);
+            return result;
         }
     }
 

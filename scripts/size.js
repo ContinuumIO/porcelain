@@ -10,7 +10,7 @@ var porcelain;
     
 
     /**
-    * An implementation of the ISize interface.
+    * A class representing a size in Cartesian space.
     *
     * @class
     */
@@ -33,13 +33,6 @@ var porcelain;
                     throw new Error("invalid constructor call");
             }
         }
-        /**
-        * Returns true if this size is equivalent to another.
-        */
-        Size.prototype.equals = function (other) {
-            return this.width == other.width && this.height == other.height;
-        };
-
         /**
         * Returns true if the width OR height is zero.
         */
@@ -80,10 +73,26 @@ var porcelain;
         };
 
         /**
-        * Return a new size with the width and height values swapped.
+        * Swap the width and height values.
         */
         Size.prototype.transpose = function () {
+            var temp = this.width;
+            this.width = this.height;
+            this.height = temp;
+        };
+
+        /**
+        * Returns a new size with width and height swapped.
+        */
+        Size.prototype.transposed = function () {
             return new Size(this.height, this.width);
+        };
+
+        /**
+        * Returns true if this size is equivalent to another.
+        */
+        Size.prototype.equals = function (other) {
+            return this.width == other.width && this.height == other.height;
         };
 
         /**

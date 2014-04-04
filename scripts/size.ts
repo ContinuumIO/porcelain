@@ -8,7 +8,7 @@
 module porcelain {
 
     /**
-     * The interface for a size defined by width and height.
+     * An interface defining a size in Cartesian space. 
      */
     export interface ISize {
         width: number;
@@ -17,11 +17,11 @@ module porcelain {
 
 
     /**
-     * An implementation of the ISize interface.
+     * A class representing a size in Cartesian space.
      *
      * @class
      */
-    export class Size implements ISize {
+    export class Size {
         
         /**
          * The width, in pixels.
@@ -59,13 +59,6 @@ module porcelain {
         }
 
         /**
-         * Returns true if this size is equivalent to another.
-         */
-        equals(other: ISize): boolean {
-            return this.width == other.width && this.height == other.height;
-        }
-
-        /**
          * Returns true if the width OR height is zero.
          */
         isEmpty(): boolean {
@@ -89,7 +82,7 @@ module porcelain {
         /**
          * Returns a new size limited in each dimension by another size.
          */
-        boundedTo(other: ISize): Size {
+        boundedTo(other: Size): Size {
             var w = Math.min(this.width, other.width);
             var h = Math.min(this.height, other.height);
             return new Size(w, h);
@@ -98,23 +91,39 @@ module porcelain {
         /**
          * Returns a new size expaned in each dimension to another size.
          */
-        expandedTo(other: ISize): Size {
+        expandedTo(other: Size): Size {
             var w = Math.max(this.width, other.width);
             var h = Math.max(this.height, other.height);
             return new Size(w, h);
         }
 
         /**
-         * Return a new size with the width and height values swapped.
+         * Swap the width and height values.
          */
-        transpose(): Size {
+        transpose(): void {
+            var temp = this.width;
+            this.width = this.height;
+            this.height = temp;
+        }
+
+        /**
+         * Returns a new size with width and height swapped.
+         */
+        transposed(): Size {
             return new Size(this.height, this.width);
+        }
+
+        /**
+         * Returns true if this size is equivalent to another.
+         */
+        equals(other: Size): boolean {
+            return this.width == other.width && this.height == other.height;
         }
 
         /**
          * Returns a new size which is the sum of two sizes.
          */
-        add(other: ISize): Size {
+        add(other: Size): Size {
             var w = this.width + other.width;
             var h = this.height + other.height;
             return new Size(w, h);
@@ -123,7 +132,7 @@ module porcelain {
         /**
          * Returns a new size which is the difference of two sizes.
          */
-        subtract(other: ISize): Size {
+        subtract(other: Size): Size {
             var w = this.width - other.width;
             var h = this.height - other.height;
             return new Size(w, h);

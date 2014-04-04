@@ -10,7 +10,7 @@ var porcelain;
     
 
     /**
-    * An implementation of the IRect interface.
+    * A class represeting a rectangle in Cartesian space.
     *
     * @class
     */
@@ -273,13 +273,6 @@ var porcelain;
         };
 
         /**
-        * Returns true if this rect is equivalent to another.
-        */
-        Rect.prototype.equals = function (other) {
-            return this.left == other.left && this.top == other.top && this.right == other.right && this.bottom == other.bottom;
-        };
-
-        /**
         * Returns true if the width OR height is zero or negative.
         */
         Rect.prototype.isEmpty = function () {
@@ -298,6 +291,13 @@ var porcelain;
         */
         Rect.prototype.isValid = function () {
             return this.left < this.right && this.top < this.bottom;
+        };
+
+        /**
+        * Returns true if this rect is equivalent to another.
+        */
+        Rect.prototype.equals = function (other) {
+            return this.left == other.left && this.top == other.top && this.right == other.right && this.bottom == other.bottom;
         };
 
         /**
@@ -401,13 +401,8 @@ var porcelain;
         * Returns true if this rect intersects the given rect.
         */
         Rect.prototype.intersects = function (rect) {
-            if (this.isNull()) {
+            if (this.isNull() || rect.isNull()) {
                 return false;
-            }
-
-            // inline isNull()
-            if (rect.left === rect.right && rect.top === rect.bottom) {
-                return;
             }
             var temp;
             var l1 = this.left;
@@ -450,14 +445,9 @@ var porcelain;
         /**
         * Returns the bounding rect of this rect and the given rect.
         */
-        Rect.prototype.intersection = function (rect) {
-            if (this.isNull()) {
+        Rect.prototype.intersectected = function (rect) {
+            if (this.isNull() || rect.isNull()) {
                 return new Rect();
-            }
-
-            // inline isNull()
-            if (rect.left === rect.right && rect.top === rect.bottom) {
-                return;
             }
             var temp;
             var l1 = this.left;
@@ -494,24 +484,23 @@ var porcelain;
             if (t1 >= b2 || t2 >= b1) {
                 return new Rect();
             }
-            var l = Math.max(l1, l2);
-            var t = Math.max(t1, t2);
-            var r = Math.min(r1, r2);
-            var b = Math.min(b1, b2);
-            return new Rect({ left: l, top: t, right: r, bottom: b });
+            var result = new Rect();
+            result.left = Math.max(l1, l2);
+            result.top = Math.max(t1, t2);
+            result.right = Math.min(r1, r2);
+            result.bottom = Math.min(b1, b2);
+            return result;
         };
 
         /**
         * Returns the bounding rect of this rect and the given rect.
         */
-        Rect.prototype.union = function (rect) {
+        Rect.prototype.united = function (rect) {
             if (this.isNull()) {
                 return new Rect(rect);
                 ;
             }
-
-            // inline isNull()
-            if (rect.left === rect.right && rect.top === rect.bottom) {
+            if (rect.isNull()) {
                 return new Rect(this);
             }
             var temp;
@@ -543,11 +532,12 @@ var porcelain;
                 t2 = b2;
                 b2 = temp;
             }
-            var l = Math.min(l1, l2);
-            var t = Math.min(t1, t2);
-            var r = Math.max(r1, r2);
-            var b = Math.max(b1, b2);
-            return new Rect({ left: l, top: t, right: r, bottom: b });
+            var result = new Rect();
+            result.left = Math.min(l1, l2);
+            result.top = Math.min(t1, t2);
+            result.right = Math.max(r1, r2);
+            result.bottom = Math.max(b1, b2);
+            return result;
         };
         return Rect;
     })();

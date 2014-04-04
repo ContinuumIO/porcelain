@@ -8,7 +8,7 @@
 module porcelain {
 
     /**
-     * The interface for a point in Cartesian space.
+     * An interface defining point in Cartesian space. 
      */
     export interface IPoint {
         x: number;
@@ -17,7 +17,7 @@ module porcelain {
 
 
     /**
-     * An implementation of the IPoint interface.
+     * A class which represents a point in Cartesian space.
      *
      * @class
      */
@@ -59,13 +59,6 @@ module porcelain {
         }
 
         /**
-         * Returns true if this point is equivalent to another.
-         */
-        equals(other: IPoint): boolean {
-            return this.x == other.x && this.y == other.y;
-        }
-
-        /**
          * Returns true if both X AND Y coordinates are zero.
          */
         isNull(): boolean {
@@ -80,23 +73,23 @@ module porcelain {
         }
 
         /**
-         * Return a new size with the X and Y values swapped.
+         * Returns true if this point is equivalent to another.
          */
-        transpose(): Point {
-            return new Point(this.x, this.y);
+        equals(other: Point): boolean {
+            return this.x == other.x && this.y == other.y;
         }
 
         /**
          * Returns a new point which is the sum of the two points.
          */
-        add(other: IPoint): Point {
+        add(other: Point): Point {
             return new Point(this.x + other.x, this.y + other.y);
         }
 
         /**
          * Returns a new point which is the difference of the two points.
          */
-        subtract(other: IPoint): Point {
+        subtract(other: Point): Point {
             return new Point(this.x - other.x, this.y - other.y);
         }
 
