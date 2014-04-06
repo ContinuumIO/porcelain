@@ -29,9 +29,19 @@ var porcelain;
     var SIZE_GRIP_CLASS = "p-Window-sizeGrip";
 
     /**
-    * The class added a Window title bar.
+    * The class added to a Window title bar.
     */
     var TITLE_BAR_CLASS = "p-Window-titleBar";
+
+    /**
+    * The class added to a minimized Window.
+    */
+    var MINIMIZED_CLASS = "p-minimized";
+
+    /**
+    * The class added to a maximized Window.
+    */
+    var MAXIMIZED_CLASS = "p-maximized";
 
     
 
@@ -107,7 +117,7 @@ var porcelain;
 
             // Set the positioning mode and initial size of the window.
             this.setPosition("absolute");
-            this.setSize(this.minimumSizeHint());
+            this.setMinimumSize(new porcelain.Size(192, 192));
 
             // Bind the Window mousedown handler.
             this.evtMouseDown.bind(this.onMouseDown, this);
@@ -197,17 +207,6 @@ var porcelain;
         };
 
         /**
-        * A reimplemented parent class method.
-        *
-        * Returns the computed minimum size of the window.
-        *
-        * @protected
-        */
-        Window.prototype.minimumSizeHint = function () {
-            return new porcelain.Size(192, 192);
-        };
-
-        /**
         * The mousedown event handler.
         *
         * @protected
@@ -232,10 +231,15 @@ var porcelain;
                 case 1 /* Minimized */:
                     rstBtn.setDisplay("none");
                     maxBtn.setDisplay("");
+                    this.removeClass(MAXIMIZED_CLASS);
+                    this.setRect(this._stored);
                     break;
                 case 2 /* Maximized */:
                     maxBtn.setDisplay("none");
                     rstBtn.setDisplay("");
+                    this._stored = this.rect();
+                    this.addClass(MAXIMIZED_CLASS);
+                    this.setRect(new porcelain.Rect(0, 0, -1, -1));
                     break;
                 default:
                     break;

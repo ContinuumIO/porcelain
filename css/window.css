@@ -16,7 +16,12 @@
     top: 6px;
     left: 6px;
     right: 6px;
-    height: 23px;
+    height: 20px;
+}
+
+.p-Window-titleBar > .p-TitleBar-buttonBox {
+    position: relative;
+    top: -6px;
 }
 
 .p-Window-body {
@@ -106,4 +111,36 @@
     cursor: se-resize;
     right: 0px;
     bottom: 0px;
+}
+
+.p-Window.p-maximized {
+    border: none;
+    box-shadow: none;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.p-Window.p-maximized > .p-Window-titleBar {
+    top: 4px;
+    left: 3px;
+    right: 3px;
+}
+
+.p-Window.p-maximized > .p-Window-titleBar > .p-TitleBar-buttonBox {
+    top: -4px;
+}
+
+.p-Window.p-maximized > .p-Window-sizeGrip {
+    display: none;
+}
+
+.p-Window.p-maximized > .p-Window-body {
+    left: 0px;
+    right: 0px;
+    top: 23px;
+    bottom: 0px;
+    border: none;
+    border-top: 1px solid #5499D6;
 }

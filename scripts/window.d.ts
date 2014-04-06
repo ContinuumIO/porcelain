@@ -59,14 +59,6 @@
         */
         public close(): void;
         /**
-        * A reimplemented parent class method.
-        *
-        * Returns the computed minimum size of the window.
-        *
-        * @protected
-        */
-        public minimumSizeHint(): Size;
-        /**
         * The mousedown event handler.
         *
         * @protected
@@ -76,6 +68,7 @@
         * An internal helper method for setting the window state.
         */
         private _setWindowState(state);
+        private _stored;
         private _subItems;
         private _windowState;
     }

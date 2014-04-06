@@ -23,9 +23,19 @@ module porcelain {
     var SIZE_GRIP_CLASS = "p-Window-sizeGrip";
 
     /**
-     * The class added a Window title bar.
+     * The class added to a Window title bar.
      */
     var TITLE_BAR_CLASS = "p-Window-titleBar";
+
+    /**
+     * The class added to a minimized Window.
+     */
+    var MINIMIZED_CLASS = "p-minimized";
+
+    /**
+     * The class added to a maximized Window.
+     */
+    var MAXIMIZED_CLASS = "p-maximized";
 
 
     /**
@@ -109,7 +119,7 @@ module porcelain {
 
             // Set the positioning mode and initial size of the window.
             this.setPosition("absolute");
-            this.setSize(this.minimumSizeHint());
+            this.setMinimumSize(new Size(192, 192));
 
             // Bind the Window mousedown handler.
             this.evtMouseDown.bind(this.onMouseDown, this);
@@ -199,17 +209,6 @@ module porcelain {
             this.destroy();
         }
 
-        /** 
-         * A reimplemented parent class method.
-         *
-         * Returns the computed minimum size of the window.
-         *
-         * @protected
-         */
-        minimumSizeHint(): Size {
-            return new Size(192, 192);
-        }
-
         /**
          * The mousedown event handler.
          *
@@ -235,16 +234,22 @@ module porcelain {
                 case WindowState.Minimized:
                     rstBtn.setDisplay("none");
                     maxBtn.setDisplay("");
+                    this.removeClass(MAXIMIZED_CLASS);
+                    this.setRect(this._stored);
                     break;
                 case WindowState.Maximized:
                     maxBtn.setDisplay("none");
                     rstBtn.setDisplay("");
+                    this._stored = this.rect();
+                    this.addClass(MAXIMIZED_CLASS);
+                    this.setRect(new Rect(0, 0, -1, -1));
                     break;
                 default:
                     break;
             }
         }
 
+        private _stored: Rect;
         private _subItems: IWindowSubItems;
         private _windowState = WindowState.Normal;
     }
