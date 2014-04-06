@@ -182,26 +182,6 @@
         */
         public sizeHint(): Size;
         /**
-        * Returns the preferred minimum size of the component.
-        *
-        * This computes the minimal size of the component and is used
-        * by the procedural layout system. The default implementation
-        * of this method returns an invalid size.
-        *
-        * @protected
-        */
-        public minimumSizeHint(): Size;
-        /**
-        * Returns the preferred maximum size of the component.
-        *
-        * This computes the maximal size of the component and is used
-        * by the procedural layout system. The default implementation
-        * of this method returns an invalid size.
-        *
-        * @protected
-        */
-        public maximumSizeHint(): Size;
-        /**
         * Create the underlying element for the component.
         *
         * The default implementation creates a div.

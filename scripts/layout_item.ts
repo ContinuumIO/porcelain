@@ -75,12 +75,6 @@ module porcelain {
         minimumSize(): Size {
             var component = this.component;
             var size = component.minimumSize();
-            if (size.isValid() && !size.isNull()) {
-                size = size.boundedTo(MAX_ITEM_SIZE);
-                size = size.expandedTo(MIN_ITEM_SIZE);
-                return size;
-            }
-            size = component.minimumSizeHint();
             if (size.isValid()) {
                 size = size.boundedTo(MAX_ITEM_SIZE);
                 size = size.expandedTo(MIN_ITEM_SIZE);
@@ -95,12 +89,6 @@ module porcelain {
         maximumSize(): Size {
             var component = this.component;
             var size = component.maximumSize();
-            if (size.isValid()) {
-                size = size.boundedTo(MAX_ITEM_SIZE);
-                size = size.expandedTo(MIN_ITEM_SIZE);
-                return size;
-            }
-            size = component.maximumSizeHint();
             if (size.isValid()) {
                 size = size.boundedTo(MAX_ITEM_SIZE);
                 size = size.expandedTo(MIN_ITEM_SIZE);
