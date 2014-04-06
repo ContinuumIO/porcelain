@@ -10,126 +10,77 @@ var porcelain;
     
 
     /**
-    * An implementation of the IPoint interface.
+    * A class which represents a point in Cartesian space.
     *
     * @class
     */
     var Point = (function () {
-        function Point(first, second) {
+        function Point(arg1, arg2) {
             switch (arguments.length) {
                 case 0:
                     this.x = 0;
                     this.y = 0;
                     break;
                 case 1:
-                    var point = first;
-                    this.x = point.x;
-                    this.y = point.y;
+                    this.x = arg1.x;
+                    this.y = arg1.y;
                     break;
                 case 2:
-                    var x = first;
-                    var y = second;
-                    this.x = x;
-                    this.y = y;
+                    this.x = arg1;
+                    this.y = arg2;
                     break;
                 default:
-                    throw "invalid constructor call";
+                    throw new Error("invalid constructor call");
             }
         }
-        Object.defineProperty(Point.prototype, "point", {
-            /**
-            * The X and Y coordinates of the point.
-            */
-            get: function () {
-                return { x: this.x, y: this.y };
-            },
-            set: function (point) {
-                this.x = point.x;
-                this.y = point.y;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-
         /**
-        * Whether both X and Y coordinates are zero.
+        * Returns true if both X AND Y coordinates are zero.
         */
         Point.prototype.isNull = function () {
             return this.x == 0 && this.y == 0;
         };
 
         /**
-        * The sum of the absolute X and Y distances to the origin.
+        * Returns the sum of the abs X and Y distances to the origin.
         */
         Point.prototype.manhattanLength = function () {
             return Math.abs(this.x) + Math.abs(this.y);
         };
 
         /**
-        * Test the point for equality with another.
+        * Returns true if this point is equivalent to another.
         */
         Point.prototype.equals = function (other) {
             return this.x == other.x && this.y == other.y;
         };
 
         /**
-        * Increment this point by another point.
+        * Returns a new point which is the sum of the two points.
         */
         Point.prototype.add = function (other) {
-            this.x += other.x;
-            this.y += other.y;
-        };
-
-        /**
-        * A new point which is the vector sum of the two points.
-        */
-        Point.prototype.added = function (other) {
             return new Point(this.x + other.x, this.y + other.y);
         };
 
         /**
-        * Decrement this point by another point.
+        * Returns a new point which is the difference of the two points.
         */
         Point.prototype.subtract = function (other) {
-            this.x -= other.x;
-            this.y -= other.y;
-        };
-
-        /**
-        * A new point which is the vector difference of the two points.
-        */
-        Point.prototype.subtracted = function (other) {
             return new Point(this.x - other.x, this.y - other.y);
         };
 
         /**
-        * Scale this point by the given factor.
+        * Returns a new point scaled by the given factor.
         */
         Point.prototype.multiply = function (factor) {
-            this.x *= factor;
-            this.y *= factor;
+            var x = Math.floor(this.x * factor);
+            var y = Math.floor(this.y * factor);
+            return new Point(x, y);
         };
 
         /**
-        * A new point scaled by the given factor.
-        */
-        Point.prototype.multiplied = function (factor) {
-            return new Point(this.x * factor, this.y * factor);
-        };
-
-        /**
-        * Scale this point by the given divisor.
+        * Returns a new point scaled by the given divisor.
         */
         Point.prototype.divide = function (divisor) {
-            this.x /= divisor;
-            this.y /= divisor;
-        };
-
-        /**
-        * A new point scaled by the given divisor.
-        */
-        Point.prototype.divided = function (divisor) {
             var x = Math.floor(this.x / divisor);
             var y = Math.floor(this.y / divisor);
             return new Point(x, y);

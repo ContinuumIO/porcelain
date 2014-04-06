@@ -19,12 +19,27 @@ var porcelain;
     var SIZE_GRIP_CLASS = "p-SizeGrip";
 
     /**
-    * The prefix for the border class added to a size grip.
+    * The prefix for the grip area class added to a size grip.
     */
-    var BORDER_PREFIX = "p-Border-";
+    var GRIP_AREA_PREFIX = "p-GripArea-";
 
     /**
-    * An item which enables drag-sizing of an element's geometry.
+    * The areas which define the behavior of a size grip.
+    */
+    (function (GripArea) {
+        GripArea[GripArea["Left"] = 0] = "Left";
+        GripArea[GripArea["Top"] = 1] = "Top";
+        GripArea[GripArea["Right"] = 2] = "Right";
+        GripArea[GripArea["Bottom"] = 3] = "Bottom";
+        GripArea[GripArea["TopLeft"] = 4] = "TopLeft";
+        GripArea[GripArea["TopRight"] = 5] = "TopRight";
+        GripArea[GripArea["BottomLeft"] = 6] = "BottomLeft";
+        GripArea[GripArea["BottomRight"] = 7] = "BottomRight";
+    })(porcelain.GripArea || (porcelain.GripArea = {}));
+    var GripArea = porcelain.GripArea;
+
+    /**
+    * A widget which enables mouse resizing of an adjustable item.
     *
     * @class
     */
@@ -32,119 +47,170 @@ var porcelain;
         __extends(SizeGrip, _super);
         /**
         * Construct a new SizeGrip.
+        *
+        * @param gripArea The grip area defining the size grip behavior.
+        * @param target The component to resize with the grip.
         */
-        function SizeGrip(border, target, parent) {
-            if (typeof parent === "undefined") { parent = null; }
-            var _this = this;
-            _super.call(this, parent);
+        function SizeGrip(gripArea, target) {
+            _super.call(this);
             /**
-            * The internal mousedown handler.
-            *
-            * @private
+            * The mousedown event binder.
             */
-            this._onMouseDown = function (event) {
-                if (event.button === 0) {
-                    event.preventDefault();
-                    $(document).mouseup(_this._onMouseUp).mousemove(_this._onMouseMove);
-                    switch (_this._border) {
-                        case 0 /* Left */:
-                        case 4 /* TopLeft */:
-                        case 6 /* BottomLeft */:
-                            _this._offsetX = event.pageX - _this._target.left;
-                            break;
-                        case 2 /* Right */:
-                        case 5 /* TopRight */:
-                        case 7 /* BottomRight */:
-                            _this._offsetX = event.pageX - _this._target.right;
-                            break;
-                        default:
-                            break;
-                    }
-                    switch (_this._border) {
-                        case 1 /* Top */:
-                        case 4 /* TopLeft */:
-                        case 5 /* TopRight */:
-                            _this._offsetY = event.pageY - _this._target.top;
-                            break;
-                        case 3 /* Bottom */:
-                        case 6 /* BottomLeft */:
-                        case 7 /* BottomRight */:
-                            _this._offsetY = event.pageY - _this._target.bottom;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            };
+            this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
             /**
-            * The internal mouseup handler.
-            *
-            * @private
+            * The mouseup event binder.
             */
-            this._onMouseUp = function (event) {
-                if (event.button === 0) {
-                    event.preventDefault();
-                    _this._offsetX = 0;
-                    _this._offsetY = 0;
-                    $(document).off("mouseup", _this._onMouseUp).off("mousemove", _this._onMouseMove);
-                }
-            };
+            this.evtMouseUp = new porcelain.EventBinder("mouseup", document);
             /**
-            * The internal mousemove handler.
-            *
-            * @private
+            * The mousemove event binder.
             */
-            this._onMouseMove = function (event) {
-                event.preventDefault();
-                var vp = porcelain.viewport;
-                var x = event.pageX - _this._offsetX;
-                var y = event.pageY - _this._offsetY;
-                x = Math.min(Math.max(vp.left, x), vp.windowRight);
-                y = Math.min(Math.max(vp.top, y), vp.windowBottom);
-                switch (_this._border) {
-                    case 0 /* Left */:
-                        _this._target.left = x;
-                        break;
-                    case 1 /* Top */:
-                        _this._target.top = y;
-                        break;
-                    case 2 /* Right */:
-                        _this._target.right = x;
-                        break;
-                    case 3 /* Bottom */:
-                        _this._target.bottom = y;
-                        break;
-                    case 4 /* TopLeft */:
-                        _this._target.topLeft = { x: x, y: y };
-                        break;
-                    case 5 /* TopRight */:
-                        _this._target.topRight = { x: x, y: y };
-                        break;
-                    case 6 /* BottomLeft */:
-                        _this._target.bottomLeft = { x: x, y: y };
-                        break;
-                    case 7 /* BottomRight */:
-                        _this._target.bottomRight = { x: x, y: y };
-                        break;
-                    default:
-                        break;
-                }
-            };
+            this.evtMouseMove = new porcelain.EventBinder("mousemove", document);
             this._offsetX = 0;
             this._offsetY = 0;
-            this._border = border;
-            this._target = target;
-            this.$.addClass(SIZE_GRIP_CLASS).addClass(BORDER_PREFIX + porcelain.Border[border]).mousedown(this._onMouseDown);
+            this._gripArea = gripArea;
+            this._item = new porcelain.ComponentItem(target);
+            this.addClass(SIZE_GRIP_CLASS);
+            this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
         /**
-        * Destroy the size grip.
+        * Destroy the edge grip.
         */
         SizeGrip.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._target = null;
+            this._item.component = null;
+            this._item = null;
+        };
+
+        /**
+        * Returns the grip area defining the size grip behavior.
+        */
+        SizeGrip.prototype.gripArea = function () {
+            return this._gripArea;
+        };
+
+        /**
+        * Returns the target component resized by the size grip.
+        */
+        SizeGrip.prototype.target = function () {
+            return this._item.component;
+        };
+
+        /**
+        * The mousedown handler.
+        *
+        * @protected
+        */
+        SizeGrip.prototype.onMouseDown = function (event) {
+            if (event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            this.evtMouseUp.bind(this.onMouseUp, this);
+            this.evtMouseMove.bind(this.onMouseMove, this);
+            var rect = this._item.rect();
+            switch (this._gripArea) {
+                case 0 /* Left */:
+                case 4 /* TopLeft */:
+                case 6 /* BottomLeft */:
+                    this._offsetX = event.pageX - rect.left;
+                    break;
+                case 2 /* Right */:
+                case 5 /* TopRight */:
+                case 7 /* BottomRight */:
+                    this._offsetX = event.pageX - rect.right;
+                    break;
+            }
+            switch (this._gripArea) {
+                case 1 /* Top */:
+                case 4 /* TopLeft */:
+                case 5 /* TopRight */:
+                    this._offsetY = event.pageY - rect.top;
+                    break;
+                case 3 /* Bottom */:
+                case 6 /* BottomLeft */:
+                case 7 /* BottomRight */:
+                    this._offsetY = event.pageY - rect.bottom;
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        /**
+        * The mouseup handler.
+        *
+        * @protected
+        */
+        SizeGrip.prototype.onMouseUp = function (event) {
+            if (event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            this.evtMouseUp.unbind(this.onMouseUp, this);
+            this.evtMouseMove.unbind(this.onMouseMove, this);
+            this._offsetX = 0;
+            this._offsetY = 0;
+        };
+
+        /**
+        * The mousemove handler.
+        *
+        * @protected
+        */
+        SizeGrip.prototype.onMouseMove = function (event) {
+            event.preventDefault();
+            var vp = porcelain.Viewport;
+            var item = this._item;
+            var rect = item.rect();
+            var minSize = item.minimumSize();
+            var maxSize = item.maximumSize();
+            var x = event.pageX - this._offsetX;
+            var y = event.pageY - this._offsetY;
+            x = Math.min(Math.max(vp.left(), x), vp.windowRight());
+            y = Math.min(Math.max(vp.top(), y), vp.windowBottom());
+            var minX, maxX;
+            switch (this._gripArea) {
+                case 0 /* Left */:
+                case 4 /* TopLeft */:
+                case 6 /* BottomLeft */:
+                    minX = rect.right - maxSize.width;
+                    maxX = rect.right - minSize.width;
+                    rect.left = Math.min(Math.max(minX, x), maxX);
+                    break;
+                case 2 /* Right */:
+                case 5 /* TopRight */:
+                case 7 /* BottomRight */:
+                    minX = rect.left + minSize.width;
+                    maxX = rect.left + maxSize.width;
+                    rect.right = Math.min(Math.max(minX, x), maxX);
+                    break;
+                default:
+                    break;
+            }
+            var minY, maxY;
+            switch (this._gripArea) {
+                case 1 /* Top */:
+                case 4 /* TopLeft */:
+                case 5 /* TopRight */:
+                    minY = rect.bottom - maxSize.height;
+                    maxY = rect.bottom - minSize.height;
+                    rect.top = Math.min(Math.max(minY, y), maxY);
+                    break;
+                case 3 /* Bottom */:
+                case 6 /* BottomLeft */:
+                case 7 /* BottomRight */:
+                    minY = rect.top + minSize.height;
+                    maxY = rect.top + maxSize.height;
+                    rect.bottom = Math.min(Math.max(minY, y), maxY);
+                    break;
+                default:
+                    break;
+            }
+            item.setRect(rect);
         };
         return SizeGrip;
-    })(porcelain.Item);
+    })(porcelain.Component);
     porcelain.SizeGrip = SizeGrip;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=size_grip.js.map

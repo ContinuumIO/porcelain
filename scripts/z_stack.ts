@@ -7,98 +7,190 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    interface ClassifyResult {
-        oldItems: Item[];
-        newItems: Item[];
+    /**
+     * The internal interface for a Z-stack classification.
+     */
+    interface IClassifyResult {
+        oldComps: Component[];
+        newComps: Component[];
+    }
+
+    
+    /** 
+     * Get the numeric Z-index of the given component.
+     */
+    function getZIndex(component: Component): number {
+        return parseInt(component.computedStyle().zIndex) || 0;
     }
 
 
+    /**
+     * Set the numeric Z-index of the given component.
+     */
+    function setZIndex(component: Component, index: number): void {
+        component.style().zIndex = index ? index.toString() : "";
+    }
+
+
+    /**
+     * A class for managing the Z-order of a collection of Items.
+     *
+     * @class
+     */
     export class ZStack {
 
-        constructor(minZ: number) {
-            this._minZ = minZ;
+        /**
+         * Construct a new ZStack.
+         *
+         * @param minIndex The minimum Z-index of the stack.
+         */
+        constructor(minIndex: number) {
+            this._minIndex = minIndex;
         }
 
-        get top(): Item {
+        /**
+         * Returns the component on the top of the stack.
+         */
+        top(): Component {
             if (this._stack.length) {
                 return this._stack[this._stack.length - 1];
             }
             return null;
         }
-
-        get bottom(): Item {
+    
+        /**
+         * Returns the component on the bottom of the stack.
+         */
+        bottom(): Component {
             if (this._stack.length) {
                 return this._stack[0];
             }
             return null;
         }
 
-        contains(item: Item): boolean {
-            return this._stack.indexOf(item) !== -1;
+        /**
+         * Returns true if the stack contains the given component.
+         *
+         * @param component The component of interest.
+         */
+        contains(component: Component): boolean {
+            return this._stack.indexOf(component) !== -1;
         }
 
-        add(item: Item): void {
-            if (!item || this.contains(item)) {
+        /**
+         * Add a component to the top of the stack.
+         *
+         * If the stack already contains the component, this is a no-op.
+         *
+         * @param component The component to add to the stack.
+         */
+        add(component: Component): void {
+            if (!component || this.contains(component)) {
                 return;
             }
-            var z = this._minZ + this._stack.length;
-            this._stack.push(item);
-            item.$.css("z-index", z);
+            var index = this._minIndex + this._stack.length;
+            this._stack.push(component);
+            setZIndex(component, index);
         }
 
-        remove(item: Item): void {
-            var index = this._stack.indexOf(item);
+        /**
+         * Remove a component from the stack and clear its Z-index.
+         *
+         * If the stack does not contain the component, this is a no-op.
+         */
+        remove(component: Component): void {
+            var index = this._stack.indexOf(component);
             if (index >= 0) {
                 this._stack.splice(index, 1);
+                setZIndex(component, 0);
                 this._updateIndices();
             }
         }
 
-        raise(...items: Item[]): void {
-            if (items.length === 1 && items[0] === this.top) {
+        /** 
+         * Raise the specified components to the top of the stack.
+         *
+         * The relative stacking order of the components will be maintained.
+         */
+        raise(...components: Component[]): void {
+            if (components.length === 1 && components[0] === this.top()) {
                 return;
             }
-            var cr = this._classify(items);
-            this._stack = cr.oldItems.concat(cr.newItems);
+            var cr = this._classify(components);
+            this._stack = cr.oldComps.concat(cr.newComps);
             this._updateIndices();
         }
 
-        lower(...items: Item[]): void {
-            if (items.length === 1 && items[0] === this.bottom) {
+        /**
+         * Lower the specified components to the bottom of the stack.
+         *
+         * The relative stacking order of the components will be maintained.
+         */
+        lower(...components: Component[]): void {
+            if (components.length === 1 && components[0] === this.bottom()) {
                 return;
             }
-            var cr = this._classify(items);
-            this._stack = cr.newItems.concat(cr.oldItems);
+            var cr = this._classify(components);
+            this._stack = cr.newComps.concat(cr.oldComps);
             this._updateIndices();
         }
 
-        private _classify(items: Item[]): ClassifyResult {
-            var oldItems: Item[] = [];
-            var newItems: Item[] = [];
-            $.each(this._stack, function (index, item) {
-                if (items.indexOf(item) === -1) {
-                    oldItems.push(item);
+        /**
+         * Classify the given and current components into old and new.
+         *
+         * @private
+         */
+        private _classify(components: Component[]): IClassifyResult {
+            var oldComps: Component[] = [];
+            var newComps: Component[] = [];
+            var stack = this._stack;
+            for (var i = 0, n = stack.length; i < n; ++i) {
+                var component = stack[i];
+                if (components.indexOf(component) === -1) {
+                    oldComps.push(component);
                 } else {
-                    newItems.push(item);
+                    newComps.push(component);
                 }
+            }
+            newComps.sort(function (a, b) {
+                return getZIndex(a) - getZIndex(b);
             });
-            newItems.sort(function (a, b) {
-                var z1 = parseInt(a.$.css("z-index")) || 0;
-                var z2 = parseInt(b.$.css("z-index")) || 0;
-                return z1 - z2;
-            });
-            return { oldItems: oldItems, newItems: newItems };
+            return { oldComps: oldComps, newComps: newComps };
         }
 
+        /**
+         * Update the Z-indices for the current stack components.
+         *
+         * @private
+         */
         private _updateIndices(): void {
-            var minZ = this._minZ;
-            $.each(this._stack, function (index, item) {
-                item.$.css("z-index", index + minZ);
-            });
+            var minIndex = this._minIndex;
+            var stack = this._stack;
+            for (var i = 0, n = stack.length; i < n; ++i) {
+                setZIndex(stack[i], minIndex + i);
+            }
         }
 
-        private _stack: Item[] = [];
-        private _minZ: number;
+        private _minIndex: number;
+        private _stack: Component[] = [];
     }
+
+
+    /**
+     * A predefinined Z-stack for normal window components.
+     */
+    export var normalWindowStack = new ZStack(10000);
+
+
+    /**
+     * A predefined Z-stack for top-most window components.
+     */
+    export var topMostWindowStack = new ZStack(20000);
+
+
+    /**
+     * A predefined Z-stack for popup window components.
+     */
+    export var popupWindowStack = new ZStack(30000);
 
 }

@@ -8,7 +8,7 @@
 module porcelain {
 
     /**
-     * The interface for a size defined by width and height.
+     * An interface defining a size in Cartesian space. 
      */
     export interface ISize {
         width: number;
@@ -17,12 +17,12 @@ module porcelain {
 
 
     /**
-     * An implementation of the ISize interface.
+     * A class representing a size in Cartesian space.
      *
      * @class
      */
-    export class Size implements ISize {
-
+    export class Size {
+        
         /**
          * The width, in pixels.
          */
@@ -39,88 +39,66 @@ module porcelain {
         constructor();
         constructor(size: ISize);
         constructor(width: number, height: number);
-        constructor(first?, second?) {
+        constructor(arg1?, arg2?) {
             switch (arguments.length) {
                 case 0:
                     this.width = -1;
                     this.height = -1;
                     break;
                 case 1:
-                    var size = <ISize>first;
-                    this.width = size.width;
-                    this.height = size.height;
+                    this.width = (<ISize>arg1).width;
+                    this.height = (<ISize>arg1).height;
                     break;
                 case 2:
-                    var width = <number>first;
-                    var height = <number>second;
-                    this.width = width;
-                    this.height = height;
+                    this.width = <number>arg1;
+                    this.height = <number>arg2;
                     break;
                 default:
-                    throw "invalid constructor call";
+                    throw new Error("invalid constructor call");
             }
         }
 
         /**
-         * The width and height of the size.
-         */
-        get size(): ISize {
-            return { width: this.width, height: this.height };
-        }
-
-        set size(size: ISize) {
-            this.width = size.width;
-            this.height = size.height;
-        }
-
-        /**
-         * Whether the width OR height is zero.
+         * Returns true if the width OR height is zero.
          */
         isEmpty(): boolean {
             return this.width == 0 || this.height == 0;
         }
 
         /**
-         * Whether the width AND height are zero.
+         * Returns true if the height width AND height are zero.
          */
         isNull(): boolean {
             return this.width == 0 && this.height == 0;
         }
 
         /**
-         * Whether the width AND height are non-negative.
+         * Returns true if the width AND height are non-negative.
          */
         isValid(): boolean {
             return this.width >= 0 && this.height >= 0;
         }
 
         /**
-         * Test the size for equality with another.
+         * Returns a new size limited in each dimension by another size.
          */
-        equals(other: ISize): boolean {
-            return this.width == other.width && this.height == other.height;
-        }
-
-        /**
-         * A new size bounded in each dimension by another size.
-         */
-        boundedTo(other: ISize): Size {
+        boundedTo(other: Size): Size {
             var w = Math.min(this.width, other.width);
             var h = Math.min(this.height, other.height);
             return new Size(w, h);
         }
 
         /**
-         * A new size expanded in each dimension to another size.
+         * Returns a new size expaned in each dimension to another size.
          */
-        expandedTo(other: ISize): Size {
+        expandedTo(other: Size): Size {
             var w = Math.max(this.width, other.width);
             var h = Math.max(this.height, other.height);
             return new Size(w, h);
         }
 
         /**
-         * Swap the width and height of this size.
+         * Swap the width and height values.
          */
         transpose(): void {
             var temp = this.width;
@@ -129,75 +107,50 @@ module porcelain {
         }
 
         /**
-         * A new size with the width and height swapped.
+         * Returns a new size with width and height swapped.
          */
         transposed(): Size {
             return new Size(this.height, this.width);
         }
 
         /**
-         * Increment this size by the given size.
+         * Returns true if this size is equivalent to another.
          */
-        add(other: ISize): void {
-            this.width += other.width;
-            this.height += other.height;
+        equals(other: Size): boolean {
+            return this.width == other.width && this.height == other.height;
         }
 
         /**
-         * A new size increased in each dimension by another.
+         * Returns a new size which is the sum of two sizes.
          */
-        added(other: ISize): Size {
+        add(other: Size): Size {
             var w = this.width + other.width;
             var h = this.height + other.height;
             return new Size(w, h);
         }
 
         /**
-         * Decrement this size by the given size.
+         * Returns a new size which is the difference of two sizes.
          */
-        subtract(other: ISize): void {
-            this.width -= other.width;
-            this.height -= other.height;
-        }
-
-        /**
-         * A new size decreased in each dimension by another.
-         */
-        subtracted(other: ISize): Size {
+        subtract(other: Size): Size {
             var w = this.width - other.width;
             var h = this.height - other.height;
             return new Size(w, h);
         }
 
         /**
-         * Scale this size by the given factor.
+         * Returns a new size scaled by the given factor.
          */
-        multiply(factor: number): void {
-            this.width *= factor;
-            this.height *= factor;
-        }
-
-        /**
-         * A new size scaled in each dimension by a factor.
-         */
-        multiplied(factor: number): Size {
-            var w = this.width * factor;
-            var h = this.height * factor;
+        multiply(factor: number): Size {
+            var w = Math.floor(this.width * factor);
+            var h = Math.floor(this.height * factor);
             return new Size(w, h);
         }
 
         /**
-         * Scale this size by the given divisor.
+         * Returns a new size scaled by the given divisor.
          */
-        divide(divisor: number): void {
-            this.width /= divisor;
-            this.height /= divisor;
-        }
-
-        /**
-         * A new size scaled in each dimension by a divisor.
-         */
-        divided(divisor: number): Size {
+        divide(divisor: number): Size {
             var w = Math.floor(this.width / divisor);
             var h = Math.floor(this.height / divisor);
             return new Size(w, h);

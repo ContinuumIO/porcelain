@@ -3,40 +3,55 @@
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
-    * This class is intented to be subclassed to provide features
-    * such as button text and default visual styling, but it is
-    * useful on its own with CSS background images.
     *
     * @class
     */
-    class Button extends Item {
+    class Button extends Component {
         /**
         * A signal emitted when the button is clicked.
+        *
+        * @readonly
         */
-        public clicked: Signal<void>;
+        public clicked: Signal;
         /**
         * A signal emitted when the button is pressed.
+        *
+        * @readonly
         */
-        public pressed: Signal<void>;
+        public pressed: Signal;
         /**
         * A signal emitted when the button is released.
+        *
+        * @readonly
         */
-        public released: Signal<void>;
+        public released: Signal;
+        /**
+        * The mousedown event binder.
+        *
+        * @readonly
+        */
+        public evtMouseDown: EventBinder;
+        /**
+        * The mouseup event binder.
+        *
+        * @readonly
+        */
+        public evtMouseUp: EventBinder;
         /**
         * Construct a new Button instance.
         */
-        constructor(parent?: Item);
+        constructor();
         /**
-        * The internal mouse down handler.
+        * The mousedown event handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseDown;
+        public onMouseDown(event: MouseEvent): void;
         /**
-        * The internal mouse up handler.
+        * The mouseup event handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseUp;
+        public onMouseUp(event: MouseEvent): void;
     }
 }

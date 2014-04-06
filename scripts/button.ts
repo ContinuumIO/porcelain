@@ -12,68 +12,95 @@ module porcelain {
      */
     var BUTTON_CLASS = "p-Button";
 
+    /**
+     * The class added to a Button when pressed.
+     *
+     * This is needed for firefox since event.preventDefault() 
+     * will prevent the :active CSS class from being applied.
+     */
+    var PRESSED_CLASS = 'p-Button-pressed'
+
 
     /**
      * A basic button class.
      *
      * A Button provides the basic behavior of a simple push button. 
-     * This class is intented to be subclassed to provide features
-     * such as button text and default visual styling, but it is 
-     * useful on its own with CSS background images.
      *
      * @class
      */
-    export class Button extends Item {
+    export class Button extends Component {
 
         /**
          * A signal emitted when the button is clicked.
+         *
+         * @readonly
          */
-        clicked = this.createSignal<void>();
+        clicked = new Signal();
 
         /**
          * A signal emitted when the button is pressed.
+         *
+         * @readonly
          */
-        pressed = this.createSignal<void>();
+        pressed = new Signal();
 
         /**
          * A signal emitted when the button is released.
+         *
+         * @readonly
          */
-        released = this.createSignal<void>();
+        released = new Signal();
+
+        /** 
+         * The mousedown event binder.
+         *
+         * @readonly
+         */
+        evtMouseDown = new EventBinder("mousedown", this.element());
+
+        /**
+         * The mouseup event binder.
+         *
+         * @readonly
+         */
+        evtMouseUp = new EventBinder("mouseup", document);
 
         /**
          * Construct a new Button instance.
          */
-        constructor(parent: Item = null) {
-            super(parent);
-            this.$.addClass(BUTTON_CLASS)
-                .mousedown(this._onMouseDown);
+        constructor() {
+            super();
+            this.addClass(BUTTON_CLASS);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
 
         /**
-         * The internal mouse down handler.
+         * The mousedown event handler.
          *
-         * @private
+         * @protected
          */
-        private _onMouseDown = (event: JQueryMouseEventObject) => {
+        onMouseDown(event: MouseEvent): void {
             if (event.button === 0) {
                 event.preventDefault();
-                $(document).mouseup(this._onMouseUp);
-                this.pressed.emit(null);
+                this.addClass(PRESSED_CLASS);
+                this.evtMouseUp.bind(this.onMouseUp, this);
+                this.pressed.emit();
             }
         }
 
         /**
-         * The internal mouse up handler.
+         * The mouseup event handler.
          *
-         * @private
+         * @protected
          */
-        private _onMouseUp = (event: JQueryMouseEventObject) => {
+        onMouseUp(event: MouseEvent): void {
             if (event.button === 0) {
-                $(document).off("mouseup", this._onMouseUp);
-                this.released.emit(null);
-                if (event.target === this.element) {
+                this.removeClass(PRESSED_CLASS);
+                this.evtMouseUp.unbind(this.onMouseUp, this);
+                this.released.emit();
+                if (event.target === this.element()) {
                     event.preventDefault();
-                    this.clicked.emit(null);
+                    this.clicked.emit();
                 }
             }
         }

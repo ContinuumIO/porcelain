@@ -9,7 +9,7 @@
     float: left;
 }
 
-.p-TitleBar-text {
+.p-TitleBar-label {
     overflow: hidden;
     white-space: nowrap;
     font-family: "Segoe UI", "Lucida Grande", "Dejavu Sans", Arial, sans-serif;
@@ -17,21 +17,40 @@
     line-height: 1em;
     text-align: center;
     text-overflow: ellipsis;
+    cursor: default;
 }
 
 .p-TitleBar-buttonBox {
-    position: relative;
-    top: -6px;
     height: 20px;
     float: right;
     white-space: nowrap;
 }
 
+.p-TitleBar-closeButton,
+.p-TitleBar-restoreButton,
+.p-TitleBar-minimizeButton,
+.p-TitleBar-maximizeButton {
+    margin-left: 1px;
+    display: inline-block;
+    -webkit-transition: background-color 200ms;
+    -moz-transition: background-color 200ms;
+    -o-transition: background-color 200ms;
+    transition: background-color 200ms;
+}
+
+.p-TitleBar-closeButton:hover,
+.p-TitleBar-restoreButton:hover,
+.p-TitleBar-minimizeButton:hover,
+.p-TitleBar-maximizeButton:hover {
+    -webkit-transition: background-color 0ms;
+    -moz-transition: background-color 0ms;
+    -o-transition: background-color 0ms;
+    transition: background-color 0ms;
+}
+
 .p-TitleBar-closeButton {
     width: 45px;
     height: 20px;
-    display: inline-block;
-    margin-left: 1px;
     background-image: url("/media/close.png");
     background-color: #C75050;
 }
@@ -41,8 +60,6 @@
 .p-TitleBar-maximizeButton {
     width: 26px;
     height: 20px;
-    display: inline-block;
-    margin-left: 1px;
 }
 
 .p-TitleBar-restoreButton {
@@ -61,7 +78,7 @@
     background-color: #E04343;
 }
 
-.p-TitleBar-closeButton:hover:active {
+.p-TitleBar-closeButton.p-Button-pressed:hover {
     background-color: #993D3D;
 }
 
@@ -83,8 +100,8 @@
     background-image: url("/media/maximizehover.png");
 }
 
-.p-TitleBar-restoreButton:hover:active,
-.p-TitleBar-minimizeButton:hover:active,
-.p-TitleBar-maximizeButton:hover:active {
+.p-TitleBar-restoreButton.p-Button-pressed:hover,
+.p-TitleBar-minimizeButton.p-Button-pressed:hover,
+.p-TitleBar-maximizeButton.p-Button-pressed:hover {
     background-color: #3D6099;
 }

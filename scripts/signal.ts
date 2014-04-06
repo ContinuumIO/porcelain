@@ -7,42 +7,82 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /** 
+    /**
      * The Slot interface.
+     *
+     * This interface can be extended to create custom strongly typed slots.
      */
-    export interface ISlot<T> {
-        (param: T): void;
+    export interface ISlot {
+        (): void;
     }
 
 
-    /** 
+    /**
+     * The Signal interface.
+     * 
+     * This interface can be extended to create custom strongly typed signals. 
+     */
+    export interface ISignal {
+        connect(slot: ISlot, context?: any): void;
+        disconnect(slot: ISlot, context?: any): void;
+        emit(...args: any[]): void;
+    }
+
+
+    /**
+     * The internal interface defining a slot connection.
+     */
+    interface IConnection {
+        slot: ISlot;
+        context: any;
+    }
+
+
+    /**
      * The Signal class.
      *
-     * A Signal provides a type-safe on-to-many notification mechanism. 
+     * A Signal provides a type-safe one-to-many notification mechanism. 
      * It allows objects to broadcast information without regard as to 
      * whether or not anything is listening.
      *
      * @class
      */
-    export class Signal<T> {
+    export class Signal implements ISignal, IComponentExtra {
+
+        /**
+         * Construct a new Signal.
+         */
+        constructor() { }
+
+        /**
+         * Destroy the Signal.
+         */
+        destroy(): void {
+            this._connections = null;
+        }
 
         /**
          * Connect a slot to the signal.
          *
          * The slot will be invoked when the signal is emitted. The 
-         * parameter emitted by the signal will be passed to the slot.
-         * If the slot is already connect, this is a no-op.
+         * arguments emitted by the signal will be passed to the slot.
+         * If the slot is already connected, this is a no-op.
          *
-         * @param slot - the function to connect to the signal
+         * @param slot The function to connect to the signal.
+         * @param [context] The context to bind to the function call.
          */
-        connect(slot: ISlot<T>): void {
-            if (!this._slots) {
-                this._slots = [];
+        connect(slot: ISlot, context: any = null): void {
+            var connections = this._connections;
+            if (!connections) {
+                connections = this._connections = [];
             }
-            var i = this._slots.indexOf(slot);
-            if (i === -1) {
-                this._slots.push(slot);
+            for (var i = 0, n = connections.length; i < n; ++i) {
+                var conn = connections[i];
+                if (conn.slot === slot && conn.context === context) {
+                    return;
+                }
             }
+            connections.push({ slot: slot, context: context });
         }
 
         /**
@@ -51,44 +91,60 @@ module porcelain {
          * If the slot is not connected to the signal, this is a no-op.
          * If no slot is provided, all slots will be disconnected.
          * 
-         * @param slot - the function to disconnect from the signal
+         * @param slot - the function to disconnect from the signal.
+         * @param [context] The context object provided with the slot.
          */
-        disconnect(slot?: ISlot<T>): void {
-            if (!this._slots) {
+        disconnect(slot: ISlot = null, context: any = null): void {
+            var connections = this._connections;
+            if (!connections) {
                 return;
             }
             if (!slot) {
-                this._slots = null;
+                this._connections = null;
                 return;
             }
-            var i = this._slots.indexOf(slot);
-            if (i !== -1) {
-                this._slots.splice(i, 1);
-                if (!this._slots.length) {
-                    this._slots = null;
+            for (var i = 0, n = connections.length; i < n; ++i) {
+                var conn = connections[i];
+                if (conn.slot === slot && conn.context === context) {
+                    this._connections.splice(i, 1);
+                    return;
                 }
             }
         }
 
         /**
-         * Emit the signal with the given parameter.
+         * Emit the signal with the given parameters.
          *
-         * This will invoke all slots with the provided parameter in 
+         * This will invoke all slots with the provided parameters in
          * the order in which they were connected. It is safe to
          * connect and disconnect slots while the signal is emitting.
-         * 
-         * @param param - the parameter to pass to the slots
          */
-        emit(param: T): void {
-            if (!this._slots) {
+        emit(...args: any[]): void;
+        emit(): void {
+            var connections = this._connections;
+            if (!connections || !connections.length) {
                 return;
             }
-            $.each(this._slots.slice(), function (index, slot) {
-                slot(param);
-            });
+            connections = connections.slice();
+            for (var i = 0, n = connections.length; i < n; ++i) {
+                var conn = connections[i];
+                conn.slot.apply(conn.context, arguments);
+            }
         }
 
-        private _slots: ISlot<T>[] = null;
+        /**
+         * IComponentExtra interface. Prototype property.
+         */
+        porcelain_ComponentExtra: boolean;
+
+        private _connections: IConnection[] = null;
     }
+
+    /**
+     * IComponentExtra interface.
+     *
+     * This should not be manipulated directly by user code.
+     */
+    Signal.prototype.porcelain_ComponentExtra = true;
 
 }

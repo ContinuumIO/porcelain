@@ -7,101 +7,106 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
-    
-
     /**
-    * The internal IViewport implementation.
+    * A class which provides viewport measurement functions.
     *
     * @class
     */
     var Viewport = (function () {
         function Viewport() {
+            throw new Error("cannot create Viewport instance");
         }
-        Object.defineProperty(Viewport.prototype, "left", {
-            get: function () {
-                return window.pageXOffset;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The position of the left edge of the viewport, in pixels.
+        *
+        * This is equal to the X scroll position of the page.
+        */
+        Viewport.left = function () {
+            return window.pageXOffset;
+        };
 
-        Object.defineProperty(Viewport.prototype, "top", {
-            get: function () {
-                return window.pageYOffset;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The position of the top edge of the viewport, in pixels.
+        *
+        * This is equal to the Y scroll position of the page.
+        */
+        Viewport.top = function () {
+            return window.pageYOffset;
+        };
 
-        Object.defineProperty(Viewport.prototype, "clientRight", {
-            get: function () {
-                return this.left + this.clientWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The position of the right edge of the viewport, in pixels.
+        *
+        * This value *does not* include the vertical scrollbar.
+        */
+        Viewport.clientRight = function () {
+            return Viewport.left() + Viewport.clientWidth();
+        };
 
-        Object.defineProperty(Viewport.prototype, "clientBottom", {
-            get: function () {
-                return this.top + this.clientHeight;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The position of the bottom edge of the viewport, in pixels.
+        *
+        * This value *does not* include the horizontal scrollbar.
+        */
+        Viewport.clientBottom = function () {
+            return Viewport.top() + Viewport.clientHeight();
+        };
 
-        Object.defineProperty(Viewport.prototype, "clientWidth", {
-            get: function () {
-                return document.documentElement.clientWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The width of the viewport, in pixels.
+        *
+        * This value *does not* include the vertical scrollbar.
+        */
+        Viewport.clientWidth = function () {
+            return document.documentElement.clientWidth;
+        };
 
-        Object.defineProperty(Viewport.prototype, "clientHeight", {
-            get: function () {
-                return document.documentElement.clientHeight;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The height of the viewport, in pixels.
+        *
+        * This value *does not* include the horizontal scrollbar.
+        */
+        Viewport.clientHeight = function () {
+            return document.documentElement.clientHeight;
+        };
 
-        Object.defineProperty(Viewport.prototype, "windowRight", {
-            get: function () {
-                return this.left + this.windowWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The position of the right edge of the viewport, in pixels.
+        *
+        * This value *includes* the vertical scrollbar.
+        */
+        Viewport.windowRight = function () {
+            return Viewport.left() + Viewport.windowWidth();
+        };
 
-        Object.defineProperty(Viewport.prototype, "windowBottom", {
-            get: function () {
-                return this.top + this.windowHeight;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The position of the bottom edge of the viewport, in pixels.
+        *
+        * This value *includes* the horizontal scrollbar.
+        */
+        Viewport.windowBottom = function () {
+            return Viewport.top() + Viewport.windowHeight();
+        };
 
-        Object.defineProperty(Viewport.prototype, "windowWidth", {
-            get: function () {
-                return window.innerWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The width of the viewport, in pixels.
+        *
+        * This value *include* the vertical scrollbar.
+        */
+        Viewport.windowWidth = function () {
+            return window.innerWidth;
+        };
 
-        Object.defineProperty(Viewport.prototype, "windowHeight", {
-            get: function () {
-                return window.innerHeight;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * The height of the viewport, in pixels.
+        *
+        * This value does *includes* the horizontal scrollbar.
+        */
+        Viewport.windowHeight = function () {
+            return window.innerHeight;
+        };
         return Viewport;
     })();
-
-    /**
-    * The singelton IViewport instance.
-    */
-    porcelain.viewport = new Viewport();
+    porcelain.Viewport = Viewport;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=viewport.js.map

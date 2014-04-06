@@ -13,138 +13,202 @@ module porcelain {
     var SIZE_GRIP_CLASS = "p-SizeGrip";
 
     /**
-     * The prefix for the border class added to a size grip.
+     * The prefix for the grip area class added to a size grip.
      */
-    var BORDER_PREFIX = "p-Border-";
+    var GRIP_AREA_PREFIX = "p-GripArea-";
+
+    
+    /**
+     * The areas which define the behavior of a size grip.
+     */
+    export enum GripArea {
+        Left,
+        Top,
+        Right,
+        Bottom,
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
 
 
     /**
-     * An item which enables drag-sizing of an element's geometry.
+     * A widget which enables mouse resizing of an adjustable item.
      *
      * @class
      */
-    export class SizeGrip extends Item {
+    export class SizeGrip extends Component {
+
+        /**
+         * The mousedown event binder.
+         */
+        evtMouseDown = new EventBinder("mousedown", this.element());
+
+        /**
+         * The mouseup event binder.
+         */
+        evtMouseUp = new EventBinder("mouseup", document);
+
+        /**
+         * The mousemove event binder.
+         */
+        evtMouseMove = new EventBinder("mousemove", document);
 
         /**
          * Construct a new SizeGrip.
+         *
+         * @param gripArea The grip area defining the size grip behavior.
+         * @param target The component to resize with the grip.
          */
-        constructor(border: Border, target: Geometry, parent: Item = null) {
-            super(parent);
-            this._border = border;
-            this._target = target;
-            this.$.addClass(SIZE_GRIP_CLASS)
-                .addClass(BORDER_PREFIX + Border[border])
-                .mousedown(this._onMouseDown);
+        constructor(gripArea: GripArea, target: Component) {
+            super();
+            this._gripArea = gripArea;
+            this._item = new ComponentItem(target);
+            this.addClass(SIZE_GRIP_CLASS);
+            this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
 
         /**
-         * Destroy the size grip.
+         * Destroy the edge grip.
          */
         destroy(): void {
             super.destroy();
-            this._target = null;
+            this._item.component = null;
+            this._item = null;
         }
 
         /**
-         * The internal mousedown handler.
-         *
-         * @private
+         * Returns the grip area defining the size grip behavior.
          */
-        private _onMouseDown = (event: JQueryMouseEventObject) => {
-            if (event.button === 0) {
-                event.preventDefault();
-                $(document).mouseup(this._onMouseUp)
-                    .mousemove(this._onMouseMove);
-                switch (this._border) {
-                    case Border.Left:
-                    case Border.TopLeft:
-                    case Border.BottomLeft:
-                        this._offsetX = event.pageX - this._target.left;
-                        break;
-                    case Border.Right:
-                    case Border.TopRight:
-                    case Border.BottomRight:
-                        this._offsetX = event.pageX - this._target.right;
-                        break;
-                    default:
-                        break;
-                }
-                switch (this._border) {
-                    case Border.Top:
-                    case Border.TopLeft:
-                    case Border.TopRight:
-                        this._offsetY = event.pageY - this._target.top;
-                        break;
-                    case Border.Bottom:
-                    case Border.BottomLeft:
-                    case Border.BottomRight:
-                        this._offsetY = event.pageY - this._target.bottom;
-                        break;
-                    default:
-                        break;
-                }
+        gripArea(): GripArea {
+            return this._gripArea;
+        }
+
+        /**
+         * Returns the target component resized by the size grip.
+         */
+        target(): Component {
+            return this._item.component;
+        }
+
+        /**
+         * The mousedown handler.
+         *
+         * @protected
+         */
+        onMouseDown(event: MouseEvent): void {
+            if (event.button !== 0) {
+                return;
             }
-        }
-
-        /**
-         * The internal mouseup handler.
-         *
-         * @private
-         */
-        private _onMouseUp = (event: JQueryMouseEventObject) => {
-            if (event.button === 0) {
-                event.preventDefault();
-                this._offsetX = 0;
-                this._offsetY = 0;
-                $(document).off("mouseup", this._onMouseUp)
-                    .off("mousemove", this._onMouseMove);
-            }
-        }
-
-        /**
-         * The internal mousemove handler.
-         *
-         * @private
-         */
-        private _onMouseMove = (event: JQueryMouseEventObject) => {
             event.preventDefault();
-            var vp = viewport;
-            var x = event.pageX - this._offsetX;
-            var y = event.pageY - this._offsetY;
-            x = Math.min(Math.max(vp.left, x), vp.windowRight);
-            y = Math.min(Math.max(vp.top, y), vp.windowBottom);
-            switch (this._border) {
-                case Border.Left:
-                    this._target.left = x;
+            this.evtMouseUp.bind(this.onMouseUp, this);
+            this.evtMouseMove.bind(this.onMouseMove, this);
+            var rect = this._item.rect();
+            switch (this._gripArea) {
+                case GripArea.Left:
+                case GripArea.TopLeft:
+                case GripArea.BottomLeft:
+                    this._offsetX = event.pageX - rect.left;
                     break;
-                case Border.Top:
-                    this._target.top = y;
+                case GripArea.Right:
+                case GripArea.TopRight:
+                case GripArea.BottomRight:
+                    this._offsetX = event.pageX - rect.right;
                     break;
-                case Border.Right:
-                    this._target.right = x;
+            }
+            switch (this._gripArea) {
+                case GripArea.Top:
+                case GripArea.TopLeft:
+                case GripArea.TopRight:
+                    this._offsetY = event.pageY - rect.top;
                     break;
-                case Border.Bottom:
-                    this._target.bottom = y;
-                    break;
-                case Border.TopLeft:
-                    this._target.topLeft = { x: x, y: y };
-                    break;
-                case Border.TopRight:
-                    this._target.topRight = { x: x, y: y };
-                    break;
-                case Border.BottomLeft:
-                    this._target.bottomLeft = { x: x, y: y };
-                    break;
-                case Border.BottomRight:
-                    this._target.bottomRight = { x: x, y: y };
+                case GripArea.Bottom:
+                case GripArea.BottomLeft:
+                case GripArea.BottomRight:
+                    this._offsetY = event.pageY - rect.bottom;
                     break;
                 default:
                     break;
             }
         }
 
-        private _border: Border;
-        private _target: Geometry;
+        /**
+         * The mouseup handler.
+         *
+         * @protected
+         */
+        onMouseUp(event: MouseEvent): void {
+            if (event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            this.evtMouseUp.unbind(this.onMouseUp, this);
+            this.evtMouseMove.unbind(this.onMouseMove, this);
+            this._offsetX = 0;
+            this._offsetY = 0;
+        }
+
+        /**
+         * The mousemove handler.
+         *
+         * @protected
+         */
+        onMouseMove(event: MouseEvent): void {
+            event.preventDefault();
+            var vp = Viewport;
+            var item = this._item;
+            var rect = item.rect();
+            var minSize = item.minimumSize();
+            var maxSize = item.maximumSize();
+            var x = event.pageX - this._offsetX;
+            var y = event.pageY - this._offsetY;
+            x = Math.min(Math.max(vp.left(), x), vp.windowRight());
+            y = Math.min(Math.max(vp.top(), y), vp.windowBottom());
+            var minX: number, maxX: number;
+            switch (this._gripArea) {
+                case GripArea.Left:
+                case GripArea.TopLeft:
+                case GripArea.BottomLeft:
+                    minX = rect.right - maxSize.width;
+                    maxX = rect.right - minSize.width;
+                    rect.left = Math.min(Math.max(minX, x), maxX);
+                    break;
+                case GripArea.Right:
+                case GripArea.TopRight:
+                case GripArea.BottomRight:
+                    minX = rect.left + minSize.width;
+                    maxX = rect.left + maxSize.width;
+                    rect.right = Math.min(Math.max(minX, x), maxX);
+                    break;
+                default:
+                    break;
+            }
+            var minY: number, maxY: number;
+            switch (this._gripArea) {
+                case GripArea.Top:
+                case GripArea.TopLeft:
+                case GripArea.TopRight:
+                    minY = rect.bottom - maxSize.height;
+                    maxY = rect.bottom - minSize.height;
+                    rect.top = Math.min(Math.max(minY, y), maxY);
+                    break;
+                case GripArea.Bottom:
+                case GripArea.BottomLeft:
+                case GripArea.BottomRight:
+                    minY = rect.top + minSize.height;
+                    maxY = rect.top + maxSize.height;
+                    rect.bottom = Math.min(Math.max(minY, y), maxY);
+                    break;
+                default:
+                    break;
+            }
+            item.setRect(rect);
+        }
+
+        private _gripArea: GripArea;
+        private _item: ComponentItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }

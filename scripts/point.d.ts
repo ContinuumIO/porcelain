@@ -1,13 +1,13 @@
 ﻿declare module porcelain {
     /**
-    * The interface for a point in Cartesian space.
+    * An interface defining point in Cartesian space.
     */
     interface IPoint {
         x: number;
         y: number;
     }
     /**
-    * An implementation of the IPoint interface.
+    * A class which represents a point in Cartesian space.
     *
     * @class
     */
@@ -27,52 +27,32 @@
         constructor(point: IPoint);
         constructor(x: number, y: number);
         /**
-        * The X and Y coordinates of the point.
-        */
-        public point : IPoint;
-        /**
-        * Whether both X and Y coordinates are zero.
+        * Returns true if both X AND Y coordinates are zero.
         */
         public isNull(): boolean;
         /**
-        * The sum of the absolute X and Y distances to the origin.
+        * Returns the sum of the abs X and Y distances to the origin.
         */
         public manhattanLength(): number;
         /**
-        * Test the point for equality with another.
+        * Returns true if this point is equivalent to another.
         */
-        public equals(other: IPoint): boolean;
+        public equals(other: Point): boolean;
         /**
-        * Increment this point by another point.
+        * Returns a new point which is the sum of the two points.
         */
-        public add(other: IPoint): void;
+        public add(other: Point): Point;
         /**
-        * A new point which is the vector sum of the two points.
+        * Returns a new point which is the difference of the two points.
         */
-        public added(other: IPoint): Point;
+        public subtract(other: Point): Point;
         /**
-        * Decrement this point by another point.
+        * Returns a new point scaled by the given factor.
         */
-        public subtract(other: IPoint): void;
+        public multiply(factor: number): Point;
         /**
-        * A new point which is the vector difference of the two points.
+        * Returns a new point scaled by the given divisor.
         */
-        public subtracted(other: IPoint): Point;
-        /**
-        * Scale this point by the given factor.
-        */
-        public multiply(factor: number): void;
-        /**
-        * A new point scaled by the given factor.
-        */
-        public multiplied(factor: number): Point;
-        /**
-        * Scale this point by the given divisor.
-        */
-        public divide(divisor: number): void;
-        /**
-        * A new point scaled by the given divisor.
-        */
-        public divided(divisor: number): Point;
+        public divide(divisor: number): Point;
     }
 }

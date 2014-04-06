@@ -2,34 +2,41 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Sample</title>
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
-    <link rel="stylesheet" href="css/item.css" type="text/css" />
+    <link rel="stylesheet" href="css/component.css" type="text/css" />
     <link rel="stylesheet" href="css/title_bar.css" type="text/css" />
     <link rel="stylesheet" href="css/window.css" type="text/css" />
+    <link rel="stylesheet" href="css/resize_spy.css" type="text/css" />
+    <script src="scripts/utils.js"></script>
     <script src="scripts/point.js"></script>
     <script src="scripts/size.js"></script>
     <script src="scripts/rect.js"></script>
-    <script src="scripts/geometry.js"></script>
-    <script src="scripts/enums.js"></script>
     <script src="scripts/z_stack.js"></script>
+    <script src="scripts/event_binder.js"></script>
+    <script src="scripts/layout_item.js"></script>
     <script src="scripts/signal.js"></script>
-    <script src="scripts/item.js"></script>
+    <script src="scripts/component.js"></script>
+    <script src="scripts/resize_spy.js"></script>
     <script src="scripts/button.js"></script>
+    <script src="scripts/label.js"></script>
     <script src="scripts/viewport.js"></script>
+    <script src="scripts/move_grip.js"></script>
     <script src="scripts/title_bar.js"></script>
     <script src="scripts/size_grip.js"></script>
     <script src="scripts/window.js"></script>
     <script type="text/javascript">
         window.onload = function () {
-            var w = new porcelain.Window();
-            w.show();
-            var w2 = new porcelain.Window();
-            w2.show();
-            var w3 = new porcelain.Window();
-            w3.show();
-            var w4 = new porcelain.Window();
-            w4.show();
+            for (var i = 0; i < 1; ++i) {
+                var col = i % 5;
+                var row = Math.floor(i / 5);
+                var w = new porcelain.Window();
+                var p = { x: 50 + 200 * col, y: 50 + row * 200 };
+                w.setTitle("Window Number " + (i + 1));
+                w.setPos(new porcelain.Point(p));
+                w.attach();
+            }
+            window.theWindow = w;
         };
     </script>
 </head>

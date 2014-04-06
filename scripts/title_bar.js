@@ -19,9 +19,14 @@ var porcelain;
     var TITLE_BAR_CLASS = "p-TitleBar";
 
     /**
-    * The class added to a title bar text area.
+    * The class added to a title bar icon item.
     */
-    var TEXT_CLASS = "p-TitleBar-text";
+    var ICON_CLASS = "p-TitleBar-icon";
+
+    /**
+    * The class added to a title bar label item.
+    */
+    var LABEL_CLASS = "p-TitleBar-label";
 
     /**
     * The class added to a title bar button box.
@@ -48,87 +53,134 @@ var porcelain;
     */
     var RESTORE_BUTTON_CLASS = "p-TitleBar-restoreButton";
 
+    
+
     /**
-    * A title bar for use in a top level window.
+    * A simple title bar widget for use in a typical window.
+    *
+    * The title bar is a dumb container widget. The window is
+    * responsible for interacting directly with its sub items.
     *
     * @class
     */
     var TitleBar = (function (_super) {
         __extends(TitleBar, _super);
-        function TitleBar(target, parent) {
-            if (typeof parent === "undefined") { parent = null; }
-            _super.call(this, parent);
-            this._target = target;
+        /**
+        * Construct a new TitleBar
+        *
+        * @param target The component to move with the title bar.
+        */
+        function TitleBar(target) {
+            _super.call(this, target);
+            this.addClass(TITLE_BAR_CLASS);
 
-            var minBtn = this._minimizeButton = new porcelain.Button(this);
-            minBtn.$.addClass(MINIMIZE_BUTTON_CLASS);
+            var icon = new porcelain.Component();
+            icon.addClass(ICON_CLASS);
 
-            var maxBtn = this._maximizeButton = new porcelain.Button(this);
-            maxBtn.$.addClass(MAXIMIZE_BUTTON_CLASS);
+            var label = new porcelain.Label();
+            label.addClass(LABEL_CLASS);
 
-            var rstBtn = this._restoreButton = new porcelain.Button(this);
-            rstBtn.$.addClass(RESTORE_BUTTON_CLASS);
+            var minBtn = new porcelain.Button();
+            minBtn.addClass(MINIMIZE_BUTTON_CLASS);
 
-            var clsBtn = this._closeButton = new porcelain.Button(this);
-            clsBtn.$.addClass(CLOSE_BUTTON_CLASS);
+            var maxBtn = new porcelain.Button();
+            maxBtn.addClass(MAXIMIZE_BUTTON_CLASS);
 
-            var btnBox = this._buttonBox = new porcelain.Item(this);
-            btnBox.$.addClass(BUTTON_BOX_CLASS).append(minBtn.element, maxBtn.element, rstBtn.element, clsBtn.element);
+            var rstBtn = new porcelain.Button();
+            rstBtn.addClass(RESTORE_BUTTON_CLASS);
 
-            var iconItem = this._iconItem = new porcelain.Item(this);
-            iconItem.$.addClass("p-TitleBar-icon");
+            var clsBtn = new porcelain.Button();
+            clsBtn.addClass(CLOSE_BUTTON_CLASS);
 
-            var textItem = this._textItem = new porcelain.Item(this);
-            textItem.$.addClass(TEXT_CLASS);
-            textItem.element.innerHTML = "The Window Title";
+            var btnBox = new porcelain.Component();
+            btnBox.addClass(BUTTON_BOX_CLASS);
+            btnBox.append(minBtn, rstBtn, maxBtn, clsBtn);
 
-            this.$.addClass(TITLE_BAR_CLASS).append(iconItem.element, btnBox.element, textItem.element);
+            this._subItems = {
+                icon: icon,
+                label: label,
+                minimizeButton: minBtn,
+                maximizeButton: maxBtn,
+                restoreButton: rstBtn,
+                closeButton: clsBtn,
+                buttonBox: btnBox
+            };
+
+            // the order is important for CSS float layout
+            this.append(icon, btnBox, label);
         }
+        /**
+        * Destroy the title bar.
+        */
         TitleBar.prototype.destroy = function () {
             _super.prototype.destroy.call(this);
-            this._target = null;
-            this._iconItem = null;
-            this._textItem = null;
-            this._buttonBox = null;
-            this._closeButton = null;
-            this._restoreButton = null;
-            this._minimizeButton = null;
-            this._maximizeButton = null;
+            this._subItems = null;
         };
 
-        Object.defineProperty(TitleBar.prototype, "closeButton", {
-            get: function () {
-                return this._closeButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the icon item attached to the title bar.
+        */
+        TitleBar.prototype.icon = function () {
+            return this._subItems.icon;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "restoreButton", {
-            get: function () {
-                return this._restoreButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the label item attached to the title bar.
+        */
+        TitleBar.prototype.label = function () {
+            return this._subItems.label;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "minimizeButton", {
-            get: function () {
-                return this._minimizeButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the close button attached to the title bar.
+        */
+        TitleBar.prototype.closeButton = function () {
+            return this._subItems.closeButton;
+        };
 
-        Object.defineProperty(TitleBar.prototype, "maximizeButton", {
-            get: function () {
-                return this._maximizeButton;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Returns the restore button attached to the title bar.
+        */
+        TitleBar.prototype.restoreButton = function () {
+            return this._subItems.restoreButton;
+        };
+
+        /**
+        * Returns the minimize button attached to the title bar.
+        */
+        TitleBar.prototype.minimizeButton = function () {
+            return this._subItems.minimizeButton;
+        };
+
+        /**
+        * Returns the maximize button attached to the title bar.
+        */
+        TitleBar.prototype.maximizeButton = function () {
+            return this._subItems.maximizeButton;
+        };
+
+        /**
+        * The mousedown handler.
+        *
+        * This is a reimplemented parent class method. The mouse press
+        * is ignored when clicking within the bounds of the button box.
+        *
+        * @protected
+        */
+        TitleBar.prototype.onMouseDown = function (event) {
+            if (event.button !== 0) {
+                return;
+            }
+            var elem = this._subItems.buttonBox.element();
+            var rect = new porcelain.Rect(elem.getBoundingClientRect());
+            var point = new porcelain.Point(event.clientX, event.clientY);
+            if (rect.contains(point)) {
+                return;
+            }
+            _super.prototype.onMouseDown.call(this, event);
+        };
         return TitleBar;
-    })(porcelain.Item);
+    })(porcelain.MoveGrip);
     porcelain.TitleBar = TitleBar;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=title_bar.js.map

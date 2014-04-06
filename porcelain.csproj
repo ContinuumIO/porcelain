@@ -9,7 +9,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>0.9</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -18,16 +18,18 @@
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="scripts\button.ts" />
-    <TypeScriptCompile Include="scripts\geometry.ts" />
-    <TypeScriptCompile Include="scripts\jquery.d.ts" />
+    <TypeScriptCompile Include="scripts\move_grip.ts" />
+    <TypeScriptCompile Include="scripts\event_binder.ts" />
+    <TypeScriptCompile Include="scripts\layout_item.ts" />
     <TypeScriptCompile Include="scripts\point.ts" />
     <TypeScriptCompile Include="scripts\size_grip.ts" />
     <TypeScriptCompile Include="scripts\size.ts" />
-    <TypeScriptCompile Include="scripts\item.ts" />
+    <TypeScriptCompile Include="scripts\component.ts" />
     <TypeScriptCompile Include="scripts\rect.ts" />
     <TypeScriptCompile Include="scripts\signal.ts" />
     <Content Include="css\app.css" />
-    <Content Include="css\item.css" />
+    <Content Include="css\component.css" />
+    <Content Include="css\resize_spy.css" />
     <Content Include="css\title_bar.css" />
     <Content Include="css\window.css" />
     <TypeScriptCompile Include="scripts\title_bar.ts" />
@@ -35,7 +37,10 @@
     <TypeScriptCompile Include="scripts\window.ts" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="scripts\z_stack.ts" />
-    <TypeScriptCompile Include="scripts\enums.ts" />
+    <TypeScriptCompile Include="scripts\definitions\lodash.d.ts" />
+    <TypeScriptCompile Include="scripts\utils.ts" />
+    <TypeScriptCompile Include="scripts\label.ts" />
+    <TypeScriptCompile Include="scripts\resize_spy.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +51,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

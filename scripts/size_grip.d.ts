@@ -1,38 +1,74 @@
 ﻿declare module porcelain {
     /**
-    * An item which enables drag-sizing of an element's geometry.
+    * The areas which define the behavior of a size grip.
+    */
+    enum GripArea {
+        Left = 0,
+        Top = 1,
+        Right = 2,
+        Bottom = 3,
+        TopLeft = 4,
+        TopRight = 5,
+        BottomLeft = 6,
+        BottomRight = 7,
+    }
+    /**
+    * A widget which enables mouse resizing of an adjustable item.
     *
     * @class
     */
-    class SizeGrip extends Item {
+    class SizeGrip extends Component {
+        /**
+        * The mousedown event binder.
+        */
+        public evtMouseDown: EventBinder;
+        /**
+        * The mouseup event binder.
+        */
+        public evtMouseUp: EventBinder;
+        /**
+        * The mousemove event binder.
+        */
+        public evtMouseMove: EventBinder;
         /**
         * Construct a new SizeGrip.
+        *
+        * @param gripArea The grip area defining the size grip behavior.
+        * @param target The component to resize with the grip.
         */
-        constructor(border: Border, target: Geometry, parent?: Item);
+        constructor(gripArea: GripArea, target: Component);
         /**
-        * Destroy the size grip.
+        * Destroy the edge grip.
         */
         public destroy(): void;
         /**
-        * The internal mousedown handler.
-        *
-        * @private
+        * Returns the grip area defining the size grip behavior.
         */
-        private _onMouseDown;
+        public gripArea(): GripArea;
         /**
-        * The internal mouseup handler.
-        *
-        * @private
+        * Returns the target component resized by the size grip.
         */
-        private _onMouseUp;
+        public target(): Component;
         /**
-        * The internal mousemove handler.
+        * The mousedown handler.
         *
-        * @private
+        * @protected
         */
-        private _onMouseMove;
-        private _border;
-        private _target;
+        public onMouseDown(event: MouseEvent): void;
+        /**
+        * The mouseup handler.
+        *
+        * @protected
+        */
+        public onMouseUp(event: MouseEvent): void;
+        /**
+        * The mousemove handler.
+        *
+        * @protected
+        */
+        public onMouseMove(event: MouseEvent): void;
+        private _gripArea;
+        private _item;
         private _offsetX;
         private _offsetY;
     }

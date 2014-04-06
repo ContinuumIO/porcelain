@@ -19,12 +19,17 @@ var porcelain;
     var BUTTON_CLASS = "p-Button";
 
     /**
+    * The class added to a Button when pressed.
+    *
+    * This is needed for firefox since event.preventDefault()
+    * will prevent the :active CSS class from being applied.
+    */
+    var PRESSED_CLASS = 'p-Button-pressed';
+
+    /**
     * A basic button class.
     *
     * A Button provides the basic behavior of a simple push button.
-    * This class is intented to be subclassed to provide features
-    * such as button text and default visual styling, but it is
-    * useful on its own with CSS background images.
     *
     * @class
     */
@@ -33,53 +38,73 @@ var porcelain;
         /**
         * Construct a new Button instance.
         */
-        function Button(parent) {
-            if (typeof parent === "undefined") { parent = null; }
-            var _this = this;
-            _super.call(this, parent);
+        function Button() {
+            _super.call(this);
             /**
             * A signal emitted when the button is clicked.
+            *
+            * @readonly
             */
-            this.clicked = this.createSignal();
+            this.clicked = new porcelain.Signal();
             /**
             * A signal emitted when the button is pressed.
+            *
+            * @readonly
             */
-            this.pressed = this.createSignal();
+            this.pressed = new porcelain.Signal();
             /**
             * A signal emitted when the button is released.
-            */
-            this.released = this.createSignal();
-            /**
-            * The internal mouse down handler.
             *
-            * @private
+            * @readonly
             */
-            this._onMouseDown = function (event) {
-                if (event.button === 0) {
-                    event.preventDefault();
-                    $(document).mouseup(_this._onMouseUp);
-                    _this.pressed.emit(null);
-                }
-            };
+            this.released = new porcelain.Signal();
             /**
-            * The internal mouse up handler.
+            * The mousedown event binder.
             *
-            * @private
+            * @readonly
             */
-            this._onMouseUp = function (event) {
-                if (event.button === 0) {
-                    $(document).off("mouseup", _this._onMouseUp);
-                    _this.released.emit(null);
-                    if (event.target === _this.element) {
-                        event.preventDefault();
-                        _this.clicked.emit(null);
-                    }
-                }
-            };
-            this.$.addClass(BUTTON_CLASS).mousedown(this._onMouseDown);
+            this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
+            /**
+            * The mouseup event binder.
+            *
+            * @readonly
+            */
+            this.evtMouseUp = new porcelain.EventBinder("mouseup", document);
+            this.addClass(BUTTON_CLASS);
+            this.evtMouseDown.bind(this.onMouseDown, this);
         }
+        /**
+        * The mousedown event handler.
+        *
+        * @protected
+        */
+        Button.prototype.onMouseDown = function (event) {
+            if (event.button === 0) {
+                event.preventDefault();
+                this.addClass(PRESSED_CLASS);
+                this.evtMouseUp.bind(this.onMouseUp, this);
+                this.pressed.emit();
+            }
+        };
+
+        /**
+        * The mouseup event handler.
+        *
+        * @protected
+        */
+        Button.prototype.onMouseUp = function (event) {
+            if (event.button === 0) {
+                this.removeClass(PRESSED_CLASS);
+                this.evtMouseUp.unbind(this.onMouseUp, this);
+                this.released.emit();
+                if (event.target === this.element()) {
+                    event.preventDefault();
+                    this.clicked.emit();
+                }
+            }
+        };
         return Button;
-    })(porcelain.Item);
+    })(porcelain.Component);
     porcelain.Button = Button;
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=button.js.map

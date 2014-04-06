@@ -8,156 +8,105 @@
 module porcelain {
 
     /**
-     * The public interface for the viewport singleton.
+     * A class which provides viewport measurement functions.
      *
-     * The "viewport" is the visible portion of the current page.
+     * @class
      */
-    export interface IViewport {
+    export class Viewport {
+
+        constructor() {
+            throw new Error("cannot create Viewport instance");
+        }
 
         /**
          * The position of the left edge of the viewport, in pixels.
          *
          * This is equal to the X scroll position of the page.
-         * 
-         * @readonly
          */
-        left: number;
-        
+        static left(): number {
+            return window.pageXOffset;
+        }
+
         /**
          * The position of the top edge of the viewport, in pixels.
          *
          * This is equal to the Y scroll position of the page.
-         * 
-         * @readonly
-         */                   
-        top: number;
+         */  
+        static top(): number {
+            return window.pageYOffset;
+        }
 
         /**
          * The position of the right edge of the viewport, in pixels.
          *
          * This value *does not* include the vertical scrollbar.
-         *
-         * @readonly
          */
-        clientRight: number;
+        static clientRight(): number {
+            return Viewport.left() + Viewport.clientWidth();
+        }
 
         /**
          * The position of the bottom edge of the viewport, in pixels.
          *
          * This value *does not* include the horizontal scrollbar.
-         *
-         * @readonly
          */
-        clientBottom: number;
+        static clientBottom(): number {
+            return Viewport.top() + Viewport.clientHeight();
+        }
 
         /**
          * The width of the viewport, in pixels.
          *
          * This value *does not* include the vertical scrollbar.
-         *
-         * @readonly
          */
-        clientWidth: number;
+        static clientWidth(): number {
+            return document.documentElement.clientWidth;
+        }
 
         /**
          * The height of the viewport, in pixels.
          *
          * This value *does not* include the horizontal scrollbar.
-         *
-         * @readonly
          */
-        clientHeight: number;
+        static clientHeight(): number {
+            return document.documentElement.clientHeight;
+        }
 
         /**
          * The position of the right edge of the viewport, in pixels.
          *
          * This value *includes* the vertical scrollbar.
-         *
-         * @readonly
          */
-        windowRight: number;
+        static windowRight(): number {
+            return Viewport.left() + Viewport.windowWidth();
+        }
 
         /**
          * The position of the bottom edge of the viewport, in pixels.
          *
          * This value *includes* the horizontal scrollbar.
-         *
-         * @readonly
          */
-        windowBottom: number;
+        static windowBottom(): number {
+            return Viewport.top() + Viewport.windowHeight();
+        }
 
         /**
          * The width of the viewport, in pixels.
          *
          * This value *include* the vertical scrollbar.
-         *
-         * @readonly
          */
-        windowWidth: number;
+        static windowWidth(): number {
+            return window.innerWidth;
+        }
 
         /**
          * The height of the viewport, in pixels.
          *
          * This value does *includes* the horizontal scrollbar.
-         *
-         * @readonly
          */
-        windowHeight: number;
-    }
-
-
-    /**
-     * The internal IViewport implementation.
-     *
-     * @class
-     */
-    class Viewport implements IViewport {
-
-        get left(): number {
-            return window.pageXOffset;
-        }
-
-        get top(): number {
-            return window.pageYOffset;
-        }
-
-        get clientRight(): number {
-            return this.left + this.clientWidth;
-        }
-
-        get clientBottom(): number {
-            return this.top + this.clientHeight;
-        }
-
-        get clientWidth(): number {
-            return document.documentElement.clientWidth;
-        }
-
-        get clientHeight(): number {
-            return document.documentElement.clientHeight;
-        }
-
-        get windowRight(): number {
-            return this.left + this.windowWidth;
-        }
-
-        get windowBottom(): number {
-            return this.top + this.windowHeight;
-        }
-
-        get windowWidth(): number {
-            return window.innerWidth;
-        }
-
-        get windowHeight(): number {
+        static windowHeight(): number {
             return window.innerHeight;
         }
     }
-
-
-    /**
-     * The singelton IViewport instance.
-     */
-    export var viewport: IViewport = new Viewport();
 
 }

@@ -1,93 +1,70 @@
 ﻿declare module porcelain {
     /**
-    * The public interface for the viewport singleton.
+    * A class which provides viewport measurement functions.
     *
-    * The "viewport" is the visible portion of the current page.
+    * @class
     */
-    interface IViewport {
+    class Viewport {
+        constructor();
         /**
         * The position of the left edge of the viewport, in pixels.
         *
         * This is equal to the X scroll position of the page.
-        *
-        * @readonly
         */
-        left: number;
+        static left(): number;
         /**
         * The position of the top edge of the viewport, in pixels.
         *
         * This is equal to the Y scroll position of the page.
-        *
-        * @readonly
         */ 
-        top: number;
+        static top(): number;
         /**
         * The position of the right edge of the viewport, in pixels.
         *
         * This value *does not* include the vertical scrollbar.
-        *
-        * @readonly
         */
-        clientRight: number;
+        static clientRight(): number;
         /**
         * The position of the bottom edge of the viewport, in pixels.
         *
         * This value *does not* include the horizontal scrollbar.
-        *
-        * @readonly
         */
-        clientBottom: number;
+        static clientBottom(): number;
         /**
         * The width of the viewport, in pixels.
         *
         * This value *does not* include the vertical scrollbar.
-        *
-        * @readonly
         */
-        clientWidth: number;
+        static clientWidth(): number;
         /**
         * The height of the viewport, in pixels.
         *
         * This value *does not* include the horizontal scrollbar.
-        *
-        * @readonly
         */
-        clientHeight: number;
+        static clientHeight(): number;
         /**
         * The position of the right edge of the viewport, in pixels.
         *
         * This value *includes* the vertical scrollbar.
-        *
-        * @readonly
         */
-        windowRight: number;
+        static windowRight(): number;
         /**
         * The position of the bottom edge of the viewport, in pixels.
         *
         * This value *includes* the horizontal scrollbar.
-        *
-        * @readonly
         */
-        windowBottom: number;
+        static windowBottom(): number;
         /**
         * The width of the viewport, in pixels.
         *
         * This value *include* the vertical scrollbar.
-        *
-        * @readonly
         */
-        windowWidth: number;
+        static windowWidth(): number;
         /**
         * The height of the viewport, in pixels.
         *
         * This value does *includes* the horizontal scrollbar.
-        *
-        * @readonly
         */
-        windowHeight: number;
+        static windowHeight(): number;
     }
-    /**
-    * The singelton IViewport instance.
-    */
-    var viewport: IViewport;
 }

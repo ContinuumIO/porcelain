@@ -1,17 +1,17 @@
 ﻿declare module porcelain {
     /**
-    * The interface for a size defined by width and height.
+    * An interface defining a size in Cartesian space.
     */
     interface ISize {
         width: number;
         height: number;
     }
     /**
-    * An implementation of the ISize interface.
+    * A class representing a size in Cartesian space.
     *
     * @class
     */
-    class Size implements ISize {
+    class Size {
         /**
         * The width, in pixels.
         */
@@ -27,72 +27,52 @@
         constructor(size: ISize);
         constructor(width: number, height: number);
         /**
-        * The width and height of the size.
-        */
-        public size : ISize;
-        /**
-        * Whether the width OR height is zero.
+        * Returns true if the width OR height is zero.
         */
         public isEmpty(): boolean;
         /**
-        * Whether the width AND height are zero.
+        * Returns true if the height width AND height are zero.
         */
         public isNull(): boolean;
         /**
-        * Whether the width AND height are non-negative.
+        * Returns true if the width AND height are non-negative.
         */
         public isValid(): boolean;
         /**
-        * Test the size for equality with another.
+        * Returns a new size limited in each dimension by another size.
         */
-        public equals(other: ISize): boolean;
+        public boundedTo(other: Size): Size;
         /**
-        * A new size bounded in each dimension by another size.
+        * Returns a new size expaned in each dimension to another size.
         */
-        public boundedTo(other: ISize): Size;
+        public expandedTo(other: Size): Size;
         /**
-        * A new size expanded in each dimension to another size.
-        */
-        public expandedTo(other: ISize): Size;
-        /**
-        * Swap the width and height of this size.
+        * Swap the width and height values.
         */
         public transpose(): void;
         /**
-        * A new size with the width and height swapped.
+        * Returns a new size with width and height swapped.
         */
         public transposed(): Size;
         /**
-        * Increment this size by the given size.
+        * Returns true if this size is equivalent to another.
         */
-        public add(other: ISize): void;
+        public equals(other: Size): boolean;
         /**
-        * A new size increased in each dimension by another.
+        * Returns a new size which is the sum of two sizes.
         */
-        public added(other: ISize): Size;
+        public add(other: Size): Size;
         /**
-        * Decrement this size by the given size.
+        * Returns a new size which is the difference of two sizes.
         */
-        public subtract(other: ISize): void;
+        public subtract(other: Size): Size;
         /**
-        * A new size decreased in each dimension by another.
+        * Returns a new size scaled by the given factor.
         */
-        public subtracted(other: ISize): Size;
+        public multiply(factor: number): Size;
         /**
-        * Scale this size by the given factor.
+        * Returns a new size scaled by the given divisor.
         */
-        public multiply(factor: number): void;
-        /**
-        * A new size scaled in each dimension by a factor.
-        */
-        public multiplied(factor: number): Size;
-        /**
-        * Scale this size by the given divisor.
-        */
-        public divide(divisor: number): void;
-        /**
-        * A new size scaled in each dimension by a divisor.
-        */
-        public divided(divisor: number): Size;
+        public divide(divisor: number): Size;
     }
 }

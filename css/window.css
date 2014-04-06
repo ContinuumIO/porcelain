@@ -6,7 +6,6 @@
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
 .p-Window {
-    position: absolute;
     border: 1px solid #4C8AC0;
     background-color: #63B4FB;
     box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.1);
@@ -17,7 +16,12 @@
     top: 6px;
     left: 6px;
     right: 6px;
-    height: 23px;
+    height: 20px;
+}
+
+.p-Window-titleBar > .p-TitleBar-buttonBox {
+    position: relative;
+    top: -6px;
 }
 
 .p-Window-body {
@@ -34,77 +38,109 @@
     position: absolute;
 }
 
-.p-Window-sizeGrip.p-Border-Left,
-.p-Window-sizeGrip.p-Border-Right {
+.p-Window-sizeGrip.p-GripArea-Left,
+.p-Window-sizeGrip.p-GripArea-Right {
     top: 6px;
     bottom: 6px;
     width: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-Top {
+.p-Window-sizeGrip.p-GripArea-Top {
     left: 6px;
     right: 6px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-Bottom {
+.p-Window-sizeGrip.p-GripArea-Bottom {
     left: 15px;
     right: 15px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-TopLeft,
-.p-Window-sizeGrip.p-Border-TopRight {
+.p-Window-sizeGrip.p-GripArea-TopLeft,
+.p-Window-sizeGrip.p-GripArea-TopRight {
     width: 6px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-BottomLeft,
-.p-Window-sizeGrip.p-Border-BottomRight {
+.p-Window-sizeGrip.p-GripArea-BottomLeft,
+.p-Window-sizeGrip.p-GripArea-BottomRight {
     width: 15px;
     height: 6px;
 }
 
-.p-Window-sizeGrip.p-Border-Left {
+.p-Window-sizeGrip.p-GripArea-Left {
     cursor: w-resize;
     left: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-Top {
+.p-Window-sizeGrip.p-GripArea-Top {
     cursor: n-resize;
     top: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-Right {
+.p-Window-sizeGrip.p-GripArea-Right {
     cursor: e-resize;
     right: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-Bottom {
+.p-Window-sizeGrip.p-GripArea-Bottom {
     cursor: s-resize;
     bottom: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-TopLeft {
+.p-Window-sizeGrip.p-GripArea-TopLeft {
     cursor: nw-resize;
     left: 0px;
     top: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-TopRight {
+.p-Window-sizeGrip.p-GripArea-TopRight {
     cursor: ne-resize;
     top: 0px;
     right: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-BottomLeft {
+.p-Window-sizeGrip.p-GripArea-BottomLeft {
     cursor: sw-resize;
     left: 0px;
     bottom: 0px;
 }
 
-.p-Window-sizeGrip.p-Border-BottomRight {
+.p-Window-sizeGrip.p-GripArea-BottomRight {
     cursor: se-resize;
     right: 0px;
     bottom: 0px;
+}
+
+.p-Window.p-maximized {
+    border: none;
+    box-shadow: none;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.p-Window.p-maximized > .p-Window-titleBar {
+    top: 4px;
+    left: 3px;
+    right: 3px;
+}
+
+.p-Window.p-maximized > .p-Window-titleBar > .p-TitleBar-buttonBox {
+    top: -4px;
+}
+
+.p-Window.p-maximized > .p-Window-sizeGrip {
+    display: none;
+}
+
+.p-Window.p-maximized > .p-Window-body {
+    left: 0px;
+    right: 0px;
+    top: 23px;
+    bottom: 0px;
+    border: none;
+    border-top: 1px solid #5499D6;
 }
