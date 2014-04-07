@@ -26,22 +26,26 @@ module porcelain {
         constructor(text?: string) {
             super();
             this.addClass(LABEL_CLASS);
+            this.addClass(SMALL_TEXT_CLASS);
             if (text) {
                 this.setText(text);
             }
         }
 
         /**
-         * Returns the text displayed as the inner html of the label.
+         * Returns the text content of the label.
          */
         text(): string {
             return this.element().innerHTML;
         }
 
         /**
-         * Set the text displayed in the label.
+         * Set the text content of the label.
          */
         setText(value: string) {
+            // yes, there is a potential XSS vector here
+            // but, we need to allow html formatted label text
+            // so, sanitizing needs to be handled elsewhere 
             this.element().innerHTML = value;
         }
     }
