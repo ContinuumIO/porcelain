@@ -86,6 +86,7 @@ module porcelain {
 
             var label = new Label();
             label.addClass(LABEL_CLASS);
+            label.addClass(LARGE_TEXT_CLASS);
 
             var minBtn = new Button();
             minBtn.addClass(MINIMIZE_BUTTON_CLASS);

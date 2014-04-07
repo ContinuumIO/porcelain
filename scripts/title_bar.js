@@ -79,6 +79,7 @@ var porcelain;
 
             var label = new porcelain.Label();
             label.addClass(LABEL_CLASS);
+            label.addClass(porcelain.LARGE_TEXT_CLASS);
 
             var minBtn = new porcelain.Button();
             minBtn.addClass(MINIMIZE_BUTTON_CLASS);
