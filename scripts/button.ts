@@ -14,9 +14,6 @@ module porcelain {
 
     /**
      * The class added to a Button when pressed.
-     *
-     * This is needed for firefox since event.preventDefault() 
-     * will prevent the :active CSS class from being applied.
      */
     var PRESSED_CLASS = 'p-Button-pressed'
 
@@ -82,6 +79,8 @@ module porcelain {
         onMouseDown(event: MouseEvent): void {
             if (event.button === 0) {
                 event.preventDefault();
+                // This is needed for firefox since event.preventDefault()
+                // will prevent the:active CSS class from being applied.
                 this.addClass(PRESSED_CLASS);
                 this.evtMouseUp.bind(this.onMouseUp, this);
                 this.pressed.emit();
