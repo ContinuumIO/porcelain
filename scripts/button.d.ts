@@ -2,7 +2,9 @@
     /**
     * A basic button class.
     *
-    * A Button provides the basic behavior of a simple push button.
+    * A Button provides the basic behavior of a simple push button. It
+    * does not provide any default styling or text support. Use the
+    * PushButton class for a canonical button widget.
     *
     * @class
     */
