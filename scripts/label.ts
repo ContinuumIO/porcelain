@@ -21,6 +21,17 @@ module porcelain {
     export class Label extends Component {
 
         /**
+         * Construct a new Label.
+         */
+        constructor(text?: string) {
+            super();
+            this.addClass(LABEL_CLASS);
+            if (text) {
+                this.setText(text);
+            }
+        }
+
+        /**
          * Returns the text displayed as the inner html of the label.
          */
         text(): string {

@@ -6,6 +6,10 @@
     */
     class Label extends Component {
         /**
+        * Construct a new Label.
+        */
+        constructor(text?: string);
+        /**
         * Returns the text displayed as the inner html of the label.
         */
         public text(): string;

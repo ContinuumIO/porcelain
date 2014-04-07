@@ -25,8 +25,15 @@ var porcelain;
     */
     var Label = (function (_super) {
         __extends(Label, _super);
-        function Label() {
-            _super.apply(this, arguments);
+        /**
+        * Construct a new Label.
+        */
+        function Label(text) {
+            _super.call(this);
+            this.addClass(LABEL_CLASS);
+            if (text) {
+                this.setText(text);
+            }
         }
         /**
         * Returns the text displayed as the inner html of the label.
