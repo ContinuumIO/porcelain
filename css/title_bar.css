@@ -31,7 +31,6 @@
 .p-TitleBar-minimizeButton,
 .p-TitleBar-maximizeButton {
     margin-left: 1px;
-    display: inline-block;
     -webkit-transition: background-color 200ms;
     -moz-transition: background-color 200ms;
     -o-transition: background-color 200ms;
