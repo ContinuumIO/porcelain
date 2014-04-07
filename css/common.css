@@ -1,0 +1,16 @@
+﻿/*-----------------------------------------------------------------------------
+| Copyright (c) 2014, Nucleic Development Team.
+|
+| Distributed under the terms of the Modified BSD License.
+|
+| The full license is in the file COPYING.txt, distributed with this software.
+|----------------------------------------------------------------------------*/
+.p-small-text {
+    font-family: "Segoe UI", "Lucida Grande", "Dejavu Sans", Arial, sans-serif;
+    font-size: 9pt;
+}
+
+.p-large-text {
+    font-family: "Segoe UI", "Lucida Grande", "Dejavu Sans", Arial, sans-serif;
+    font-size: 11pt;
+}

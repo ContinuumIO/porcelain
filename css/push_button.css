@@ -1,0 +1,39 @@
+﻿/*-----------------------------------------------------------------------------
+| Copyright (c) 2014, Nucleic Development Team.
+|
+| Distributed under the terms of the Modified BSD License.
+|
+| The full license is in the file COPYING.txt, distributed with this software.
+|----------------------------------------------------------------------------*/
+.p-PushButton {
+    min-width: 73px;
+    padding: 2px 6px;
+    text-align: center;
+    border: 1px solid #ACACAC;
+    background: linear-gradient(to bottom, #F0F0F0, #E5E5E5);
+    cursor: default;
+}
+
+.p-PushButton:hover {
+    border-color: #7A7A7A;
+}
+
+.p-PushButton.p-pressed:hover {
+    border-color: #939393;
+    background: linear-gradient(to top, #F0F0F0, #E5E5E5);
+}
+
+.p-PushButton-text,
+.p-PushButton-image {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.p-PushButton-text:only-child {
+    vertical-align: baseline;
+}
+ 
+.p-PushButton-image {
+    float: left;
+    margin-right: 2px;
+}
