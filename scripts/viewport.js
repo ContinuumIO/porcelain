@@ -14,7 +14,7 @@ var porcelain;
     */
     var Viewport = (function () {
         function Viewport() {
-            throw new Error("cannot create Viewport instance");
+            throw new Error("cannot create Viewport instances");
         }
         /**
         * The position of the left edge of the viewport, in pixels.

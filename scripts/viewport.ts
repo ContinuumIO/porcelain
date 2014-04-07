@@ -15,7 +15,7 @@ module porcelain {
     export class Viewport {
 
         constructor() {
-            throw new Error("cannot create Viewport instance");
+            throw new Error("cannot create Viewport instances");
         }
 
         /**
