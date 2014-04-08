@@ -31,7 +31,7 @@
     <Content Include="css\button.css" />
     <Content Include="css\component.css" />
     <Content Include="css\push_button.css" />
-    <Content Include="css\resize_spy.css" />
+    <Content Include="scripts\old\resize_spy.css" />
     <Content Include="css\common.css" />
     <Content Include="css\title_bar.css" />
     <Content Include="css\window.css" />
@@ -43,9 +43,10 @@
     <TypeScriptCompile Include="scripts\definitions\lodash.d.ts" />
     <TypeScriptCompile Include="scripts\utils.ts" />
     <TypeScriptCompile Include="scripts\label.ts" />
-    <TypeScriptCompile Include="scripts\resize_spy.ts" />
+    <TypeScriptCompile Include="scripts\old\resize_spy.ts" />
     <TypeScriptCompile Include="scripts\push_button.ts" />
     <TypeScriptCompile Include="scripts\common.ts" />
+    <Content Include="scripts\thirdparty\lodash.min.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
