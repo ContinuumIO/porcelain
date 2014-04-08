@@ -176,6 +176,28 @@
         */
         public setMaximumSize(size: Size): void;
         /**
+        * Invoked when the component is resized.
+        *
+        * This will be invoked when the geometry of the component is
+        * changed through the geometry methods, or when the parent of
+        * the component can safely assume that the component's size
+        * has been changed due to some user interaction.
+        *
+        * This method is invoked whenever it is *reasonable* to assume
+        * that the size of the component has changed. Since it may be
+        * invoked when the size has not actually changed, components
+        * which perform expensive computation on a resize should cache
+        * the previous size value and only take action when the size
+        * has actually changed.
+        *
+        * The default implementation of this method does nothing. A
+        * subclass should reimplement this method as needed to handle
+        * the resize event and/or dispatch to the appropriate children.
+        *
+        * @protected
+        */
+        public onResize(): void;
+        /**
         * Returns the preferred size of the component.
         *
         * This computes the natural size of the component and is used
@@ -193,16 +215,6 @@
         * @protected.
         */
         public createElement(): HTMLElement;
-        /**
-        * Invoked by a root node when the tree is attached to the DOM.
-        *
-        * The default implementation of this method dispatches to its
-        * children in a bottom-up fashion. A component should not
-        * modify the tree structure during this method.
-        *
-        * @protected
-        */
-        public afterAttach(): void;
         /**
         * A helper method for preparing children to be inserted.
         *
