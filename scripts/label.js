@@ -14,11 +14,6 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * The class added to a Label instance.
-    */
-    var LABEL_CLASS = "p-Label";
-
-    /**
     * A component for displaying readonly text.
     *
     * @class
@@ -30,8 +25,8 @@ var porcelain;
         */
         function Label(text) {
             _super.call(this);
-            this.addClass(LABEL_CLASS);
-            this.addClass(porcelain.SMALL_TEXT_CLASS);
+            this.addClass(Label.Class);
+            this.addClass(porcelain.CommonClass.SmallText);
             if (text) {
                 this.setText(text);
             }
@@ -52,6 +47,7 @@ var porcelain;
             // so, sanitizing needs to be handled elsewhere
             this.element().innerHTML = value;
         };
+        Label.Class = "p-Label";
         return Label;
     })(porcelain.Component);
     porcelain.Label = Label;

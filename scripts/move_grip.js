@@ -14,11 +14,6 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * The class added to a MoveGrip instance.
-    */
-    var MOVE_GRIP_CLASS = "p-MoveGrip";
-
-    /**
     * A component which serves as a move grip for a component.
     *
     * @class
@@ -53,7 +48,7 @@ var porcelain;
             this._offsetX = 0;
             this._offsetY = 0;
             this._target = target;
-            this.addClass(MOVE_GRIP_CLASS);
+            this.addClass(MoveGrip.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
         /**
@@ -117,6 +112,7 @@ var porcelain;
             var pos = new porcelain.Point(x - this._offsetX, y - this._offsetY);
             this._target.setPos(pos);
         };
+        MoveGrip.Class = "p-MoveGrip";
         return MoveGrip;
     })(porcelain.Component);
     porcelain.MoveGrip = MoveGrip;

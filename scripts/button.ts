@@ -8,12 +8,6 @@
 module porcelain {
 
     /**
-     * The class added to a Button instance.
-     */
-    var BUTTON_CLASS = "p-Button";
-
-
-    /**
      * A basic push button class.
      *
      * This class serves as a base class for more concrete button types.
@@ -21,6 +15,11 @@ module porcelain {
      * @class
      */
     export class Button extends Component {
+        
+        /**
+         * The CSS class added to Button instances.
+         */
+        static Class = "p-Button";
 
         /**
          * A signal emitted when the button is clicked.
@@ -62,7 +61,7 @@ module porcelain {
          */
         constructor() {
             super();
-            this.addClass(BUTTON_CLASS);
+            this.addClass(Button.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
 
@@ -76,7 +75,7 @@ module porcelain {
                 event.preventDefault();
                 // This is needed for firefox since event.preventDefault()
                 // will prevent the :active CSS class from being applied.
-                this.addClass(PRESSED_CLASS);
+                this.addClass(CommonClass.Pressed);
                 this.evtMouseUp.bind(this.onMouseUp, this);
                 this.pressed.emit();
             }
@@ -89,7 +88,7 @@ module porcelain {
          */
         onMouseUp(event: MouseEvent): void {
             if (event.button === 0) {
-                this.removeClass(PRESSED_CLASS);
+                this.removeClass(CommonClass.Pressed);
                 this.evtMouseUp.unbind(this.onMouseUp, this);
                 this.released.emit();
                 if (event.target === this.element()) {

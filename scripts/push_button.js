@@ -14,21 +14,6 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * The CSS class added to a PushButton instance.
-    */
-    var PUSH_BUTTON_CLASS = "p-PushButton";
-
-    /**
-    * The CSS class assigned to a PushButton text element.
-    */
-    var PUSH_BUTTON_TEXT_CLASS = "p-PushButton-text";
-
-    /**
-    * The CSS class assigned to a PushButton image element.
-    */
-    var PUSH_BUTTON_IMAGE_CLASS = "p-PushButton-image";
-
-    /**
     * A component which renders like a canonical push button.
     */
     var PushButton = (function (_super) {
@@ -39,8 +24,8 @@ var porcelain;
         function PushButton(text, image) {
             _super.call(this);
             this._imageElement = null;
-            this.addClass(PUSH_BUTTON_CLASS);
-            this.addClass(porcelain.SMALL_TEXT_CLASS);
+            this.addClass(PushButton.Class);
+            this.addClass(porcelain.CommonClass.SmallText);
             if (text) {
                 this.setText(text);
             }
@@ -99,7 +84,7 @@ var porcelain;
             var elem = document.createElement("button");
             elem.type = "button";
             var textElem = document.createElement("span");
-            textElem.className = PUSH_BUTTON_TEXT_CLASS;
+            textElem.className = PushButton.TextClass;
             elem.appendChild(textElem);
             this._textElement = textElem;
             return elem;
@@ -127,12 +112,17 @@ var porcelain;
             var elem = this._imageElement;
             if (!elem) {
                 elem = document.createElement("img");
-                elem.className = PUSH_BUTTON_IMAGE_CLASS;
+                elem.className = PushButton.ImageClass;
                 this.element().appendChild(elem);
                 this._imageElement = elem;
             }
             return elem;
         };
+        PushButton.Class = "p-PushButton";
+
+        PushButton.TextClass = "p-PushButton-text";
+
+        PushButton.ImageClass = "p-PushButton-image";
         return PushButton;
     })(porcelain.Button);
     porcelain.PushButton = PushButton;

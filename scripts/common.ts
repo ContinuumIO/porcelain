@@ -8,18 +8,34 @@
 module porcelain {
 
     /**
-     * A CSS class added to pressed components.
+     * CSS classes common to various components.
      */
-    export var PRESSED_CLASS = "p-pressed";
+    export var CommonClass = {
 
-    /**
-     * A CSS class added to small text components.
-     */
-    export var SMALL_TEXT_CLASS = "p-small-text";
+        /** 
+         * Added to pressed components.
+         */
+        Pressed: "p-pressed",
 
-    /**
-     * A CSS class added to large text components.
-     */
-    export var LARGE_TEXT_CLASS = "p-large-text";
+        /**
+         * Added to minimized components.
+         */
+        Minimized: "p-minimized",
+
+        /**
+         * Added to maximized components.
+         */
+        Maximized: "p-maximized",
+
+        /**
+         * Added to components which use small font.
+         */
+        SmallText: "p-small-text",
+
+        /**
+         * Added to components which use large font.
+         */
+        LargeText: "p-large-text",
+    };
 
 }

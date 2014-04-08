@@ -13,36 +13,6 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
-    /**
-    * The class added to a Window instance.
-    */
-    var WINDOW_CLASS = "p-Window";
-
-    /**
-    * The class added to the body div of a Window.
-    */
-    var BODY_CLASS = "p-Window-body";
-
-    /**
-    * The class added to a size grip on a Window.
-    */
-    var SIZE_GRIP_CLASS = "p-Window-sizeGrip";
-
-    /**
-    * The class added to a Window title bar.
-    */
-    var TITLE_BAR_CLASS = "p-Window-titleBar";
-
-    /**
-    * The class added to a minimized Window.
-    */
-    var MINIMIZED_CLASS = "p-minimized";
-
-    /**
-    * The class added to a maximized Window.
-    */
-    var MAXIMIZED_CLASS = "p-maximized";
-
     
 
     /**
@@ -73,27 +43,27 @@ var porcelain;
             */
             this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
             this._windowState = 0 /* Normal */;
-            this.addClass(WINDOW_CLASS);
+            this.addClass(Window.Class);
 
             // The children to be added to the window.
             var children = [];
 
             // The body component which holds the window content.
             var body = new porcelain.Component();
-            body.addClass(BODY_CLASS);
+            body.addClass(Window.BodyClass);
             children.push(body);
 
             // The size grips for interactive window resizing.
             var gripAreas = porcelain.enumValues(porcelain.GripArea);
             for (var i = 0, n = gripAreas.length; i < n; ++i) {
                 var grip = new porcelain.SizeGrip(gripAreas[i], this);
-                grip.addClass(SIZE_GRIP_CLASS);
+                grip.addClass(Window.SizeGripClass);
                 children.push(grip);
             }
 
             // The window title bar.
             var titleBar = new porcelain.TitleBar(this);
-            titleBar.addClass(TITLE_BAR_CLASS);
+            titleBar.addClass(Window.TitleBarClass);
             children.push(titleBar);
 
             // The restore button is hidden by default, and shown
@@ -176,7 +146,6 @@ var porcelain;
         * Maximize the window to fit the browser page.
         */
         Window.prototype.maximize = function () {
-            console.log("maximize me");
             this._setWindowState(2 /* Maximized */);
         };
 
@@ -184,7 +153,6 @@ var porcelain;
         * Restore the window to its normal size.
         */
         Window.prototype.restore = function () {
-            console.log("restore me");
             this._setWindowState(0 /* Normal */);
         };
 
@@ -192,7 +160,6 @@ var porcelain;
         * Minimize the window to the task bar.
         */
         Window.prototype.minimize = function () {
-            console.log("minimize me");
             this._setWindowState(1 /* Minimized */);
         };
 
@@ -231,20 +198,27 @@ var porcelain;
                 case 1 /* Minimized */:
                     rstBtn.setDisplay("none");
                     maxBtn.setDisplay("");
-                    this.removeClass(MAXIMIZED_CLASS);
+                    this.removeClass(porcelain.CommonClass.Maximized);
                     this.setRect(this._stored);
                     break;
                 case 2 /* Maximized */:
                     maxBtn.setDisplay("none");
                     rstBtn.setDisplay("");
                     this._stored = this.rect();
-                    this.addClass(MAXIMIZED_CLASS);
+                    this.addClass(porcelain.CommonClass.Maximized);
                     this.setRect(new porcelain.Rect(0, 0, -1, -1));
                     break;
                 default:
                     break;
             }
         };
+        Window.Class = "p-Window";
+
+        Window.BodyClass = "p-Window-body";
+
+        Window.SizeGripClass = "p-Window-sizeGrip";
+
+        Window.TitleBarClass = "p-Window-titleBar";
         return Window;
     })(porcelain.Component);
     porcelain.Window = Window;

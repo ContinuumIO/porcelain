@@ -8,37 +8,6 @@
 module porcelain {
 
     /**
-     * The class added to a Window instance.
-     */
-    var WINDOW_CLASS = "p-Window";
-
-    /**
-     * The class added to the body div of a Window.
-     */
-    var BODY_CLASS = "p-Window-body";
-
-    /**
-     * The class added to a size grip on a Window.
-     */
-    var SIZE_GRIP_CLASS = "p-Window-sizeGrip";
-
-    /**
-     * The class added to a Window title bar.
-     */
-    var TITLE_BAR_CLASS = "p-Window-titleBar";
-
-    /**
-     * The class added to a minimized Window.
-     */
-    var MINIMIZED_CLASS = "p-minimized";
-
-    /**
-     * The class added to a maximized Window.
-     */
-    var MAXIMIZED_CLASS = "p-maximized";
-
-
-    /**
      * An interface for storing the sub items of a Window.
      */
     interface IWindowSubItems {
@@ -65,6 +34,26 @@ module porcelain {
      */
     export class Window extends Component {
 
+        /**
+         * The CSS class added to Window instances.
+         */
+        static Class = "p-Window";
+
+        /**
+         * The CSS class added to a Window body.
+         */
+        static BodyClass = "p-Window-body";
+
+        /**
+         * The CSS class added to a Window size grip.
+         */
+        static SizeGripClass = "p-Window-sizeGrip";
+
+        /**
+         * The CSS class added to a Window title bar.
+         */
+        static TitleBarClass = "p-Window-titleBar";
+
         /** 
          * The mousedown event handler.
          */
@@ -75,27 +64,27 @@ module porcelain {
          */
         constructor() {
             super();
-            this.addClass(WINDOW_CLASS);
+            this.addClass(Window.Class);
             
             // The children to be added to the window.
             var children: Component[] = [];
 
             // The body component which holds the window content.
             var body = new Component();
-            body.addClass(BODY_CLASS);
+            body.addClass(Window.BodyClass);
             children.push(body);
 
             // The size grips for interactive window resizing.
             var gripAreas = enumValues<GripArea>(GripArea);
             for (var i = 0, n = gripAreas.length; i < n; ++i) {
                 var grip = new SizeGrip(gripAreas[i], this);
-                grip.addClass(SIZE_GRIP_CLASS);
+                grip.addClass(Window.SizeGripClass);
                 children.push(grip);
             }
 
             // The window title bar.
             var titleBar = new TitleBar(this);
-            titleBar.addClass(TITLE_BAR_CLASS);
+            titleBar.addClass(Window.TitleBarClass);
             children.push(titleBar);
 
             // The restore button is hidden by default, and shown
@@ -179,7 +168,6 @@ module porcelain {
          * Maximize the window to fit the browser page.
          */
         maximize(): void {
-            console.log("maximize me");
             this._setWindowState(WindowState.Maximized);
         }
 
@@ -187,7 +175,6 @@ module porcelain {
          * Restore the window to its normal size.
          */
         restore(): void {
-            console.log("restore me");
             this._setWindowState(WindowState.Normal);
         }
 
@@ -195,7 +182,6 @@ module porcelain {
          * Minimize the window to the task bar.
          */
         minimize(): void {
-            console.log("minimize me");
             this._setWindowState(WindowState.Minimized);
         }
 
@@ -234,14 +220,14 @@ module porcelain {
                 case WindowState.Minimized:
                     rstBtn.setDisplay("none");
                     maxBtn.setDisplay("");
-                    this.removeClass(MAXIMIZED_CLASS);
+                    this.removeClass(CommonClass.Maximized);
                     this.setRect(this._stored);
                     break;
                 case WindowState.Maximized:
                     maxBtn.setDisplay("none");
                     rstBtn.setDisplay("");
                     this._stored = this.rect();
-                    this.addClass(MAXIMIZED_CLASS);
+                    this.addClass(CommonClass.Maximized);
                     this.setRect(new Rect(0, 0, -1, -1));
                     break;
                 default:

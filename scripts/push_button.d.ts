@@ -4,6 +4,18 @@
     */
     class PushButton extends Button {
         /**
+        * The CSS class added to PushButton instances.
+        */
+        static Class: string;
+        /**
+        * The CSS class added to a PushButton text element.
+        */
+        static TextClass: string;
+        /**
+        * The CSS class added to PushButton image element.
+        */
+        static ImageClass: string;
+        /**
         * Construct a new PushButton.
         */
         constructor(text?: string, image?: string);

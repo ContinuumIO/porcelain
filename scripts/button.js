@@ -14,11 +14,6 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * The class added to a Button instance.
-    */
-    var BUTTON_CLASS = "p-Button";
-
-    /**
     * A basic push button class.
     *
     * This class serves as a base class for more concrete button types.
@@ -62,7 +57,7 @@ var porcelain;
             * @readonly
             */
             this.evtMouseUp = new porcelain.EventBinder("mouseup", document);
-            this.addClass(BUTTON_CLASS);
+            this.addClass(Button.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
         /**
@@ -76,7 +71,7 @@ var porcelain;
 
                 // This is needed for firefox since event.preventDefault()
                 // will prevent the :active CSS class from being applied.
-                this.addClass(porcelain.PRESSED_CLASS);
+                this.addClass(porcelain.CommonClass.Pressed);
                 this.evtMouseUp.bind(this.onMouseUp, this);
                 this.pressed.emit();
             }
@@ -89,7 +84,7 @@ var porcelain;
         */
         Button.prototype.onMouseUp = function (event) {
             if (event.button === 0) {
-                this.removeClass(porcelain.PRESSED_CLASS);
+                this.removeClass(porcelain.CommonClass.Pressed);
                 this.evtMouseUp.unbind(this.onMouseUp, this);
                 this.released.emit();
                 if (event.target === this.element()) {
@@ -98,6 +93,7 @@ var porcelain;
                 }
             }
         };
+        Button.Class = "p-Button";
         return Button;
     })(porcelain.Component);
     porcelain.Button = Button;

@@ -6,17 +6,6 @@
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
 module porcelain {
-
-    /**
-     * The class added to a SizeGrip instance.
-     */
-    var SIZE_GRIP_CLASS = "p-SizeGrip";
-
-    /**
-     * The prefix for the grip area class added to a size grip.
-     */
-    var GRIP_AREA_PREFIX = "p-GripArea-";
-
     
     /**
      * The areas which define the behavior of a size grip.
@@ -39,6 +28,16 @@ module porcelain {
      * @class
      */
     export class SizeGrip extends Component {
+
+        /**
+         * The CSS class added to SizeGrip instances.
+         */
+        static Class = "p-SizeGrip";
+
+        /**
+         * The CSS class prefix for GripArea values.
+         */
+        static GripAreaPrefix = "p-GripArea-";
 
         /**
          * The mousedown event binder.
@@ -65,8 +64,8 @@ module porcelain {
             super();
             this._gripArea = gripArea;
             this._item = new ComponentItem(target);
-            this.addClass(SIZE_GRIP_CLASS);
-            this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
+            this.addClass(SizeGrip.Class);
+            this.addClass(SizeGrip.GripAreaPrefix + GripArea[gripArea]);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
 

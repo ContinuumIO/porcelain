@@ -7,32 +7,6 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /** 
-     * The class added to a ResizeSpy instance.
-     */
-    var RESIZE_SPY_CLASS = "p-ResizeSpy";
-
-    /**
-     * The class added to a ResizeSpy's internal expandable div.
-     */
-    var EXPANDABLE_CLASS = "p-ResizeSpy-expandable";
-
-    /**
-     * The class added to a ResizeSpy's internal collapsible div.
-     */
-    var COLLAPSIBLE_CLASS = "p-ResizeSpy-collapsible";
-
-    /**
-     * The class added to a ResizeSpy's expandable inner div.
-     */
-    var EXPANDABLE_INNER_CLASS = "p-ResizeSpy-expandable-inner";
-
-    /**
-     * The class added to a ResizeSpy's collapsible inner div.
-     */
-    var COLLAPSIBLE_INNER_CLASS = "p-ResizeSpy-collapsible-inner";
-
-
     /**
      * An internal interface for storing the spy elements.
      */
@@ -56,6 +30,31 @@ module porcelain {
     export class ResizeSpy extends Component {
 
         /**
+         * The CSS class added to ResizeSpy instances.
+         */
+        static Class = "p-ResizeSpy";
+
+        /** 
+         * The CSS class added to the expandable div.
+         */
+        static ExpandableClass = "p-ResizeSpy-expandable";
+
+        /** 
+         * The CSS class added to the collapsible div.
+         */
+        static CollapsibleClass = "p-ResizeSpy-collapsible";
+
+         /**
+         * The CSS class added to the expandable inner div.
+         */
+        static ExpandableInnerClass = "p-ResizeSpy-expandable-inner";
+
+        /**
+         * The CSS class added to the collapsible inner div.
+         */
+        static CollapsibleInnerClass = "p-ResizeSpy-collapsible-inner";
+
+        /**
          * A signal emmited when the parent div is resized.
          */
         resized = new Signal();
@@ -65,17 +64,17 @@ module porcelain {
          */
         constructor() {
             super();
-            this.addClass(RESIZE_SPY_CLASS);
+            this.addClass(ResizeSpy.Class);
 
             var expandable = document.createElement("div");
             var expandableInner = document.createElement("div");
             var collapsible = document.createElement("div");
             var collapsibleInner = document.createElement("div");
 
-            expandable.className = EXPANDABLE_CLASS;
-            collapsible.className = COLLAPSIBLE_CLASS;
-            expandableInner.className = EXPANDABLE_INNER_CLASS;
-            collapsibleInner.className = COLLAPSIBLE_INNER_CLASS;
+            expandable.className = ResizeSpy.ExpandableClass;
+            collapsible.className = ResizeSpy.CollapsibleClass;
+            expandableInner.className = ResizeSpy.ExpandableInnerClass;
+            collapsibleInner.className = ResizeSpy.CollapsibleInnerClass;
 
             expandable.appendChild(expandableInner);
             collapsible.appendChild(collapsibleInner);

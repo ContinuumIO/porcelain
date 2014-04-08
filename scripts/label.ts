@@ -7,12 +7,6 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /** 
-     * The class added to a Label instance.
-     */
-    var LABEL_CLASS = "p-Label";
-
-
     /**
      * A component for displaying readonly text.
      *
@@ -21,12 +15,17 @@ module porcelain {
     export class Label extends Component {
 
         /**
+         * The CSS class added to Label instances.
+         */
+        static Class = "p-Label";
+
+        /**
          * Construct a new Label.
          */
         constructor(text?: string) {
             super();
-            this.addClass(LABEL_CLASS);
-            this.addClass(SMALL_TEXT_CLASS);
+            this.addClass(Label.Class);
+            this.addClass(CommonClass.SmallText);
             if (text) {
                 this.setText(text);
             }

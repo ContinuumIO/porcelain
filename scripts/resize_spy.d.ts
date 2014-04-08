@@ -10,6 +10,26 @@
     */
     class ResizeSpy extends Component {
         /**
+        * The CSS class added to ResizeSpy instances.
+        */
+        static Class: string;
+        /**
+        * The CSS class added to the expandable div.
+        */
+        static ExpandableClass: string;
+        /**
+        * The CSS class added to the collapsible div.
+        */
+        static CollapsibleClass: string;
+        /**
+        * The CSS class added to the expandable inner div.
+        */
+        static ExpandableInnerClass: string;
+        /**
+        * The CSS class added to the collapsible inner div.
+        */
+        static CollapsibleInnerClass: string;
+        /**
         * A signal emmited when the parent div is resized.
         */
         public resized: Signal;

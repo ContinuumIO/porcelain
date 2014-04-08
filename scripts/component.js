@@ -7,11 +7,6 @@
 |----------------------------------------------------------------------------*/
 var porcelain;
 (function (porcelain) {
-    /**
-    * The CSS class added to Component instances.
-    */
-    var COMPONENT_CLASS = "p-Component";
-
     
 
     /**
@@ -33,7 +28,7 @@ var porcelain;
             this._parent = null;
             this._children = null;
             this._element = this.createElement();
-            this.addClass(COMPONENT_CLASS);
+            this.addClass(Component.Class);
         }
         /**
         * Destroy the component and its children.
@@ -491,6 +486,7 @@ var porcelain;
             }
             _.pull(siblings, this);
         };
+        Component.Class = "p-Component";
         return Component;
     })();
     porcelain.Component = Component;

@@ -8,6 +8,10 @@
     */
     class Button extends Component {
         /**
+        * The CSS class added to Button instances.
+        */
+        static Class: string;
+        /**
         * A signal emitted when the button is clicked.
         *
         * @readonly

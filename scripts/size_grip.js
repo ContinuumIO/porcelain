@@ -14,16 +14,6 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * The class added to a SizeGrip instance.
-    */
-    var SIZE_GRIP_CLASS = "p-SizeGrip";
-
-    /**
-    * The prefix for the grip area class added to a size grip.
-    */
-    var GRIP_AREA_PREFIX = "p-GripArea-";
-
-    /**
     * The areas which define the behavior of a size grip.
     */
     (function (GripArea) {
@@ -69,8 +59,8 @@ var porcelain;
             this._offsetY = 0;
             this._gripArea = gripArea;
             this._item = new porcelain.ComponentItem(target);
-            this.addClass(SIZE_GRIP_CLASS);
-            this.addClass(GRIP_AREA_PREFIX + GripArea[gripArea]);
+            this.addClass(SizeGrip.Class);
+            this.addClass(SizeGrip.GripAreaPrefix + GripArea[gripArea]);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
         /**
@@ -209,6 +199,9 @@ var porcelain;
             }
             item.setRect(rect);
         };
+        SizeGrip.Class = "p-SizeGrip";
+
+        SizeGrip.GripAreaPrefix = "p-GripArea-";
         return SizeGrip;
     })(porcelain.Component);
     porcelain.SizeGrip = SizeGrip;

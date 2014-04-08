@@ -19,6 +19,14 @@
     */
     class SizeGrip extends Component {
         /**
+        * The CSS class added to SizeGrip instances.
+        */
+        static Class: string;
+        /**
+        * The CSS class prefix for GripArea values.
+        */
+        static GripAreaPrefix: string;
+        /**
         * The mousedown event binder.
         */
         public evtMouseDown: EventBinder;

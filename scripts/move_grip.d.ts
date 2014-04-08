@@ -6,6 +6,10 @@
     */
     class MoveGrip extends Component {
         /**
+        * The CSS class added to MoveGrip instances.
+        */
+        static Class: string;
+        /**
         * The mousedown event binder.
         *
         * @readonly

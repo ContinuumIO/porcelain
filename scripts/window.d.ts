@@ -7,6 +7,22 @@
     */
     class Window extends Component {
         /**
+        * The CSS class added to Window instances.
+        */
+        static Class: string;
+        /**
+        * The CSS class added to a Window body.
+        */
+        static BodyClass: string;
+        /**
+        * The CSS class added to a Window size grip.
+        */
+        static SizeGripClass: string;
+        /**
+        * The CSS class added to a Window title bar.
+        */
+        static TitleBarClass: string;
+        /**
         * The mousedown event handler.
         */
         public evtMouseDown: EventBinder;

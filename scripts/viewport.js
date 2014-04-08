@@ -8,105 +8,89 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * A class which provides viewport measurement functions.
-    *
-    * @class
+    * An object which provides viewport measurement functions.
     */
-    var Viewport = (function () {
-        function Viewport() {
-            throw new Error("cannot create Viewport instances");
-        }
+    porcelain.Viewport = {
         /**
         * The position of the left edge of the viewport, in pixels.
         *
         * This is equal to the X scroll position of the page.
         */
-        Viewport.left = function () {
+        left: function () {
             return window.pageXOffset;
-        };
-
+        },
         /**
         * The position of the top edge of the viewport, in pixels.
         *
         * This is equal to the Y scroll position of the page.
         */
-        Viewport.top = function () {
+        top: function () {
             return window.pageYOffset;
-        };
-
+        },
         /**
         * The position of the right edge of the viewport, in pixels.
         *
         * This value *does not* include the vertical scrollbar.
         */
-        Viewport.clientRight = function () {
-            return Viewport.left() + Viewport.clientWidth();
-        };
-
+        clientRight: function () {
+            return this.left() + this.clientWidth();
+        },
         /**
         * The position of the bottom edge of the viewport, in pixels.
         *
         * This value *does not* include the horizontal scrollbar.
         */
-        Viewport.clientBottom = function () {
-            return Viewport.top() + Viewport.clientHeight();
-        };
-
+        clientBottom: function () {
+            return this.top() + this.clientHeight();
+        },
         /**
         * The width of the viewport, in pixels.
         *
         * This value *does not* include the vertical scrollbar.
         */
-        Viewport.clientWidth = function () {
+        clientWidth: function () {
             return document.documentElement.clientWidth;
-        };
-
+        },
         /**
         * The height of the viewport, in pixels.
         *
         * This value *does not* include the horizontal scrollbar.
         */
-        Viewport.clientHeight = function () {
+        clientHeight: function () {
             return document.documentElement.clientHeight;
-        };
-
+        },
         /**
         * The position of the right edge of the viewport, in pixels.
         *
         * This value *includes* the vertical scrollbar.
         */
-        Viewport.windowRight = function () {
-            return Viewport.left() + Viewport.windowWidth();
-        };
-
+        windowRight: function () {
+            return this.left() + this.windowWidth();
+        },
         /**
         * The position of the bottom edge of the viewport, in pixels.
         *
         * This value *includes* the horizontal scrollbar.
         */
-        Viewport.windowBottom = function () {
-            return Viewport.top() + Viewport.windowHeight();
-        };
-
+        windowBottom: function () {
+            return this.top() + this.windowHeight();
+        },
         /**
         * The width of the viewport, in pixels.
         *
         * This value *include* the vertical scrollbar.
         */
-        Viewport.windowWidth = function () {
+        windowWidth: function () {
             return window.innerWidth;
-        };
-
+        },
         /**
         * The height of the viewport, in pixels.
         *
         * This value does *includes* the horizontal scrollbar.
         */
-        Viewport.windowHeight = function () {
+        windowHeight: function () {
             return window.innerHeight;
-        };
-        return Viewport;
-    })();
-    porcelain.Viewport = Viewport;
+        }
+    };
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=viewport.js.map

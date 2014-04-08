@@ -7,34 +7,33 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /**
-     * The CSS class added to a PushButton instance.
-     */
-    var PUSH_BUTTON_CLASS = "p-PushButton";
-
-    /**
-     * The CSS class assigned to a PushButton text element.
-     */
-    var PUSH_BUTTON_TEXT_CLASS = "p-PushButton-text";
-
-    /**
-     * The CSS class assigned to a PushButton image element.
-     */
-    var PUSH_BUTTON_IMAGE_CLASS = "p-PushButton-image";
-
-
     /** 
      * A component which renders like a canonical push button.
      */
     export class PushButton extends Button {
 
         /**
+         * The CSS class added to PushButton instances.
+         */
+        static Class = "p-PushButton";
+
+        /**
+         * The CSS class added to a PushButton text element.
+         */
+        static TextClass = "p-PushButton-text";
+
+        /**
+         * The CSS class added to PushButton image element.
+         */
+        static ImageClass = "p-PushButton-image";
+
+        /**
          * Construct a new PushButton.
          */
         constructor(text?: string, image?: string) {
             super();
-            this.addClass(PUSH_BUTTON_CLASS);
-            this.addClass(SMALL_TEXT_CLASS);
+            this.addClass(PushButton.Class);
+            this.addClass(CommonClass.SmallText);
             if (text) {
                 this.setText(text);
             }
@@ -94,7 +93,7 @@ module porcelain {
             var elem = document.createElement("button");
             elem.type = "button";
             var textElem = document.createElement("span");
-            textElem.className = PUSH_BUTTON_TEXT_CLASS;
+            textElem.className = PushButton.TextClass;
             elem.appendChild(textElem);
             this._textElement = textElem;
             return elem;
@@ -122,7 +121,7 @@ module porcelain {
             var elem = this._imageElement
             if (!elem) {
                 elem = document.createElement("img");
-                elem.className = PUSH_BUTTON_IMAGE_CLASS;
+                elem.className = PushButton.ImageClass;
                 this.element().appendChild(elem);
                 this._imageElement = elem;
             }

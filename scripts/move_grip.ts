@@ -8,17 +8,16 @@
 module porcelain {
 
     /**
-     * The class added to a MoveGrip instance.
-     */
-    var MOVE_GRIP_CLASS = "p-MoveGrip";
-
-
-    /**
      * A component which serves as a move grip for a component.
      *
      * @class
      */
     export class MoveGrip extends Component {
+
+        /**
+         * The CSS class added to MoveGrip instances.
+         */
+        static Class = "p-MoveGrip";
 
         /**
          * The mousedown event binder.
@@ -49,7 +48,7 @@ module porcelain {
         constructor(target: Component) {
             super();
             this._target = target;
-            this.addClass(MOVE_GRIP_CLASS);
+            this.addClass(MoveGrip.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
 

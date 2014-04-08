@@ -6,6 +6,10 @@
     */
     class Label extends Component {
         /**
+        * The CSS class added to Label instances.
+        */
+        static Class: string;
+        /**
         * Construct a new Label.
         */
         constructor(text?: string);

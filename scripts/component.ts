@@ -7,12 +7,6 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /**
-     * The CSS class added to Component instances.
-     */
-    var COMPONENT_CLASS = "p-Component";
-
-
     /** 
      * An interface for declaring component extras.
      *
@@ -42,6 +36,11 @@ module porcelain {
      */
     export class Component {
 
+        /**
+         * The CSS class added to Component instances.
+         */
+        static Class = "p-Component";
+
         /** 
          * A signal emitted when the component is destroyed.
          *
@@ -54,7 +53,7 @@ module porcelain {
          */
         constructor() {
             this._element = this.createElement();
-            this.addClass(COMPONENT_CLASS);
+            this.addClass(Component.Class);
         }
 
         /**

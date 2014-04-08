@@ -8,18 +8,29 @@
 var porcelain;
 (function (porcelain) {
     /**
-    * A CSS class added to pressed components.
+    * CSS classes common to various components.
     */
-    porcelain.PRESSED_CLASS = "p-pressed";
-
-    /**
-    * A CSS class added to small text components.
-    */
-    porcelain.SMALL_TEXT_CLASS = "p-small-text";
-
-    /**
-    * A CSS class added to large text components.
-    */
-    porcelain.LARGE_TEXT_CLASS = "p-large-text";
+    porcelain.CommonClass = {
+        /**
+        * Added to pressed components.
+        */
+        Pressed: "p-pressed",
+        /**
+        * Added to minimized components.
+        */
+        Minimized: "p-minimized",
+        /**
+        * Added to maximized components.
+        */
+        Maximized: "p-maximized",
+        /**
+        * Added to components which use small font.
+        */
+        SmallText: "p-small-text",
+        /**
+        * Added to components which use large font.
+        */
+        LargeText: "p-large-text"
+    };
 })(porcelain || (porcelain = {}));
 //# sourceMappingURL=common.js.map

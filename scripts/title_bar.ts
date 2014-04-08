@@ -8,47 +8,6 @@
 module porcelain {
 
     /**
-     * The class added to a TitleBar instance.
-     */
-    var TITLE_BAR_CLASS = "p-TitleBar";
-
-    /**
-     * The class added to a title bar icon item.
-     */
-    var ICON_CLASS = "p-TitleBar-icon";
-
-    /**
-     * The class added to a title bar label item.
-     */
-    var LABEL_CLASS = "p-TitleBar-label";
-
-    /**
-     * The class added to a title bar button box.
-     */
-    var BUTTON_BOX_CLASS = "p-TitleBar-buttonBox";
-
-    /**
-     * The class added to a title bar close button.
-     */
-    var CLOSE_BUTTON_CLASS = "p-TitleBar-closeButton";
-
-    /**
-     * The class added to a title bar close button.
-     */
-    var MINIMIZE_BUTTON_CLASS = "p-TitleBar-minimizeButton";
-
-    /**
-     * The class added to a title bar close button.
-     */
-    var MAXIMIZE_BUTTON_CLASS = "p-TitleBar-maximizeButton";
-
-    /**
-     * The class added to a title bar close button.
-     */
-    var RESTORE_BUTTON_CLASS = "p-TitleBar-restoreButton";
-
-
-    /**
      * An interface for storing the sub items of a title bar.
      */
     interface ITitleBarSubItems {
@@ -72,6 +31,46 @@ module porcelain {
      */
     export class TitleBar extends MoveGrip {
 
+        /**
+         * The CSS class added to TitleBar instances. 
+         */
+        static Class = "p-TitleBar";
+
+        /**
+         * The CSS class added to a TitleBar icon element.
+         */
+        static IconClass = "p-TitleBar-icon";
+
+        /**
+         * The CSS class added to a TitleBar label element.
+         */
+        static LabelClass = "p-TitleBar-label";
+
+        /**
+         * The CSS class added to a TitleBar button box.
+         */
+        static ButtonBoxClass = "p-TitleBar-buttonBox";
+
+        /**
+         * The CSS class added to a TitleBar close button.
+         */
+        static CloseButtonClass = "p-TitleBar-closeButton";
+
+        /**
+         * The CSS class added to a TitleBar minimize button.
+         */
+        static MinimizeButtonClass = "p-TitleBar-minimizeButton";
+
+        /**
+         * The CSS class added to a TitleBar maximize button.
+         */
+        static MaximizeButtonClass = "p-TitleBar-maximizeButton";
+
+        /**
+         * The CSS class added to a TitleBar restore button.
+         */
+        static RestoreButtonClass = "p-TitleBar-restoreButton";
+
         /** 
          * Construct a new TitleBar
          *
@@ -79,29 +78,29 @@ module porcelain {
          */
         constructor(target: Component) {
             super(target);
-            this.addClass(TITLE_BAR_CLASS);
+            this.addClass(TitleBar.Class);
 
             var icon = new Component();
-            icon.addClass(ICON_CLASS);
+            icon.addClass(TitleBar.IconClass);
 
             var label = new Label();
-            label.addClass(LABEL_CLASS);
-            label.addClass(LARGE_TEXT_CLASS);
+            label.addClass(TitleBar.LabelClass);
+            label.addClass(CommonClass.LargeText);
 
             var minBtn = new Button();
-            minBtn.addClass(MINIMIZE_BUTTON_CLASS);
+            minBtn.addClass(TitleBar.MinimizeButtonClass);
 
             var maxBtn = new Button();
-            maxBtn.addClass(MAXIMIZE_BUTTON_CLASS);
+            maxBtn.addClass(TitleBar.MaximizeButtonClass);
 
             var rstBtn = new Button();
-            rstBtn.addClass(RESTORE_BUTTON_CLASS);
+            rstBtn.addClass(TitleBar.RestoreButtonClass);
 
             var clsBtn = new Button();
-            clsBtn.addClass(CLOSE_BUTTON_CLASS);
+            clsBtn.addClass(TitleBar.CloseButtonClass);
 
             var btnBox = new Component();
-            btnBox.addClass(BUTTON_BOX_CLASS);
+            btnBox.addClass(TitleBar.ButtonBoxClass);
             btnBox.append(minBtn, rstBtn, maxBtn, clsBtn);
 
             this._subItems = {

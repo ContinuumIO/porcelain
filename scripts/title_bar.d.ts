@@ -9,6 +9,38 @@
     */
     class TitleBar extends MoveGrip {
         /**
+        * The CSS class added to TitleBar instances.
+        */
+        static Class: string;
+        /**
+        * The CSS class added to a TitleBar icon element.
+        */
+        static IconClass: string;
+        /**
+        * The CSS class added to a TitleBar label element.
+        */
+        static LabelClass: string;
+        /**
+        * The CSS class added to a TitleBar button box.
+        */
+        static ButtonBoxClass: string;
+        /**
+        * The CSS class added to a TitleBar close button.
+        */
+        static CloseButtonClass: string;
+        /**
+        * The CSS class added to a TitleBar minimize button.
+        */
+        static MinimizeButtonClass: string;
+        /**
+        * The CSS class added to a TitleBar maximize button.
+        */
+        static MaximizeButtonClass: string;
+        /**
+        * The CSS class added to a TitleBar restore button.
+        */
+        static RestoreButtonClass: string;
+        /**
         * Construct a new TitleBar
         *
         * @param target The component to move with the title bar.
