@@ -171,7 +171,7 @@ module porcelain {
         /** 
          * Set the id of the component and its DOM element.
          */
-        setId(id: string) {
+        setId(id: string): void {
             this._element.id = id;
         }
 
@@ -233,7 +233,7 @@ module porcelain {
         /**
          * Set the CSS display value for the component element.
          */
-        setDisplay(value: string) {
+        setDisplay(value: string): void {
             this._element.style.display = value;
         }
 
@@ -247,7 +247,7 @@ module porcelain {
         /**
          * Set the CSS position value for the component element.
          */
-        setPosition(value: string) {
+        setPosition(value: string): void {
             this._element.style.position = value;
         }
 
@@ -264,7 +264,7 @@ module porcelain {
         /**
          * Set the offset position of the component.
          */
-        setPos(point: Point) {
+        setPos(point: Point): void {
             var style = this._element.style;
             style.left = point.x + "px";
             style.top = point.y + "px";
@@ -283,7 +283,7 @@ module porcelain {
         /**
          * Set the offset size of the component.
          */
-        setSize(size: Size) {
+        setSize(size: Size): void {
             var style = this._element.style;
             if (size.isValid()) {
                 style.width = size.width + "px";
@@ -309,7 +309,7 @@ module porcelain {
         /**
          * Set the offset rect of the component.
          */
-        setRect(rect: Rect) {
+        setRect(rect: Rect): void {
             var style = this._element.style;
             if (rect.isValid()) {
                 style.left = rect.left + "px";
@@ -340,7 +340,7 @@ module porcelain {
         /** 
          * Set the minimum size of the component.
          */
-        setMinimumSize(size: Size) {
+        setMinimumSize(size: Size): void {
             var style = this._element.style;
             if (size.isValid()) {
                 style.minWidth = size.width + "px";
@@ -367,7 +367,7 @@ module porcelain {
         /**
          * Set the maximum size of the component.
          */
-        setMaximumSize(size: Size) {
+        setMaximumSize(size: Size): void {
             var style = this._element.style;
             if (size.isValid()) {
                 style.maxWidth = size.width + "px";
