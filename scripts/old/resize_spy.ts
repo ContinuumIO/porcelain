@@ -5,7 +5,7 @@
 |
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
-module porcelain {
+module porcelain.old {
 
     /**
      * An internal interface for storing the spy elements.

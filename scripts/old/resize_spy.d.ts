@@ -1,4 +1,4 @@
-﻿declare module porcelain {
+﻿declare module porcelain.old {
     /**
     * A class for listening for resizes on a component.
     *
