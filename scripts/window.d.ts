@@ -11,7 +11,7 @@
         */
         static Class: string;
         /**
-        * The CSS class added to a Window body.
+        * The CSS class added to the Window body.
         */
         static BodyClass: string;
         /**
@@ -22,6 +22,10 @@
         * The CSS class added to a Window title bar.
         */
         static TitleBarClass: string;
+        /**
+        * The CSS class added to the Window content.
+        */
+        static ContentClass: string;
         /**
         * The mousedown event handler.
         */

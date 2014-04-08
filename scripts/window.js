@@ -219,6 +219,8 @@ var porcelain;
         Window.SizeGripClass = "p-Window-sizeGrip";
 
         Window.TitleBarClass = "p-Window-titleBar";
+
+        Window.ContentClass = "p-Window-content";
         return Window;
     })(porcelain.Component);
     porcelain.Window = Window;

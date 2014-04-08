@@ -40,7 +40,7 @@ module porcelain {
         static Class = "p-Window";
 
         /**
-         * The CSS class added to a Window body.
+         * The CSS class added to the Window body.
          */
         static BodyClass = "p-Window-body";
 
@@ -53,6 +53,11 @@ module porcelain {
          * The CSS class added to a Window title bar.
          */
         static TitleBarClass = "p-Window-titleBar";
+
+        /**
+         * The CSS class added to the Window content.
+         */
+        static ContentClass = "p-Window-content";
 
         /** 
          * The mousedown event handler.
