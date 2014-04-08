@@ -125,7 +125,6 @@ var porcelain;
         */
         Window.prototype.attach = function (elem) {
             (elem || document.body).appendChild(this.element());
-            this.afterAttach();
         };
 
         /**
@@ -171,6 +170,17 @@ var porcelain;
         Window.prototype.close = function () {
             this.setDisplay("none");
             this.destroy();
+        };
+
+        /**
+        * The resize event handler.
+        *
+        * This handler will dispatch to the window body.
+        *
+        * @protected
+        */
+        Window.prototype.onResize = function () {
+            this._subItems.body.onResize();
         };
 
         /**

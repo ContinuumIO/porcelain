@@ -79,6 +79,14 @@
         */
         public close(): void;
         /**
+        * The resize event handler.
+        *
+        * This handler will dispatch to the window body.
+        *
+        * @protected
+        */
+        public onResize(): void;
+        /**
         * The mousedown event handler.
         *
         * @protected

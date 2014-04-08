@@ -152,7 +152,6 @@ module porcelain {
          */
         attach(elem?: HTMLElement): void {
             (elem || document.body).appendChild(this.element());
-            this.afterAttach();
         }
 
         /**
@@ -198,6 +197,17 @@ module porcelain {
         close(): void {
             this.setDisplay("none");
             this.destroy();
+        }
+
+        /**
+         * The resize event handler.
+         *
+         * This handler will dispatch to the window body.
+         *
+         * @protected
+         */
+        onResize(): void {
+            this._subItems.body.onResize();
         }
 
         /**
