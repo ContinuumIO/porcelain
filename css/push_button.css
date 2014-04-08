@@ -37,3 +37,8 @@
     float: left;
     margin-right: 2px;
 }
+
+.p-PushButton-image:only-child {
+    float: none;
+    margin-right: 0px;
+}

@@ -55,14 +55,19 @@ module porcelain {
          * Returns the text displayed in the push button.
          */
         text(): string {
-            return this._textElement.textContent;
+            var elem = this._textElement;
+            return elem ? elem.textContent : "";
         }
 
         /**
          * Set the text displayed in the push button.
          */
         setText(value: string) {
-            this._textElement.textContent = value;
+            if (!value) {
+                this._clearText();
+            } else {
+                this._ensureText().textContent = value;
+            }    
         }
 
         /**
@@ -79,9 +84,9 @@ module porcelain {
         setImage(image: string): void {
             if (!image) {
                 this._clearImage();
+            } else {
+                this._ensureImage().src = image;
             }
-            var elem = this._ensureImage();
-            elem.src = image;
         }
 
         /**
@@ -92,10 +97,35 @@ module porcelain {
         createElement(): HTMLElement {
             var elem = document.createElement("button");
             elem.type = "button";
-            var textElem = document.createElement("span");
-            textElem.className = PushButton.TextClass;
-            elem.appendChild(textElem);
-            this._textElement = textElem;
+            return elem;
+        }
+
+        /**
+         * A helper method for clearing the text element.
+         *
+         * @private
+         */
+        private _clearText(): void {
+            var elem = this._textElement;
+            if (elem) {
+                this.element().removeChild(elem);
+                this._textElement = null;
+            }
+        }
+
+        /**
+         * A helper method for creating the text element.
+         *
+         * @private
+         */
+        private _ensureText(): HTMLSpanElement {
+            var elem = this._textElement;
+            if (!elem) {
+                elem = document.createElement("span");
+                elem.className = PushButton.TextClass;
+                this.element().appendChild(elem);
+                this._textElement = elem;
+            }
             return elem;
         }
 
@@ -128,7 +158,7 @@ module porcelain {
             return elem;
         }
 
-        private _textElement: HTMLSpanElement;
+        private _textElement: HTMLSpanElement = null;
         private _imageElement: HTMLImageElement = null;
     }
 

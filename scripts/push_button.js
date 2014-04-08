@@ -23,6 +23,7 @@ var porcelain;
         */
         function PushButton(text, image) {
             _super.call(this);
+            this._textElement = null;
             this._imageElement = null;
             this.addClass(PushButton.Class);
             this.addClass(porcelain.CommonClass.SmallText);
@@ -46,14 +47,19 @@ var porcelain;
         * Returns the text displayed in the push button.
         */
         PushButton.prototype.text = function () {
-            return this._textElement.textContent;
+            var elem = this._textElement;
+            return elem ? elem.textContent : "";
         };
 
         /**
         * Set the text displayed in the push button.
         */
         PushButton.prototype.setText = function (value) {
-            this._textElement.textContent = value;
+            if (!value) {
+                this._clearText();
+            } else {
+                this._ensureText().textContent = value;
+            }
         };
 
         /**
@@ -70,9 +76,9 @@ var porcelain;
         PushButton.prototype.setImage = function (image) {
             if (!image) {
                 this._clearImage();
+            } else {
+                this._ensureImage().src = image;
             }
-            var elem = this._ensureImage();
-            elem.src = image;
         };
 
         /**
@@ -83,10 +89,35 @@ var porcelain;
         PushButton.prototype.createElement = function () {
             var elem = document.createElement("button");
             elem.type = "button";
-            var textElem = document.createElement("span");
-            textElem.className = PushButton.TextClass;
-            elem.appendChild(textElem);
-            this._textElement = textElem;
+            return elem;
+        };
+
+        /**
+        * A helper method for clearing the text element.
+        *
+        * @private
+        */
+        PushButton.prototype._clearText = function () {
+            var elem = this._textElement;
+            if (elem) {
+                this.element().removeChild(elem);
+                this._textElement = null;
+            }
+        };
+
+        /**
+        * A helper method for creating the text element.
+        *
+        * @private
+        */
+        PushButton.prototype._ensureText = function () {
+            var elem = this._textElement;
+            if (!elem) {
+                elem = document.createElement("span");
+                elem.className = PushButton.TextClass;
+                this.element().appendChild(elem);
+                this._textElement = elem;
+            }
             return elem;
         };
 

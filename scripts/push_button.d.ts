@@ -46,6 +46,18 @@
         */
         public createElement(): HTMLElement;
         /**
+        * A helper method for clearing the text element.
+        *
+        * @private
+        */
+        private _clearText();
+        /**
+        * A helper method for creating the text element.
+        *
+        * @private
+        */
+        private _ensureText();
+        /**
         * A helper method for clearing the image element.
         *
         * @private
