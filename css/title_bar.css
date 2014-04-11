@@ -24,18 +24,16 @@
     white-space: nowrap;
 }
 
-.p-TitleBar-closeButton,
 .p-TitleBar-restoreButton,
 .p-TitleBar-minimizeButton,
 .p-TitleBar-maximizeButton {
     margin-left: 1px;
-    -webkit-transition: background-color 200ms;
-    -moz-transition: background-color 200ms;
-    -o-transition: background-color 200ms;
-    transition: background-color 200ms;
+    -webkit-transition: background-color 300ms;
+    -moz-transition: background-color 300ms;
+    -o-transition: background-color 300ms;
+    transition: background-color 300ms;
 }
 
-.p-TitleBar-closeButton:hover,
 .p-TitleBar-restoreButton:hover,
 .p-TitleBar-minimizeButton:hover,
 .p-TitleBar-maximizeButton:hover {
@@ -48,6 +46,7 @@
 .p-TitleBar-closeButton {
     width: 45px;
     height: 20px;
+    margin-left: 1px;
     background-image: url("/media/close.png");
     background-color: #C75050;
 }
