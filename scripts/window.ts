@@ -120,6 +120,11 @@ module porcelain {
 
             // Add the window to the global Z stack.
             normalWindowStack.add(this);
+
+            // XXX temporary content
+            body.append(new PushButton("OK"));
+            body.append(new PushButton("Cancel"));
+            body.append(new PushButton("Apply"));
         }
 
         /**

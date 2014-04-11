@@ -94,6 +94,11 @@ var porcelain;
 
             // Add the window to the global Z stack.
             porcelain.normalWindowStack.add(this);
+
+            // XXX temporary content
+            body.append(new porcelain.PushButton("OK"));
+            body.append(new porcelain.PushButton("Cancel"));
+            body.append(new porcelain.PushButton("Apply"));
         }
         /**
         * Destroy the Window component.
