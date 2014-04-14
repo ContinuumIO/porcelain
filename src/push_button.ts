@@ -7,7 +7,7 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /** 
+    /**
      * A component which renders like a canonical push button.
      */
     export class PushButton extends Button {
@@ -67,7 +67,7 @@ module porcelain {
                 this._clearText();
             } else {
                 this._ensureText().textContent = value;
-            }    
+            }
         }
 
         /**
@@ -131,7 +131,7 @@ module porcelain {
 
         /**
          * A helper method for clearing the image element.
-         * 
+         *
          * @private
          */
         private _clearImage(): void {

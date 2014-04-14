@@ -72,7 +72,7 @@ module porcelain {
 
         /**
          * Bind a listener to the event.
-         * 
+         *
          * If the listener is already attached, this is a no-op.
          *
          * @param listener The event listener to bind to the event.
@@ -97,7 +97,7 @@ module porcelain {
 
         /**
          * Unbind a listener from the event.
-         * 
+         *
          * If the listener is not attached, this is a no-op. If
          * no listener is supplied, all listeners will be unbound.
          *
@@ -122,7 +122,7 @@ module porcelain {
                 var p = proxies[i];
                 if (p.listener === listener && p.context === context) {
                     // workaround http://typescript.codeplex.com/workitem/45
-                    this._target.removeEventListener(this._type, <any>p);  
+                    this._target.removeEventListener(this._type, <any>p);
                     this._proxies.splice(i, 1);
                     return;
                 }

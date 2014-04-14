@@ -19,8 +19,8 @@ module porcelain {
 
     /**
      * The Signal interface.
-     * 
-     * This interface can be extended to create custom strongly typed signals. 
+     *
+     * This interface can be extended to create custom strongly typed signals.
      */
     export interface ISignal {
         connect(slot: ISlot, context?: any): void;
@@ -41,8 +41,8 @@ module porcelain {
     /**
      * The Signal class.
      *
-     * A Signal provides a type-safe one-to-many notification mechanism. 
-     * It allows objects to broadcast information without regard as to 
+     * A Signal provides a type-safe one-to-many notification mechanism.
+     * It allows objects to broadcast information without regard as to
      * whether or not anything is listening.
      *
      * @class
@@ -64,7 +64,7 @@ module porcelain {
         /**
          * Connect a slot to the signal.
          *
-         * The slot will be invoked when the signal is emitted. The 
+         * The slot will be invoked when the signal is emitted. The
          * arguments emitted by the signal will be passed to the slot.
          * If the slot is already connected, this is a no-op.
          *
@@ -90,7 +90,7 @@ module porcelain {
          *
          * If the slot is not connected to the signal, this is a no-op.
          * If no slot is provided, all slots will be disconnected.
-         * 
+         *
          * @param slot - the function to disconnect from the signal.
          * @param [context] The context object provided with the slot.
          */

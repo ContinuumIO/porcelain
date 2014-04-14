@@ -10,9 +10,9 @@ module porcelain {
     /**
      * The maximimum allowed width or height of an item.
      */
-    export var MAX_ITEM_DIM = 1073741823;  // (1 << 30) - 1; 
+    export var MAX_ITEM_DIM = 1073741823;  // (1 << 30) - 1;
 
-    /** 
+    /**
      * The minimum allowed size of an item.
      */
     export var MIN_ITEM_SIZE = new Size(0, 0);
@@ -38,7 +38,7 @@ module porcelain {
          */
         maximumSize(): Size;
 
-        /** 
+        /**
          * Returns the computed preferred size of the object.
          */
         sizeHint(): Size;

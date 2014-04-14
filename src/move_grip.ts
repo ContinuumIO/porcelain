@@ -40,7 +40,7 @@ module porcelain {
          */
         evtMouseMove = new EventBinder("mousemove", document);
 
-        /** 
+        /**
          * Construct a new MoveGrip.
          *
          * @param target The component to move with the grip.
@@ -70,7 +70,7 @@ module porcelain {
         /**
          * The mousedown handler.
          *
-         * @protected 
+         * @protected
          */
         onMouseDown(event: MouseEvent): void {
             if (event.button !== 0) {

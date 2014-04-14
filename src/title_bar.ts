@@ -24,7 +24,7 @@ module porcelain {
     /**
      * A simple title bar widget for use in a typical window.
      *
-     * The title bar is a dumb container widget. The window is 
+     * The title bar is a dumb container widget. The window is
      * responsible for interacting directly with its sub items.
      *
      * @class
@@ -32,7 +32,7 @@ module porcelain {
     export class TitleBar extends MoveGrip {
 
         /**
-         * The CSS class added to TitleBar instances. 
+         * The CSS class added to TitleBar instances.
          */
         static Class = "p-TitleBar";
 
@@ -71,7 +71,7 @@ module porcelain {
          */
         static RestoreButtonClass = "p-TitleBar-restoreButton";
 
-        /** 
+        /**
          * Construct a new TitleBar
          *
          * @param target The component to move with the title bar.
@@ -170,7 +170,7 @@ module porcelain {
         /**
          * The mousedown handler.
          *
-         * This is a reimplemented parent class method. The mouse press 
+         * This is a reimplemented parent class method. The mouse press
          * is ignored when clicking within the bounds of the button box.
          *
          * @protected

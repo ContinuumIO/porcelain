@@ -12,7 +12,8 @@ module porcelain {
      *
      * @class
      */
-    export class Label extends Component {
+    export
+    class Label extends Component {
 
         /**
          * The CSS class added to Label instances.
@@ -44,7 +45,7 @@ module porcelain {
         setText(value: string) {
             // yes, there is a potential XSS vector here
             // but, we need to allow html formatted label text
-            // so, sanitizing needs to be handled elsewhere 
+            // so, sanitizing needs to be handled elsewhere
             this.element().innerHTML = value;
         }
     }

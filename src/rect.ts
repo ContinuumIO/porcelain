@@ -8,7 +8,7 @@
 module porcelain {
 
     /**
-     * An interface defining a rectangle in Cartesian space. 
+     * An interface defining a rectangle in Cartesian space.
      */
     export interface IRect {
         left: number;
@@ -19,24 +19,24 @@ module porcelain {
 
 
     /**
-     * A class represeting a rectangle in Cartesian space. 
+     * A class represeting a rectangle in Cartesian space.
      *
      * @class
      */
     export class Rect implements IRect {
-        
+
         /**
          * The left edge of the rect, in pixels.
          *
-         * Modifying this value will change the width, but will not 
+         * Modifying this value will change the width, but will not
          * change the right edge.
          */
         left: number;
 
         /**
          * The top edge of the rect, in pixels.
-         * 
-         * Modifying this value will change the height, but will not 
+         *
+         * Modifying this value will change the height, but will not
          * change the bottom edge.
          */
         top: number;
@@ -44,15 +44,15 @@ module porcelain {
         /**
          * The right edge of the rect, in pixels.
          *
-         * Modifying this value will change the width, but will not 
+         * Modifying this value will change the width, but will not
          * change the left edge.
          */
         right: number;
 
         /**
          * The bottom edge of the rect, in pixel.
-         * 
-         * Modifying this value will change the height, but will not 
+         *
+         * Modifying this value will change the height, but will not
          * change the bottom edge.
          */
         bottom: number;
@@ -96,7 +96,7 @@ module porcelain {
         }
 
         /**
-         * Returns the width of the rect. 
+         * Returns the width of the rect.
          *
          * This is equivalent to `right - left`
          */
@@ -106,7 +106,7 @@ module porcelain {
 
         /**
          * Set the width of the rect.
-         * 
+         *
          * This will move the right edge.
          */
         setWidth(width: number): void {
@@ -114,7 +114,7 @@ module porcelain {
         }
 
         /**
-         * Returns the height of the rect. 
+         * Returns the height of the rect.
          *
          * This is Equivalent to `bottom - top`.
          */
@@ -124,7 +124,7 @@ module porcelain {
 
         /**
          * Set the height of the rect.
-         * 
+         *
          * This will move the bottom edge.
          */
         setHeight(height: number) {
@@ -140,7 +140,7 @@ module porcelain {
 
         /**
          * Set the size of the rect.
-         * 
+         *
          * This will move the left and right edges.
          */
         setSize(size: Size) {
@@ -188,7 +188,7 @@ module porcelain {
          * Returns bottom left corner of the rect.
          */
         bottomLeft(): Point {
-            return new Point(this.left, this.bottom); 
+            return new Point(this.left, this.bottom);
         }
 
         /**
@@ -242,7 +242,7 @@ module porcelain {
         /**
          * Move the top edge of the rect.
          *
-         * This will change the bottom edge, but will not change 
+         * This will change the bottom edge, but will not change
          * the height.
          */
         moveTop(pos: number): void {
@@ -253,7 +253,7 @@ module porcelain {
         /**
          * Move the right edge of the rect.
          *
-         * This will change the left edge, but will not change 
+         * This will change the left edge, but will not change
          * the width.
          */
         moveRight(pos: number): void {
@@ -264,7 +264,7 @@ module porcelain {
         /**
          * Move the bottom edge of the rect.
          *
-         * This will change the top edge, but will not change the 
+         * This will change the top edge, but will not change the
          * height.
          */
         moveBottom(pos: number): void {
@@ -335,7 +335,7 @@ module porcelain {
         isNull(): boolean {
             return this.left === this.right && this.top === this.bottom;
         }
-          
+
         /**
          * Returns true the width AND height are positive non-zero.
          */
@@ -544,7 +544,7 @@ module porcelain {
             result.bottom = Math.min(b1, b2);
             return result;
         }
-        
+
         /**
          * Returns the bounding rect of this rect and the given rect.
          */

@@ -15,7 +15,7 @@ module porcelain {
      * @class
      */
     export class Button extends Component {
-        
+
         /**
          * The CSS class added to Button instances.
          */
@@ -42,7 +42,7 @@ module porcelain {
          */
         released = new Signal();
 
-        /** 
+        /**
          * The mousedown event binder.
          *
          * @readonly

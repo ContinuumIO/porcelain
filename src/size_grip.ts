@@ -6,7 +6,7 @@
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
 module porcelain {
-    
+
     /**
      * The areas which define the behavior of a size grip.
      */
