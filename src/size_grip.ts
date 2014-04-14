@@ -10,7 +10,8 @@ module porcelain {
     /**
      * The areas which define the behavior of a size grip.
      */
-    export enum GripArea {
+    export
+    enum GripArea {
         Left,
         Top,
         Right,
@@ -27,7 +28,8 @@ module porcelain {
      *
      * @class
      */
-    export class SizeGrip extends Component {
+    export
+    class SizeGrip extends Component {
 
         /**
          * The CSS class added to SizeGrip instances.
@@ -70,10 +72,13 @@ module porcelain {
         }
 
         /**
-         * Destroy the edge grip.
+         * Destroy the SizeGrip.
          */
         destroy(): void {
             super.destroy();
+            this.evtMouseDown.destroy();
+            this.evtMouseUp.destroy();
+            this.evtMouseMove.destroy();
             this._item.component = null;
             this._item = null;
         }

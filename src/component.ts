@@ -7,41 +7,20 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /** 
-     * An interface for declaring component extras.
-     *
-     * The lifetime of a component extra is bound to the lifetime
-     * of the component on which it exists. When the component is
-     * destroyed, the extra will be destroyed. Therefore, an extra
-     * must not be shared amongst components.
-     */
-    export interface IComponentExtra {
-
-        /**
-         * Destroy the extra and release its resources.
-         */
-        destroy(): void;
-
-        /**
-         * Identifies this object as an extra.
-         */
-        porcelain_ComponentExtra: boolean;
-    }
-
-
     /**
      * The most base class of porcelain objects.
      *
      * @class
      */
-    export class Component {
+    export
+    class Component {
 
         /**
          * The CSS class added to Component instances.
          */
         static Class = "p-Component";
 
-        /** 
+        /**
          * A signal emitted when the component is destroyed.
          *
          * @readonly
@@ -61,8 +40,8 @@ module porcelain {
          */
         destroy(): void {
             this.destroyed.emit();
+            this.destroyed.disconnect();
             this._detachElement();
-            this._destroyExtras();
             this._destroyChildren();
             this._deparent();
             this._element = null;
@@ -113,7 +92,7 @@ module porcelain {
         /**
          * Prepend children to the beginning of this component.
          *
-         * If a component is already a child, it will be moved to the 
+         * If a component is already a child, it will be moved to the
          * beginning of the child array. The children *must* be unique.
          *
          * @param [...] The child Components to prepend.
@@ -129,8 +108,8 @@ module porcelain {
         /**
          * Insert children before the given child.
          *
-         * If a component is already a child, it will be moved to the 
-         * new location in the child array. The before child *must* be 
+         * If a component is already a child, it will be moved to the
+         * new location in the child array. The before child *must* be
          * a current child. The children *must* be unique.
          *
          * @param before The child marking the insert location.
@@ -168,7 +147,7 @@ module porcelain {
             return this._element.id
         }
 
-        /** 
+        /**
          * Set the id of the component and its DOM element.
          */
         setId(id: string): void {
@@ -306,7 +285,7 @@ module porcelain {
             var h = elem.offsetHeight;
             return new Rect(x, y, w, h);
         }
-        
+
         /**
          * Set the offset rect of the component.
          */
@@ -339,7 +318,7 @@ module porcelain {
             return new Size(w, h);
         }
 
-        /** 
+        /**
          * Set the minimum size of the component.
          */
         setMinimumSize(size: Size): void {
@@ -395,7 +374,7 @@ module porcelain {
          * invoked when the size has not actually changed, components
          * which perform expensive computation on a resize should cache
          * the previous size value and only take action when the size
-         * has actually changed. 
+         * has actually changed.
          *
          * The default implementation of this method does nothing. A
          * subclass should reimplement this method as needed to handle
@@ -409,9 +388,9 @@ module porcelain {
          * Returns the preferred size of the component.
          *
          * This computes the natural size of the component and is used
-         * by the procedural layout system. The default implementation 
+         * by the procedural layout system. The default implementation
          * of this method returns an invalid size.
-         * 
+         *
          * @protected
          */
         sizeHint(): Size {
@@ -432,7 +411,7 @@ module porcelain {
         /**
          * A helper method for preparing children to be inserted.
          *
-         * @private 
+         * @private
          */
         private _prepareChildren(children: Component[]): DocumentFragment {
             var fragment = document.createDocumentFragment();
@@ -447,7 +426,7 @@ module porcelain {
 
         /**
          * A helper method to detach the DOM element.
-         * 
+         *
          * @private
          */
         private _detachElement(): void {
@@ -459,25 +438,8 @@ module porcelain {
         }
 
         /**
-         * A helper method for destroying the component extras.
-         *
-         * @private
-         */
-        private _destroyExtras(): void {
-            var names = Object.getOwnPropertyNames(this);
-            for (var i = 0, n = names.length; i < n; ++i) {
-                var key = names[i];
-                var value = this[key];
-                if (value && value.porcelain_ComponentExtra) {
-                    this[key] = null;
-                    (<IComponentExtra>value).destroy();
-                }
-            }
-        }
-
-        /**
          * A helper method for destroying the component children.
-         * 
+         *
          * @private
          */
         private _destroyChildren(): void {

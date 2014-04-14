@@ -8,9 +8,10 @@
 module porcelain {
 
     /**
-     * An interface defining point in Cartesian space. 
+     * An interface defining point in Cartesian space.
      */
-    export interface IPoint {
+    export
+    interface IPoint {
         x: number;
         y: number;
     }
@@ -21,7 +22,8 @@ module porcelain {
      *
      * @class
      */
-    export class Point implements IPoint {
+    export
+    class Point implements IPoint {
 
         /**
          * The X-coordinate of the point, in pixels.
@@ -32,24 +34,24 @@ module porcelain {
          * The Y-coordinate of the point, in pixels.
          */
         y: number;
-        
+
         /**
          * Construct a new Point.
          */
         constructor();
         constructor(point: IPoint);
         constructor(x: number, y: number);
-        constructor(arg1?, arg2?) {
+        constructor(arg1?: any, arg2?: any) {
             switch (arguments.length) {
                 case 0:
                     this.x = 0;
                     this.y = 0;
                     break;
-                case 1: 
+                case 1:
                     this.x = (<IPoint>arg1).x;
                     this.y = (<IPoint>arg1).y;
                     break;
-                case 2: 
+                case 2:
                     this.x = <number>arg1;
                     this.y = <number>arg2;
                     break;

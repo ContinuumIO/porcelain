@@ -10,7 +10,8 @@ module porcelain {
     /**
      * A component which renders like a canonical push button.
      */
-    export class PushButton extends Button {
+    export
+    class PushButton extends Button {
 
         /**
          * The CSS class added to PushButton instances.

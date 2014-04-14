@@ -12,7 +12,8 @@ module porcelain {
      *
      * @class
      */
-    export class MoveGrip extends Component {
+    export
+    class MoveGrip extends Component {
 
         /**
          * The CSS class added to MoveGrip instances.
@@ -53,10 +54,13 @@ module porcelain {
         }
 
         /**
-         * Destroy the title bar.
+         * Destroy the MoveGrip.
          */
         destroy(): void {
             super.destroy();
+            this.evtMouseDown.destroy();
+            this.evtMouseUp.destroy();
+            this.evtMouseMove.destroy();
             this._target = null;
         }
 

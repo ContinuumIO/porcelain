@@ -8,20 +8,6 @@
 module porcelain {
 
     /**
-     * An interface for storing the sub items of a title bar.
-     */
-    interface ITitleBarSubItems {
-        icon: Component;
-        label: Label;
-        minimizeButton: Button;
-        maximizeButton: Button;
-        restoreButton: Button;
-        closeButton: Button;
-        buttonBox: Component;
-    }
-
-
-    /**
      * A simple title bar widget for use in a typical window.
      *
      * The title bar is a dumb container widget. The window is
@@ -29,7 +15,8 @@ module porcelain {
      *
      * @class
      */
-    export class TitleBar extends MoveGrip {
+    export
+    class TitleBar extends MoveGrip {
 
         /**
          * The CSS class added to TitleBar instances.
@@ -189,6 +176,20 @@ module porcelain {
         }
 
         private _subItems: ITitleBarSubItems;
+    }
+
+
+    /**
+     * An interface for storing the sub items of a title bar.
+     */
+    interface ITitleBarSubItems {
+        icon: Component;
+        label: Label;
+        minimizeButton: Button;
+        maximizeButton: Button;
+        restoreButton: Button;
+        closeButton: Button;
+        buttonBox: Component;
     }
 
 }

@@ -10,7 +10,8 @@ module porcelain {
     /**
      * An object which provides viewport measurement functions.
      */
-    export var Viewport = {
+    export
+    var Viewport = {
 
         /**
          * The position of the left edge of the viewport, in pixels.
@@ -25,7 +26,7 @@ module porcelain {
          * The position of the top edge of the viewport, in pixels.
          *
          * This is equal to the Y scroll position of the page.
-         */  
+         */
         top: function(): number {
             return window.pageYOffset;
         },

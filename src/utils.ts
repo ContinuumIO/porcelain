@@ -10,7 +10,8 @@ module porcelain {
     /**
      * Create an array of values defined an enum object.
      */
-    export function enumValues<T extends number>(enumObj: any): T[] {
+    export
+    function enumValues<T extends number>(enumObj: any): T[] {
         var values: T[] = [];
         for (var k in enumObj) {
             var v = enumObj[k];

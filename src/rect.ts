@@ -10,7 +10,8 @@ module porcelain {
     /**
      * An interface defining a rectangle in Cartesian space.
      */
-    export interface IRect {
+    export
+    interface IRect {
         left: number;
         top: number;
         right: number;
@@ -23,7 +24,8 @@ module porcelain {
      *
      * @class
      */
-    export class Rect implements IRect {
+    export
+    class Rect implements IRect {
 
         /**
          * The left edge of the rect, in pixels.
@@ -64,7 +66,7 @@ module porcelain {
         constructor(rect: IRect);
         constructor(topLeft: IPoint, bottomRight: IPoint);
         constructor(x: number, y: number, width: number, height: number);
-        constructor(arg1?, arg2?, arg3?, arg4?){
+        constructor(arg1?: any, arg2?: any, arg3?: any, arg4?: any){
             switch (arguments.length) {
                 case 0:
                     this.left = 0;

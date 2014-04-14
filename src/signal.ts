@@ -12,7 +12,8 @@ module porcelain {
      *
      * This interface can be extended to create custom strongly typed slots.
      */
-    export interface ISlot {
+    export
+    interface ISlot {
         (): void;
     }
 
@@ -22,19 +23,11 @@ module porcelain {
      *
      * This interface can be extended to create custom strongly typed signals.
      */
-    export interface ISignal {
+    export
+    interface ISignal {
         connect(slot: ISlot, context?: any): void;
         disconnect(slot: ISlot, context?: any): void;
         emit(...args: any[]): void;
-    }
-
-
-    /**
-     * The internal interface defining a slot connection.
-     */
-    interface IConnection {
-        slot: ISlot;
-        context: any;
     }
 
 
@@ -47,19 +40,13 @@ module porcelain {
      *
      * @class
      */
-    export class Signal implements ISignal, IComponentExtra {
+    export
+    class Signal implements ISignal {
 
         /**
          * Construct a new Signal.
          */
         constructor() { }
-
-        /**
-         * Destroy the Signal.
-         */
-        destroy(): void {
-            this._connections = null;
-        }
 
         /**
          * Connect a slot to the signal.
@@ -132,19 +119,16 @@ module porcelain {
             }
         }
 
-        /**
-         * IComponentExtra interface. Prototype property.
-         */
-        porcelain_ComponentExtra: boolean;
-
         private _connections: IConnection[] = null;
     }
 
+
     /**
-     * IComponentExtra interface.
-     *
-     * This should not be manipulated directly by user code.
+     * The internal interface defining a slot connection.
      */
-    Signal.prototype.porcelain_ComponentExtra = true;
+    interface IConnection {
+        slot: ISlot;
+        context: any;
+    }
 
 }

@@ -10,23 +10,27 @@ module porcelain {
     /**
      * The maximimum allowed width or height of an item.
      */
-    export var MAX_ITEM_DIM = 1073741823;  // (1 << 30) - 1;
+    export
+    var MAX_ITEM_DIM = 1073741823;  // (1 << 30) - 1;
 
     /**
      * The minimum allowed size of an item.
      */
-    export var MIN_ITEM_SIZE = new Size(0, 0);
+    export
+    var MIN_ITEM_SIZE = new Size(0, 0);
 
     /**
      * The maximum allowed size of an item.
      */
-    export var MAX_ITEM_SIZE = new Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
+    export
+    var MAX_ITEM_SIZE = new Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
 
 
     /**
      * An interface for objects which can be procedurally layed out.
      */
-    export interface ILayoutItem {
+    export
+    interface ILayoutItem {
 
         /**
          * Returns the computed minimum size of the object.
@@ -51,7 +55,7 @@ module porcelain {
         /**
          * Sets the object's offset rect.
          */
-        setRect(rect: Rect);
+        setRect(rect: Rect): void;
     }
 
 
@@ -60,7 +64,8 @@ module porcelain {
      *
      * @class
      */
-    export class ComponentItem implements ILayoutItem {
+    export
+    class ComponentItem implements ILayoutItem {
 
         /**
          * Construct a new ComponentItem.
@@ -117,7 +122,7 @@ module porcelain {
         /**
          * Sets the offset rect of the component.
          */
-        setRect(rect: Rect) {
+        setRect(rect: Rect): void {
             this.component.setRect(rect);
         }
     }

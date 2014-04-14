@@ -14,7 +14,8 @@ module porcelain {
      *
      * @class
      */
-    export class Button extends Component {
+    export
+    class Button extends Component {
 
         /**
          * The CSS class added to Button instances.
@@ -63,6 +64,18 @@ module porcelain {
             super();
             this.addClass(Button.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
+        }
+
+        /**
+         * Destroy the button instance.
+         */
+        destroy(): void {
+            super.destroy();
+            this.clicked.disconnect();
+            this.pressed.disconnect();
+            this.released.disconnect();
+            this.evtMouseDown.destroy();
+            this.evtMouseUp.destroy();
         }
 
         /**

@@ -8,31 +8,13 @@
 module porcelain {
 
     /**
-     * An interface for storing the sub items of a Window.
-     */
-    interface IWindowSubItems {
-        titleBar: TitleBar;
-        body: Component;
-    }
-
-
-    /**
-     * An enum defining the window state.
-     */
-    enum WindowState {
-        Normal,
-        Minimized,
-        Maximized
-    }
-
-
-    /**
      * A top-level Window component.
      *
-     * A Window looks and behaves much like its desktop counterpart. 
+     * A Window looks and behaves much like its desktop counterpart.
      * It should never be added as the child of another component.
      */
-    export class Window extends Component {
+    export
+    class Window extends Component {
 
         /**
          * The CSS class added to Window instances.
@@ -59,7 +41,7 @@ module porcelain {
          */
         static ContentClass = "p-Window-content";
 
-        /** 
+        /**
          * The mousedown event handler.
          */
         evtMouseDown = new EventBinder("mousedown", this.element());
@@ -70,7 +52,7 @@ module porcelain {
         constructor() {
             super();
             this.addClass(Window.Class);
-            
+
             // The children to be added to the window.
             var children: Component[] = [];
 
@@ -133,6 +115,7 @@ module porcelain {
         destroy(): void {
             normalWindowStack.remove(this);
             super.destroy()
+            this.evtMouseDown.destroy();
             this._subItems = null;
         }
 
@@ -195,7 +178,7 @@ module porcelain {
         }
 
         /**
-         * Close the window. 
+         * Close the window.
          *
          * This will hide the window and then destroy it.
          */
@@ -258,6 +241,25 @@ module porcelain {
         private _stored: Rect;
         private _subItems: IWindowSubItems;
         private _windowState = WindowState.Normal;
+    }
+
+
+    /**
+     * An interface for storing the sub items of a Window.
+     */
+    interface IWindowSubItems {
+        titleBar: TitleBar;
+        body: Component;
+    }
+
+
+    /**
+     * An enum defining the window state.
+     */
+    enum WindowState {
+        Normal,
+        Minimized,
+        Maximized
     }
 
 }

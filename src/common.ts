@@ -10,9 +10,10 @@ module porcelain {
     /**
      * CSS classes common to various components.
      */
-    export var CommonClass = {
+    export
+    var CommonClass = {
 
-        /** 
+        /**
          * Added to pressed components.
          */
         Pressed: "p-pressed",

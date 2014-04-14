@@ -7,34 +7,13 @@
 |----------------------------------------------------------------------------*/
 module porcelain {
 
-    /**
-     * An internal class which implements an event listener proxy.
-     */
-    class ProxyListener {
-
-        /**
-         * Construct a new proxy listener.
-         *
-         * @param listener The listener function to invoke.
-         * @param context The 'this' context to pass to the listener.
-         */
-        constructor(public listener: EventListener, public context: any) { }
-
-        /**
-         * The event listener dispatch method.
-         */
-        handleEvent(event: Event): void {
-            this.listener.call(this.context, event);
-        }
-    }
-
-
     /*
      * A class which manages an event listener binding.
      *
      * @class
      */
-    export class EventBinder implements IComponentExtra {
+    export
+    class EventBinder {
 
         /**
          * Construct a new event binder.
@@ -53,7 +32,6 @@ module porcelain {
         destroy(): void {
             this.unbind();
             this._target = null;
-            this._proxies = null;
         }
 
         /**
@@ -129,21 +107,31 @@ module porcelain {
             }
         }
 
-        /**
-         * IComponentExtra interface. Prototype property.
-         */
-        porcelain_ComponentExtra: boolean;
-
         private _type: string;
         private _target: EventTarget;
         private _proxies: ProxyListener[] = null;
     }
 
+
     /**
-     * IComponentExtra interface.
-     *
-     * This should not be manipulated directly by user code.
+     * An internal class which implements an event listener proxy.
      */
-    EventBinder.prototype.porcelain_ComponentExtra = true;
+    class ProxyListener {
+
+        /**
+         * Construct a new proxy listener.
+         *
+         * @param listener The listener function to invoke.
+         * @param context The 'this' context to pass to the listener.
+         */
+        constructor(public listener: EventListener, public context: any) { }
+
+        /**
+         * The event listener dispatch method.
+         */
+        handleEvent(event: Event): void {
+            this.listener.call(this.context, event);
+        }
+    }
 
 }

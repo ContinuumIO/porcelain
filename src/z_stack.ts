@@ -8,36 +8,12 @@
 module porcelain {
 
     /**
-     * The internal interface for a Z-stack classification.
-     */
-    interface IClassifyResult {
-        oldComps: Component[];
-        newComps: Component[];
-    }
-
-    
-    /** 
-     * Get the numeric Z-index of the given component.
-     */
-    function getZIndex(component: Component): number {
-        return parseInt(component.computedStyle().zIndex) || 0;
-    }
-
-
-    /**
-     * Set the numeric Z-index of the given component.
-     */
-    function setZIndex(component: Component, index: number): void {
-        component.style().zIndex = index ? index.toString() : "";
-    }
-
-
-    /**
      * A class for managing the Z-order of a collection of Items.
      *
      * @class
      */
-    export class ZStack {
+    export
+    class ZStack {
 
         /**
          * Construct a new ZStack.
@@ -57,7 +33,7 @@ module porcelain {
             }
             return null;
         }
-    
+
         /**
          * Returns the component on the bottom of the stack.
          */
@@ -107,7 +83,7 @@ module porcelain {
             }
         }
 
-        /** 
+        /**
          * Raise the specified components to the top of the stack.
          *
          * The relative stacking order of the components will be maintained.
@@ -179,18 +155,46 @@ module porcelain {
     /**
      * A predefinined Z-stack for normal window components.
      */
-    export var normalWindowStack = new ZStack(10000);
+    export
+    var normalWindowStack = new ZStack(10000);
 
 
     /**
      * A predefined Z-stack for top-most window components.
      */
-    export var topMostWindowStack = new ZStack(20000);
+    export
+    var topMostWindowStack = new ZStack(20000);
 
 
     /**
      * A predefined Z-stack for popup window components.
      */
-    export var popupWindowStack = new ZStack(30000);
+    export
+    var popupWindowStack = new ZStack(30000);
+
+
+    /**
+     * The internal interface for a Z-stack classification.
+     */
+    interface IClassifyResult {
+        oldComps: Component[];
+        newComps: Component[];
+    }
+
+
+    /**
+     * Get the numeric Z-index of the given component.
+     */
+    function getZIndex(component: Component): number {
+        return parseInt(component.computedStyle().zIndex) || 0;
+    }
+
+
+    /**
+     * Set the numeric Z-index of the given component.
+     */
+    function setZIndex(component: Component, index: number): void {
+        component.style().zIndex = index ? index.toString() : "";
+    }
 
 }

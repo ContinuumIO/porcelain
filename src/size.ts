@@ -8,9 +8,10 @@
 module porcelain {
 
     /**
-     * An interface defining a size in Cartesian space. 
+     * An interface defining a size in Cartesian space.
      */
-    export interface ISize {
+    export
+    interface ISize {
         width: number;
         height: number;
     }
@@ -21,8 +22,9 @@ module porcelain {
      *
      * @class
      */
-    export class Size {
-        
+    export
+    class Size {
+
         /**
          * The width, in pixels.
          */
@@ -32,14 +34,14 @@ module porcelain {
          * The height, in pixels.
          */
         height: number;
-        
+
         /**
          * Construct a new Size.
          */
         constructor();
         constructor(size: ISize);
         constructor(width: number, height: number);
-        constructor(arg1?, arg2?) {
+        constructor(arg1?: any, arg2?: any) {
             switch (arguments.length) {
                 case 0:
                     this.width = -1;
