@@ -104,7 +104,9 @@ module porcelain {
                 this.removeClass(CommonClass.Pressed);
                 this.evtMouseUp.unbind(this.onMouseUp, this);
                 this.released.emit();
-                if (event.target === this.element()) {
+                var rect = new Rect(this.element().getBoundingClientRect());
+                var point = new Point(event.clientX, event.clientY);
+                if (rect.contains(point)) {
                     event.preventDefault();
                     this.clicked.emit();
                 }
