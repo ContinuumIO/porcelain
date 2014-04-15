@@ -2,32 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Sample</title>
-    <link rel="stylesheet" href="css/app.css" type="text/css" />
-    <link rel="stylesheet" href="css/common.css" type="text/css" />
-    <link rel="stylesheet" href="css/component.css" type="text/css" />
-    <link rel="stylesheet" href="css/button.css" type="text/css" />
-    <link rel="stylesheet" href="css/push_button.css" type="text/css" />
-    <link rel="stylesheet" href="css/title_bar.css" type="text/css" />
-    <link rel="stylesheet" href="css/window.css" type="text/css" />
-    <script src="scripts/thirdparty/lodash.min.js"></script>
-    <script src="scripts/utils.js"></script>
-    <script src="scripts/point.js"></script>
-    <script src="scripts/size.js"></script>
-    <script src="scripts/rect.js"></script>
-    <script src="scripts/z_stack.js"></script>
-    <script src="scripts/event_binder.js"></script>
-    <script src="scripts/layout_item.js"></script>
-    <script src="scripts/signal.js"></script>
-    <script src="scripts/common.js"></script>
-    <script src="scripts/component.js"></script>
-    <script src="scripts/button.js"></script>
-    <script src="scripts/push_button.js"></script>
-    <script src="scripts/label.js"></script>
-    <script src="scripts/viewport.js"></script>
-    <script src="scripts/move_grip.js"></script>
-    <script src="scripts/title_bar.js"></script>
-    <script src="scripts/size_grip.js"></script>
-    <script src="scripts/window.js"></script>
+    <link rel="stylesheet" href="css/porcelain.css" type="text/css" />
+    <script src="thirdparty/lodash.min.js"></script>
+    <script src="bin/porcelain.js"></script>
     <script type="text/javascript">
         window.onload = function () {
             for (var i = 0; i < 1; ++i) {
@@ -36,7 +13,6 @@
                 var w = new porcelain.Window();
                 var p = { x: 50 + 200 * col, y: 50 + row * 200 };
                 w.setTitle("Window Number " + (i + 1));
-                w.setPos(new porcelain.Point(p));
                 w.attach();
             }
             window.theWindow = w;
