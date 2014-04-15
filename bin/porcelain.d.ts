@@ -1,4 +1,6 @@
 ﻿/// <reference path="../thirdparty/lodash.d.ts" />
+/// <reference path="../thirdparty/tsutils.d.ts" />
+/// <reference path="../thirdparty/kiwi.d.ts" />
 declare module porcelain {
     /**
     * An interface defining point in Cartesian space.
@@ -600,11 +602,13 @@ declare module porcelain {
         */
         public element(): HTMLElement;
         /**
-        * Returns the id of the component and its DOM element.
+        * Returns the id of the component's DOM element.
         */
         public id(): string;
         /**
-        * Set the id of the component and its DOM element.
+        * Set the id of the component's DOM element.
+        *
+        * @param id The id string to apply to the element.
         */
         public setId(id: string): void;
         /**
@@ -637,6 +641,8 @@ declare module porcelain {
         public display(): string;
         /**
         * Set the CSS display value for the component element.
+        *
+        * @param value The display value to apply to the element.
         */
         public setDisplay(value: string): void;
         /**
@@ -645,68 +651,22 @@ declare module porcelain {
         public position(): string;
         /**
         * Set the CSS position value for the component element.
+        *
+        * @param value The position value to apply to the element.
         */
         public setPosition(value: string): void;
         /**
-        * Returns the offset position of the component.
-        */
-        public pos(): Point;
-        /**
-        * Set the offset position of the component.
-        */
-        public setPos(point: Point): void;
-        /**
-        * Returns the offset size of the component.
-        */
-        public size(): Size;
-        /**
-        * Set the offset size of the component.
-        */
-        public setSize(size: Size): void;
-        /**
-        * Returns the offset rect of the component.
-        */
-        public rect(): Rect;
-        /**
-        * Set the offset rect of the component.
-        */
-        public setRect(rect: Rect): void;
-        /**
-        * Returns the minimum size of the component.
-        */
-        public minimumSize(): Size;
-        /**
-        * Set the minimum size of the component.
-        */
-        public setMinimumSize(size: Size): void;
-        /**
-        * Returns the maximum size of the component.
-        */
-        public maximumSize(): Size;
-        /**
-        * Set the maximum size of the component.
-        */
-        public setMaximumSize(size: Size): void;
-        /**
-        * Invoked when the component is resized.
+        * Invoked when the component is resized by the framework.
         *
-        * This will be invoked when the geometry of the component is
-        * changed through the geometry methods, or when the parent of
-        * the component can safely assume that the component's size
-        * has been changed due to some user interaction.
-        *
-        * This method is invoked whenever it is *reasonable* to assume
-        * that the size of the component has changed. Since it may be
-        * invoked when the size has not actually changed, components
-        * which perform expensive computation on a resize should cache
-        * the previous size value and only take action when the size
-        * has actually changed.
+        * This method is invoked whenever the framework can reasonably
+        * assume that the size of the component has changed. Since the
+        * assumption may be wrong, components which perform expensive
+        * computation on a resize should cache the previous size value
+        * and only take action when the sizehas actually changed.
         *
         * The default implementation of this method does nothing. A
         * subclass should reimplement this method as needed to handle
         * the resize event and/or dispatch to the appropriate children.
-        *
-        * @protected
         */
         public onResize(): void;
         /**
@@ -715,6 +675,9 @@ declare module porcelain {
         * This computes the natural size of the component and is used
         * by the procedural layout system. The default implementation
         * of this method returns an invalid size.
+        *
+        * This should be implemented by subclasses which wish to be
+        * used effectively by the procedural layout system.
         *
         * @protected
         */
@@ -758,17 +721,17 @@ declare module porcelain {
 }
 declare module porcelain {
     /**
-    * The maximimum allowed width or height of an item.
+    * The maximimum allowed layout width or height of an object.
     */
-    var MAX_ITEM_DIM: number;
+    var MAX_LAYOUT_DIM: number;
     /**
-    * The minimum allowed size of an item.
+    * The minimum allowed layout size of an object.
     */
-    var MIN_ITEM_SIZE: Size;
+    var MIN_LAYOUT_SIZE: Size;
     /**
-    * The maximum allowed size of an item.
+    * The maximum allowed layout size of an object.
     */
-    var MAX_ITEM_SIZE: Size;
+    var MAX_LAYOUT_SIZE: Size;
     /**
     * An interface for objects which can be procedurally layed out.
     */
@@ -786,14 +749,16 @@ declare module porcelain {
         */
         sizeHint(): Size;
         /**
-        * Returns the object's offset rect.
+        * Returns the object's layout rect.
         */
         rect(): Rect;
         /**
-        * Sets the object's offset rect.
+        * Sets the object's layout rect.
         */
         setRect(rect: Rect): void;
     }
+}
+declare module porcelain {
     /**
     * A class which implements ILayoutItem for a Component.
     *
@@ -812,19 +777,49 @@ declare module porcelain {
         */
         public minimumSize(): Size;
         /**
+        * Set the minimum size of the component.
+        *
+        * @param size The minimum size to apply to the component.
+        */
+        public setMinimumSize(size: Size): void;
+        /**
         * Compute the maximum size of the component.
         */
         public maximumSize(): Size;
+        /**
+        * Set the maximum size of the component.
+        *
+        * @param size The maximum size to apply to the component.
+        */
+        public setMaximumSize(size: Size): void;
         /**
         * Compute the preferred size of the component.
         */
         public sizeHint(): Size;
         /**
-        * Returns the offset rect of the component.
+        * Returns the layout position of the component.
+        */
+        public pos(): Point;
+        /**
+        * Set the layout position of the component.
+        */
+        public setPos(point: Point): void;
+        /**
+        * Returns the layout size of the component.
+        */
+        public size(): Size;
+        /**
+        * Set the layout size of the component.
+        */
+        public setSize(size: Size): void;
+        /**
+        * Returns the layout rect of the component.
         */
         public rect(): Rect;
         /**
-        * Sets the offset rect of the component.
+        * Set the layout rect of the component.
+        *
+        * @param rect The layout rect to apply to the component.
         */
         public setRect(rect: Rect): void;
     }
@@ -991,7 +986,7 @@ declare module porcelain {
         */
         constructor(text?: string);
         /**
-        * Returns the text content of the label.
+        * Get the text content of the label.
         */
         public text(): string;
         /**
@@ -1061,7 +1056,7 @@ declare module porcelain {
         * @protected
         */
         public onMouseMove(event: MouseEvent): void;
-        private _target;
+        private _item;
         private _offsetX;
         private _offsetY;
     }
@@ -1226,6 +1221,17 @@ declare module porcelain {
 }
 declare module porcelain {
     /**
+    * An enum defining the available title bar buttons.
+    */
+    enum TitleBarButton {
+        NoButton = 0,
+        Close = 1,
+        Maximize = 2,
+        Minimize = 4,
+        Restore = 8,
+        Mask = 15,
+    }
+    /**
     * A simple title bar widget for use in a typical window.
     *
     * The title bar is a dumb container widget. The window is
@@ -1277,29 +1283,37 @@ declare module porcelain {
         */
         public destroy(): void;
         /**
-        * Returns the icon item attached to the title bar.
+        * A signal emitted when the close button is clicked.
         */
-        public icon(): Component;
+        public closeButtonClicked : Signal;
         /**
-        * Returns the label item attached to the title bar.
+        * A signal emitted when the maximize button is clicked.
         */
-        public label(): Label;
+        public maximizeButtonClicked : Signal;
         /**
-        * Returns the close button attached to the title bar.
+        * A signal emitted when the minimize button is clicked.
         */
-        public closeButton(): Button;
+        public minimizeButtonClicked : Signal;
         /**
-        * Returns the restore button attached to the title bar.
+        * A signal emitted when the restore button is clicked.
         */
-        public restoreButton(): Button;
+        public restoreButtonClicked : Signal;
         /**
-        * Returns the minimize button attached to the title bar.
+        * Returns the title text of the title bar.
         */
-        public minimizeButton(): Button;
+        public title(): string;
         /**
-        * Returns the maximize button attached to the title bar.
+        * Set the title text of the title bar.
         */
-        public maximizeButton(): Button;
+        public setTitle(title: string): void;
+        /**
+        * Returns an OR'd combination of visible TitleBarButtons.
+        */
+        public buttons(): number;
+        /**
+        * Set the OR'd combination of visible TitleBarButtons.
+        */
+        public setButtons(buttons: number): void;
         /**
         * The mousedown handler.
         *
@@ -1309,7 +1323,14 @@ declare module porcelain {
         * @protected
         */
         public onMouseDown(event: MouseEvent): void;
-        private _subItems;
+        private _icon;
+        private _label;
+        private _minimizeButton;
+        private _maximizeButton;
+        private _restoreButton;
+        private _closeButton;
+        private _buttonBox;
+        private _buttons;
     }
 }
 declare module porcelain {
@@ -1359,7 +1380,19 @@ declare module porcelain {
         /**
         * Set the title text in the Window title bar.
         */
-        public setTitle(value: string): void;
+        public setTitle(title: string): void;
+        /**
+        * Returns the central content component of the window.
+        */
+        public content(): Component;
+        /**
+        * Set the central content component of the window.
+        *
+        * The old window content will be detached from the window.
+        *
+        * @param content The component to add to the window.
+        */
+        public setContent(content: Component): void;
         /**
         * Attach the Window to the given DOM element.
         *
@@ -1395,9 +1428,7 @@ declare module porcelain {
         /**
         * The resize event handler.
         *
-        * This handler will dispatch to the window body.
-        *
-        * @protected
+        * This handler dispatches the resize to the central content.
         */
         public onResize(): void;
         /**
@@ -1411,7 +1442,10 @@ declare module porcelain {
         */
         private _setWindowState(state);
         private _stored;
-        private _subItems;
+        private _item;
+        private _titleBar;
+        private _body;
+        private _content;
         private _windowState;
     }
 }

@@ -1309,14 +1309,16 @@ var porcelain;
         };
 
         /**
-        * Returns the id of the component and its DOM element.
+        * Returns the id of the component's DOM element.
         */
         Component.prototype.id = function () {
             return this._element.id;
         };
 
         /**
-        * Set the id of the component and its DOM element.
+        * Set the id of the component's DOM element.
+        *
+        * @param id The id string to apply to the element.
         */
         Component.prototype.setId = function (id) {
             this._element.id = id;
@@ -1379,6 +1381,8 @@ var porcelain;
 
         /**
         * Set the CSS display value for the component element.
+        *
+        * @param value The display value to apply to the element.
         */
         Component.prototype.setDisplay = function (value) {
             this._element.style.display = value;
@@ -1393,162 +1397,25 @@ var porcelain;
 
         /**
         * Set the CSS position value for the component element.
+        *
+        * @param value The position value to apply to the element.
         */
         Component.prototype.setPosition = function (value) {
             this._element.style.position = value;
         };
 
         /**
-        * Returns the offset position of the component.
-        */
-        Component.prototype.pos = function () {
-            var elem = this._element;
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            return new porcelain.Point(x, y);
-        };
-
-        /**
-        * Set the offset position of the component.
-        */
-        Component.prototype.setPos = function (point) {
-            var style = this._element.style;
-            style.left = point.x + "px";
-            style.top = point.y + "px";
-        };
-
-        /**
-        * Returns the offset size of the component.
-        */
-        Component.prototype.size = function () {
-            var elem = this._element;
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new porcelain.Size(w, h);
-        };
-
-        /**
-        * Set the offset size of the component.
-        */
-        Component.prototype.setSize = function (size) {
-            var style = this._element.style;
-            if (size.isValid()) {
-                style.width = size.width + "px";
-                style.height = size.height + "px";
-            } else {
-                style.width = "";
-                style.height = "";
-            }
-            this.onResize();
-        };
-
-        /**
-        * Returns the offset rect of the component.
-        */
-        Component.prototype.rect = function () {
-            var elem = this._element;
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new porcelain.Rect(x, y, w, h);
-        };
-
-        /**
-        * Set the offset rect of the component.
-        */
-        Component.prototype.setRect = function (rect) {
-            var style = this._element.style;
-            if (rect.isValid()) {
-                style.left = rect.left + "px";
-                style.top = rect.top + "px";
-                style.width = rect.width() + "px";
-                style.height = rect.height() + "px";
-            } else {
-                style.left = "";
-                style.top = "";
-                style.width = "";
-                style.height = "";
-            }
-            this.onResize();
-        };
-
-        /**
-        * Returns the minimum size of the component.
-        */
-        Component.prototype.minimumSize = function () {
-            var style = window.getComputedStyle(this._element);
-            var w = parseInt(style.minWidth);
-            var h = parseInt(style.minHeight);
-            if (w !== w || h !== h) {
-                return new porcelain.Size();
-            }
-            return new porcelain.Size(w, h);
-        };
-
-        /**
-        * Set the minimum size of the component.
-        */
-        Component.prototype.setMinimumSize = function (size) {
-            var style = this._element.style;
-            if (size.isValid()) {
-                style.minWidth = size.width + "px";
-                style.minHeight = size.height + "px";
-            } else {
-                style.minWidth = "";
-                style.minHeight = "";
-            }
-            this.onResize();
-        };
-
-        /**
-        * Returns the maximum size of the component.
-        */
-        Component.prototype.maximumSize = function () {
-            var style = window.getComputedStyle(this._element);
-            var w = parseInt(style.maxWidth);
-            var h = parseInt(style.maxHeight);
-            if (w !== w || h !== h) {
-                return new porcelain.Size();
-            }
-            return new porcelain.Size(w, h);
-        };
-
-        /**
-        * Set the maximum size of the component.
-        */
-        Component.prototype.setMaximumSize = function (size) {
-            var style = this._element.style;
-            if (size.isValid()) {
-                style.maxWidth = size.width + "px";
-                style.maxHeight = size.height + "px";
-            } else {
-                style.maxWidth = "";
-                style.maxHeight = "";
-            }
-            this.onResize();
-        };
-
-        /**
-        * Invoked when the component is resized.
+        * Invoked when the component is resized by the framework.
         *
-        * This will be invoked when the geometry of the component is
-        * changed through the geometry methods, or when the parent of
-        * the component can safely assume that the component's size
-        * has been changed due to some user interaction.
-        *
-        * This method is invoked whenever it is *reasonable* to assume
-        * that the size of the component has changed. Since it may be
-        * invoked when the size has not actually changed, components
-        * which perform expensive computation on a resize should cache
-        * the previous size value and only take action when the size
-        * has actually changed.
+        * This method is invoked whenever the framework can reasonably
+        * assume that the size of the component has changed. Since the
+        * assumption may be wrong, components which perform expensive
+        * computation on a resize should cache the previous size value
+        * and only take action when the sizehas actually changed.
         *
         * The default implementation of this method does nothing. A
         * subclass should reimplement this method as needed to handle
         * the resize event and/or dispatch to the appropriate children.
-        *
-        * @protected
         */
         Component.prototype.onResize = function () {
         };
@@ -1559,6 +1426,9 @@ var porcelain;
         * This computes the natural size of the component and is used
         * by the procedural layout system. The default implementation
         * of this method returns an invalid size.
+        *
+        * This should be implemented by subclasses which wish to be
+        * used effectively by the procedural layout system.
         *
         * @protected
         */
@@ -1654,22 +1524,31 @@ var porcelain;
 var porcelain;
 (function (porcelain) {
     /**
-    * The maximimum allowed width or height of an item.
+    * The maximimum allowed layout width or height of an object.
     */
-    porcelain.MAX_ITEM_DIM = 1073741823;
+    porcelain.MAX_LAYOUT_DIM = 1073741823;
 
     /**
-    * The minimum allowed size of an item.
+    * The minimum allowed layout size of an object.
     */
-    porcelain.MIN_ITEM_SIZE = new porcelain.Size(0, 0);
+    porcelain.MIN_LAYOUT_SIZE = new porcelain.Size(0, 0);
 
     /**
-    * The maximum allowed size of an item.
+    * The maximum allowed layout size of an object.
     */
-    porcelain.MAX_ITEM_SIZE = new porcelain.Size(porcelain.MAX_ITEM_DIM, porcelain.MAX_ITEM_DIM);
+    porcelain.MAX_LAYOUT_SIZE = new porcelain.Size(porcelain.MAX_LAYOUT_DIM, porcelain.MAX_LAYOUT_DIM);
 
     
-
+})(porcelain || (porcelain = {}));
+/*-----------------------------------------------------------------------------
+| Copyright (c) 2014, Nucleic Development Team.
+|
+| Distributed under the terms of the Modified BSD License.
+|
+| The full license is in the file COPYING.txt, distributed with this software.
+|----------------------------------------------------------------------------*/
+var porcelain;
+(function (porcelain) {
     /**
     * A class which implements ILayoutItem for a Component.
     *
@@ -1688,28 +1567,66 @@ var porcelain;
         * Compute the minimum size of the component.
         */
         ComponentItem.prototype.minimumSize = function () {
-            var component = this.component;
-            var size = component.minimumSize();
-            if (size.isValid()) {
-                size = size.boundedTo(porcelain.MAX_ITEM_SIZE);
-                size = size.expandedTo(porcelain.MIN_ITEM_SIZE);
-                return size;
+            var style = this.component.computedStyle();
+            var w = parseInt(style.minWidth);
+            var h = parseInt(style.minHeight);
+            if (w !== w || h !== h) {
+                return new porcelain.Size(porcelain.MIN_LAYOUT_SIZE);
             }
-            return new porcelain.Size(porcelain.MIN_ITEM_SIZE);
+            var size = new porcelain.Size(w, h);
+            size = size.boundedTo(porcelain.MAX_LAYOUT_SIZE);
+            size = size.expandedTo(porcelain.MIN_LAYOUT_SIZE);
+            return size;
+        };
+
+        /**
+        * Set the minimum size of the component.
+        *
+        * @param size The minimum size to apply to the component.
+        */
+        ComponentItem.prototype.setMinimumSize = function (size) {
+            var style = this.component.style();
+            if (size.isValid()) {
+                style.minWidth = size.width + "px";
+                style.minHeight = size.height + "px";
+            } else {
+                style.minWidth = "";
+                style.minHeight = "";
+            }
+            this.component.onResize();
         };
 
         /**
         * Compute the maximum size of the component.
         */
         ComponentItem.prototype.maximumSize = function () {
-            var component = this.component;
-            var size = component.maximumSize();
-            if (size.isValid()) {
-                size = size.boundedTo(porcelain.MAX_ITEM_SIZE);
-                size = size.expandedTo(porcelain.MIN_ITEM_SIZE);
-                return size;
+            var style = this.component.computedStyle();
+            var w = parseInt(style.maxWidth);
+            var h = parseInt(style.maxHeight);
+            if (w !== w || h !== h) {
+                return new porcelain.Size(porcelain.MAX_LAYOUT_SIZE);
             }
-            return new porcelain.Size(porcelain.MAX_ITEM_SIZE);
+            var size = new porcelain.Size(w, h);
+            size = size.boundedTo(porcelain.MAX_LAYOUT_SIZE);
+            size = size.expandedTo(porcelain.MIN_LAYOUT_SIZE);
+            return size;
+        };
+
+        /**
+        * Set the maximum size of the component.
+        *
+        * @param size The maximum size to apply to the component.
+        */
+        ComponentItem.prototype.setMaximumSize = function (size) {
+            var style = this.component.style();
+            if (size.isValid()) {
+                style.maxWidth = size.width + "px";
+                style.maxHeight = size.height + "px";
+            } else {
+                style.maxWidth = "";
+                style.maxHeight = "";
+            }
+            this.component.onResize();
         };
 
         /**
@@ -1723,17 +1640,80 @@ var porcelain;
         };
 
         /**
-        * Returns the offset rect of the component.
+        * Returns the layout position of the component.
         */
-        ComponentItem.prototype.rect = function () {
-            return this.component.rect();
+        ComponentItem.prototype.pos = function () {
+            var elem = this.component.element();
+            var x = elem.offsetLeft;
+            var y = elem.offsetTop;
+            return new porcelain.Point(x, y);
         };
 
         /**
-        * Sets the offset rect of the component.
+        * Set the layout position of the component.
+        */
+        ComponentItem.prototype.setPos = function (point) {
+            var style = this.component.style();
+            style.left = point.x + "px";
+            style.top = point.y + "px";
+        };
+
+        /**
+        * Returns the layout size of the component.
+        */
+        ComponentItem.prototype.size = function () {
+            var elem = this.component.element();
+            var w = elem.offsetWidth;
+            var h = elem.offsetHeight;
+            return new porcelain.Size(w, h);
+        };
+
+        /**
+        * Set the layout size of the component.
+        */
+        ComponentItem.prototype.setSize = function (size) {
+            var style = this.component.style();
+            if (size.isValid()) {
+                style.width = size.width + "px";
+                style.height = size.height + "px";
+            } else {
+                style.width = "";
+                style.height = "";
+            }
+            this.component.onResize();
+        };
+
+        /**
+        * Returns the layout rect of the component.
+        */
+        ComponentItem.prototype.rect = function () {
+            var elem = this.component.element();
+            var x = elem.offsetLeft;
+            var y = elem.offsetTop;
+            var w = elem.offsetWidth;
+            var h = elem.offsetHeight;
+            return new porcelain.Rect(x, y, w, h);
+        };
+
+        /**
+        * Set the layout rect of the component.
+        *
+        * @param rect The layout rect to apply to the component.
         */
         ComponentItem.prototype.setRect = function (rect) {
-            this.component.setRect(rect);
+            var style = this.component.style();
+            if (rect.isValid()) {
+                style.left = rect.left + "px";
+                style.top = rect.top + "px";
+                style.width = rect.width() + "px";
+                style.height = rect.height() + "px";
+            } else {
+                style.left = "";
+                style.top = "";
+                style.width = "";
+                style.height = "";
+            }
+            this.component.onResize();
         };
         return ComponentItem;
     })();
@@ -1994,12 +1974,12 @@ var porcelain;
         * Destroy the button instance.
         */
         Button.prototype.destroy = function () {
-            _super.prototype.destroy.call(this);
             this.clicked.disconnect();
             this.pressed.disconnect();
             this.released.disconnect();
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
+            _super.prototype.destroy.call(this);
         };
 
         /**
@@ -2029,7 +2009,9 @@ var porcelain;
                 this.removeClass(porcelain.CommonClass.Pressed);
                 this.evtMouseUp.unbind(this.onMouseUp, this);
                 this.released.emit();
-                if (event.target === this.element()) {
+                var rect = new porcelain.Rect(this.element().getBoundingClientRect());
+                var point = new porcelain.Point(event.clientX, event.clientY);
+                if (rect.contains(point)) {
                     event.preventDefault();
                     this.clicked.emit();
                 }
@@ -2068,7 +2050,7 @@ var porcelain;
             }
         }
         /**
-        * Returns the text content of the label.
+        * Get the text content of the label.
         */
         Label.prototype.text = function () {
             return this.element().innerHTML;
@@ -2131,7 +2113,7 @@ var porcelain;
             this.evtMouseMove = new porcelain.EventBinder("mousemove", document);
             this._offsetX = 0;
             this._offsetY = 0;
-            this._target = target;
+            this._item = new porcelain.ComponentItem(target);
             this.addClass(MoveGrip.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
@@ -2139,18 +2121,19 @@ var porcelain;
         * Destroy the MoveGrip.
         */
         MoveGrip.prototype.destroy = function () {
-            _super.prototype.destroy.call(this);
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
-            this._target = null;
+            this._item.component = null;
+            this._item = null;
+            _super.prototype.destroy.call(this);
         };
 
         /**
         * The target component moved by the grip.
         */
         MoveGrip.prototype.target = function () {
-            return this._target;
+            return this._item.component;
         };
 
         /**
@@ -2165,7 +2148,7 @@ var porcelain;
             event.preventDefault();
             this.evtMouseUp.bind(this.onMouseUp, this);
             this.evtMouseMove.bind(this.onMouseMove, this);
-            var pos = this._target.pos();
+            var pos = this._item.pos();
             this._offsetX = event.pageX - pos.x;
             this._offsetY = event.pageY - pos.y;
         };
@@ -2193,11 +2176,10 @@ var porcelain;
         */
         MoveGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
-            var vp = porcelain.Viewport;
-            var x = Math.min(Math.max(vp.left(), event.pageX), vp.windowRight());
-            var y = Math.min(Math.max(vp.top(), event.pageY), vp.windowBottom());
-            var pos = new porcelain.Point(x - this._offsetX, y - this._offsetY);
-            this._target.setPos(pos);
+            var v = porcelain.Viewport;
+            var x = Math.min(Math.max(v.left(), event.pageX), v.windowRight());
+            var y = Math.min(Math.max(v.top(), event.pageY), v.windowBottom());
+            this._item.setPos(new porcelain.Point(x - this._offsetX, y - this._offsetY));
         };
         MoveGrip.Class = "p-MoveGrip";
         return MoveGrip;
@@ -2238,9 +2220,9 @@ var porcelain;
         * Destroy the PushButton.
         */
         PushButton.prototype.destroy = function () {
-            _super.prototype.destroy.call(this);
             this._textElement = null;
             this._imageElement = null;
+            _super.prototype.destroy.call(this);
         };
 
         /**
@@ -2421,12 +2403,12 @@ var porcelain;
         * Destroy the SizeGrip.
         */
         SizeGrip.prototype.destroy = function () {
-            _super.prototype.destroy.call(this);
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
             this._item.component = null;
             this._item = null;
+            _super.prototype.destroy.call(this);
         };
 
         /**
@@ -2573,6 +2555,19 @@ var porcelain;
 var porcelain;
 (function (porcelain) {
     /**
+    * An enum defining the available title bar buttons.
+    */
+    (function (TitleBarButton) {
+        TitleBarButton[TitleBarButton["NoButton"] = 0x0] = "NoButton";
+        TitleBarButton[TitleBarButton["Close"] = 0x1] = "Close";
+        TitleBarButton[TitleBarButton["Maximize"] = 0x2] = "Maximize";
+        TitleBarButton[TitleBarButton["Minimize"] = 0x4] = "Minimize";
+        TitleBarButton[TitleBarButton["Restore"] = 0x8] = "Restore";
+        TitleBarButton[TitleBarButton["Mask"] = 0xF] = "Mask";
+    })(porcelain.TitleBarButton || (porcelain.TitleBarButton = {}));
+    var TitleBarButton = porcelain.TitleBarButton;
+
+    /**
     * A simple title bar widget for use in a typical window.
     *
     * The title bar is a dumb container widget. The window is
@@ -2589,92 +2584,125 @@ var porcelain;
         */
         function TitleBar(target) {
             _super.call(this, target);
+            this._buttons = 0 /* NoButton */;
             this.addClass(TitleBar.Class);
 
-            var icon = new porcelain.Component();
+            var icon = this._icon = new porcelain.Component();
             icon.addClass(TitleBar.IconClass);
 
-            var label = new porcelain.Label();
+            var label = this._label = new porcelain.Label();
             label.addClass(TitleBar.LabelClass);
             label.addClass(porcelain.CommonClass.LargeText);
 
-            var minBtn = new porcelain.Button();
-            minBtn.addClass(TitleBar.MinimizeButtonClass);
-
-            var maxBtn = new porcelain.Button();
-            maxBtn.addClass(TitleBar.MaximizeButtonClass);
-
-            var rstBtn = new porcelain.Button();
-            rstBtn.addClass(TitleBar.RestoreButtonClass);
-
-            var clsBtn = new porcelain.Button();
+            var clsBtn = this._closeButton = new porcelain.Button();
             clsBtn.addClass(TitleBar.CloseButtonClass);
 
-            var btnBox = new porcelain.Component();
+            var maxBtn = this._maximizeButton = new porcelain.Button();
+            maxBtn.addClass(TitleBar.MaximizeButtonClass);
+
+            var minBtn = this._minimizeButton = new porcelain.Button();
+            minBtn.addClass(TitleBar.MinimizeButtonClass);
+
+            var rstBtn = this._restoreButton = new porcelain.Button();
+            rstBtn.addClass(TitleBar.RestoreButtonClass);
+
+            var btnBox = this._buttonBox = new porcelain.Component();
             btnBox.addClass(TitleBar.ButtonBoxClass);
             btnBox.append(minBtn, rstBtn, maxBtn, clsBtn);
 
-            this._subItems = {
-                icon: icon,
-                label: label,
-                minimizeButton: minBtn,
-                maximizeButton: maxBtn,
-                restoreButton: rstBtn,
-                closeButton: clsBtn,
-                buttonBox: btnBox
-            };
-
             // the order is important for CSS float layout
             this.append(icon, btnBox, label);
+
+            this.setButtons(15 /* Mask */ & ~8 /* Restore */);
         }
         /**
         * Destroy the title bar.
         */
         TitleBar.prototype.destroy = function () {
+            this._icon = null;
+            this._label = null;
+            this._minimizeButton = null;
+            this._maximizeButton = null;
+            this._restoreButton = null;
+            this._closeButton = null;
+            this._buttonBox = null;
             _super.prototype.destroy.call(this);
-            this._subItems = null;
+        };
+
+        Object.defineProperty(TitleBar.prototype, "closeButtonClicked", {
+            /**
+            * A signal emitted when the close button is clicked.
+            */
+            get: function () {
+                return this._closeButton.clicked;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(TitleBar.prototype, "maximizeButtonClicked", {
+            /**
+            * A signal emitted when the maximize button is clicked.
+            */
+            get: function () {
+                return this._maximizeButton.clicked;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(TitleBar.prototype, "minimizeButtonClicked", {
+            /**
+            * A signal emitted when the minimize button is clicked.
+            */
+            get: function () {
+                return this._minimizeButton.clicked;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(TitleBar.prototype, "restoreButtonClicked", {
+            /**
+            * A signal emitted when the restore button is clicked.
+            */
+            get: function () {
+                return this._restoreButton.clicked;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        /**
+        * Returns the title text of the title bar.
+        */
+        TitleBar.prototype.title = function () {
+            return this._label.text();
         };
 
         /**
-        * Returns the icon item attached to the title bar.
+        * Set the title text of the title bar.
         */
-        TitleBar.prototype.icon = function () {
-            return this._subItems.icon;
+        TitleBar.prototype.setTitle = function (title) {
+            this._label.setText(title);
         };
 
         /**
-        * Returns the label item attached to the title bar.
+        * Returns an OR'd combination of visible TitleBarButtons.
         */
-        TitleBar.prototype.label = function () {
-            return this._subItems.label;
+        TitleBar.prototype.buttons = function () {
+            return this._buttons;
         };
 
         /**
-        * Returns the close button attached to the title bar.
+        * Set the OR'd combination of visible TitleBarButtons.
         */
-        TitleBar.prototype.closeButton = function () {
-            return this._subItems.closeButton;
-        };
-
-        /**
-        * Returns the restore button attached to the title bar.
-        */
-        TitleBar.prototype.restoreButton = function () {
-            return this._subItems.restoreButton;
-        };
-
-        /**
-        * Returns the minimize button attached to the title bar.
-        */
-        TitleBar.prototype.minimizeButton = function () {
-            return this._subItems.minimizeButton;
-        };
-
-        /**
-        * Returns the maximize button attached to the title bar.
-        */
-        TitleBar.prototype.maximizeButton = function () {
-            return this._subItems.maximizeButton;
+        TitleBar.prototype.setButtons = function (buttons) {
+            this._buttons = buttons & 15 /* Mask */;
+            this._closeButton.setDisplay(buttons & 1 /* Close */ ? "" : "none");
+            this._maximizeButton.setDisplay(buttons & 2 /* Maximize */ ? "" : "none");
+            this._minimizeButton.setDisplay(buttons & 4 /* Minimize */ ? "" : "none");
+            this._restoreButton.setDisplay(buttons & 8 /* Restore */ ? "" : "none");
         };
 
         /**
@@ -2689,7 +2717,7 @@ var porcelain;
             if (event.button !== 0) {
                 return;
             }
-            var elem = this._subItems.buttonBox.element();
+            var elem = this._buttonBox.element();
             var rect = new porcelain.Rect(elem.getBoundingClientRect());
             var point = new porcelain.Point(event.clientX, event.clientY);
             if (rect.contains(point)) {
@@ -2715,8 +2743,6 @@ var porcelain;
         return TitleBar;
     })(porcelain.MoveGrip);
     porcelain.TitleBar = TitleBar;
-
-    
 })(porcelain || (porcelain = {}));
 /*-----------------------------------------------------------------------------
 | Copyright (c) 2014, Nucleic Development Team.
@@ -2744,14 +2770,18 @@ var porcelain;
             * The mousedown event handler.
             */
             this.evtMouseDown = new porcelain.EventBinder("mousedown", this.element());
+            this._content = null;
             this._windowState = 0 /* Normal */;
             this.addClass(Window.Class);
+
+            // Create the layout item for sizing the window.
+            this._item = new porcelain.ComponentItem(this);
 
             // The children to be added to the window.
             var children = [];
 
             // The body component which holds the window content.
-            var body = new porcelain.Component();
+            var body = this._body = new porcelain.Component();
             body.addClass(Window.BodyClass);
             children.push(body);
 
@@ -2764,66 +2794,81 @@ var porcelain;
             }
 
             // The window title bar.
-            var titleBar = new porcelain.TitleBar(this);
+            var titleBar = this._titleBar = new porcelain.TitleBar(this);
             titleBar.addClass(Window.TitleBarClass);
             children.push(titleBar);
 
-            // The restore button is hidden by default, and shown
-            // when the window is maximized.
-            titleBar.restoreButton().setDisplay("none");
-
             // Connect the title bar button clicked signals.
-            titleBar.restoreButton().clicked.connect(this.restore, this);
-            titleBar.maximizeButton().clicked.connect(this.maximize, this);
-            titleBar.minimizeButton().clicked.connect(this.minimize, this);
-            titleBar.closeButton().clicked.connect(this.close, this);
-
-            // Store the sub items for later use.
-            this._subItems = {
-                titleBar: titleBar,
-                body: body
-            };
+            titleBar.closeButtonClicked.connect(this.close, this);
+            titleBar.maximizeButtonClicked.connect(this.maximize, this);
+            titleBar.minimizeButtonClicked.connect(this.minimize, this);
+            titleBar.restoreButtonClicked.connect(this.restore, this);
 
             // Add the window children.
             this.append.apply(this, children);
-
-            // Set the positioning mode and initial size of the window.
-            this.setPosition("absolute");
-            this.setMinimumSize(new porcelain.Size(192, 192));
 
             // Bind the Window mousedown handler.
             this.evtMouseDown.bind(this.onMouseDown, this);
 
             // Add the window to the global Z stack.
             porcelain.normalWindowStack.add(this);
-
-            // XXX temporary content
-            body.append(new porcelain.PushButton("OK"));
-            body.append(new porcelain.PushButton("Cancel"));
-            body.append(new porcelain.PushButton("Apply"));
         }
         /**
         * Destroy the Window component.
         */
         Window.prototype.destroy = function () {
             porcelain.normalWindowStack.remove(this);
-            _super.prototype.destroy.call(this);
             this.evtMouseDown.destroy();
-            this._subItems = null;
+            this._item.component = null;
+            this._item = null;
+            this._titleBar = null;
+            this._body = null;
+            this._content = null;
+            _super.prototype.destroy.call(this);
         };
 
         /**
         * Returns the title text in the Window title bar.
         */
         Window.prototype.title = function () {
-            return this._subItems.titleBar.label().text();
+            return this._titleBar.title();
         };
 
         /**
         * Set the title text in the Window title bar.
         */
-        Window.prototype.setTitle = function (value) {
-            this._subItems.titleBar.label().setText(value);
+        Window.prototype.setTitle = function (title) {
+            this._titleBar.setTitle(title);
+        };
+
+        /**
+        * Returns the central content component of the window.
+        */
+        Window.prototype.content = function () {
+            return this._content;
+        };
+
+        /**
+        * Set the central content component of the window.
+        *
+        * The old window content will be detached from the window.
+        *
+        * @param content The component to add to the window.
+        */
+        Window.prototype.setContent = function (content) {
+            var old = this._content;
+            if (content === old) {
+                return;
+            }
+            if (old) {
+                old.detach();
+                old.removeClass(Window.ContentClass);
+            }
+            if (content) {
+                content.addClass(Window.ContentClass);
+                this._body.append(content);
+            }
+            this._content = content;
         };
 
         /**
@@ -2883,12 +2928,12 @@ var porcelain;
         /**
         * The resize event handler.
         *
-        * This handler will dispatch to the window body.
-        *
-        * @protected
+        * This handler dispatches the resize to the central content.
         */
         Window.prototype.onResize = function () {
-            this._subItems.body.onResize();
+            if (this._content) {
+                this._content.onResize();
+            }
         };
 
         /**
@@ -2908,27 +2953,31 @@ var porcelain;
                 return;
             }
             this._windowState = state;
-            var titleBar = this._subItems.titleBar;
-            var maxBtn = titleBar.maximizeButton();
-            var rstBtn = titleBar.restoreButton();
+            var buttons = 1 /* Close */;
             switch (state) {
                 case 0 /* Normal */:
-                case 1 /* Minimized */:
-                    rstBtn.setDisplay("none");
-                    maxBtn.setDisplay("");
+                    buttons |= 4 /* Minimize */;
+                    buttons |= 2 /* Maximize */;
                     this.removeClass(porcelain.CommonClass.Maximized);
-                    this.setRect(this._stored);
+                    this._item.setRect(this._stored);
+                    break;
+                case 1 /* Minimized */:
+                    buttons |= 2 /* Maximize */;
+                    buttons |= 8 /* Restore */;
+                    this.removeClass(porcelain.CommonClass.Maximized);
+                    this._item.setRect(this._stored);
                     break;
                 case 2 /* Maximized */:
-                    maxBtn.setDisplay("none");
-                    rstBtn.setDisplay("");
-                    this._stored = this.rect();
+                    buttons |= 4 /* Minimize */;
+                    buttons |= 8 /* Restore */;
                     this.addClass(porcelain.CommonClass.Maximized);
-                    this.setRect(new porcelain.Rect(0, 0, -1, -1));
+                    this._stored = this._item.rect();
+                    this._item.setRect(new porcelain.Rect(0, 0, -1, -1));
                     break;
                 default:
                     break;
             }
+            this._titleBar.setButtons(buttons);
         };
         Window.Class = "p-Window";
 
@@ -2942,8 +2991,6 @@ var porcelain;
         return Window;
     })(porcelain.Component);
     porcelain.Window = Window;
-
-    
 
     /**
     * An enum defining the window state.
@@ -2963,6 +3010,8 @@ var porcelain;
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
 /// <reference path="../thirdparty/lodash.d.ts"/>
+/// <reference path="../thirdparty/tsutils.d.ts"/>
+/// <reference path="../thirdparty/kiwi.d.ts"/>
 /// <reference path="point.ts"/>
 /// <reference path="size.ts"/>
 /// <reference path="rect.ts"/>
@@ -2973,6 +3022,7 @@ var porcelain;
 /// <reference path="signal.ts"/>
 /// <reference path="component.ts"/>
 /// <reference path="layout_item.ts"/>
+/// <reference path="component_item.ts"/>
 /// <reference path="z_stack.ts"/>
 /// <reference path="button.ts"/>
 /// <reference path="label.ts"/>
