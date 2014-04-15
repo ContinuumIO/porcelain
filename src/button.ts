@@ -70,12 +70,12 @@ module porcelain {
          * Destroy the button instance.
          */
         destroy(): void {
-            super.destroy();
             this.clicked.disconnect();
             this.pressed.disconnect();
             this.released.disconnect();
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
+            super.destroy();
         }
 
         /**

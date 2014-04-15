@@ -33,7 +33,7 @@ module porcelain {
         }
 
         /**
-         * Returns the text content of the label.
+         * Get the text content of the label.
          */
         text(): string {
             return this.element().innerHTML;

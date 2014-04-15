@@ -108,8 +108,8 @@ module porcelain {
          * Destroy the title bar.
          */
         destroy(): void {
-            super.destroy();
             this._subItems = null;
+            super.destroy();
         }
 
         /**

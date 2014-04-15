@@ -47,9 +47,9 @@ module porcelain {
          * Destroy the PushButton.
          */
         destroy(): void {
-            super.destroy();
             this._textElement = null;
             this._imageElement = null;
+            super.destroy();
         }
 
         /**

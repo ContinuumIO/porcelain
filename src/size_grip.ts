@@ -75,12 +75,12 @@ module porcelain {
          * Destroy the SizeGrip.
          */
         destroy(): void {
-            super.destroy();
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
             this._item.component = null;
             this._item = null;
+            super.destroy();
         }
 
         /**

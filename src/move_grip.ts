@@ -48,7 +48,7 @@ module porcelain {
          */
         constructor(target: Component) {
             super();
-            this._target = target;
+            this._item = new ComponentItem(target);
             this.addClass(MoveGrip.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
@@ -57,18 +57,19 @@ module porcelain {
          * Destroy the MoveGrip.
          */
         destroy(): void {
-            super.destroy();
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
-            this._target = null;
+            this._item.component = null;
+            this._item = null;
+            super.destroy();
         }
 
         /**
          * The target component moved by the grip.
          */
         target(): Component {
-            return this._target;
+            return this._item.component;
         }
 
         /**
@@ -83,7 +84,7 @@ module porcelain {
             event.preventDefault();
             this.evtMouseUp.bind(this.onMouseUp, this);
             this.evtMouseMove.bind(this.onMouseMove, this);
-            var pos = this._target.pos();
+            var pos = this._item.pos();
             this._offsetX = event.pageX - pos.x;
             this._offsetY = event.pageY - pos.y;
         }
@@ -111,14 +112,13 @@ module porcelain {
          */
         onMouseMove(event: MouseEvent): void {
             event.preventDefault();
-            var vp = Viewport;
-            var x = Math.min(Math.max(vp.left(), event.pageX), vp.windowRight());
-            var y = Math.min(Math.max(vp.top(), event.pageY), vp.windowBottom());
-            var pos = new Point(x - this._offsetX, y - this._offsetY);
-            this._target.setPos(pos);
+            var v = Viewport;
+            var x = Math.min(Math.max(v.left(), event.pageX), v.windowRight());
+            var y = Math.min(Math.max(v.top(), event.pageY), v.windowBottom());
+            this._item.setPos(new Point(x - this._offsetX, y - this._offsetY));
         }
 
-        private _target: Component;
+        private _item: ComponentItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }
