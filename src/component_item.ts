@@ -60,8 +60,8 @@ module porcelain {
          */
         maximumSize(): Size {
             var style = this.component.computedStyle();
-            var w = parseInt(style.minWidth);
-            var h = parseInt(style.minHeight);
+            var w = parseInt(style.maxWidth);
+            var h = parseInt(style.maxHeight);
             if (w !== w || h !== h) {  // fast isNaN
                 return new Size(MAX_LAYOUT_SIZE);
             }
