@@ -53,11 +53,14 @@ module porcelain {
             super();
             this.addClass(Window.Class);
 
+            // Create the layout item for sizing the window.
+            this._item = new ComponentItem(this);
+
             // The children to be added to the window.
             var children: Component[] = [];
 
             // The body component which holds the window content.
-            var body = new Component();
+            var body = this._body = new Component();
             body.addClass(Window.BodyClass);
             children.push(body);
 
@@ -70,43 +73,24 @@ module porcelain {
             }
 
             // The window title bar.
-            var titleBar = new TitleBar(this);
+            var titleBar = this._titleBar = new TitleBar(this);
             titleBar.addClass(Window.TitleBarClass);
             children.push(titleBar);
 
-            // The restore button is hidden by default, and shown
-            // when the window is maximized.
-            titleBar.restoreButton().setDisplay("none");
-
             // Connect the title bar button clicked signals.
-            titleBar.restoreButton().clicked.connect(this.restore, this);
-            titleBar.maximizeButton().clicked.connect(this.maximize, this);
-            titleBar.minimizeButton().clicked.connect(this.minimize, this);
-            titleBar.closeButton().clicked.connect(this.close, this);
-
-            // Store the sub items for later use.
-            this._subItems = {
-                titleBar: titleBar,
-                body: body,
-            };
+            titleBar.closeButtonClicked.connect(this.close, this);
+            titleBar.maximizeButtonClicked.connect(this.maximize, this);
+            titleBar.minimizeButtonClicked.connect(this.minimize, this);
+            titleBar.restoreButtonClicked.connect(this.restore, this);
 
             // Add the window children.
             this.append.apply(this, children);
-
-            // Set the positioning mode and initial size of the window.
-            this.setPosition("absolute");
-            this.setMinimumSize(new Size(192, 192));
 
             // Bind the Window mousedown handler.
             this.evtMouseDown.bind(this.onMouseDown, this);
 
             // Add the window to the global Z stack.
             normalWindowStack.add(this);
-
-            // XXX temporary content
-            body.append(new PushButton("OK"));
-            body.append(new PushButton("Cancel"));
-            body.append(new PushButton("Apply"));
         }
 
         /**
@@ -114,23 +98,57 @@ module porcelain {
          */
         destroy(): void {
             normalWindowStack.remove(this);
-            super.destroy()
             this.evtMouseDown.destroy();
-            this._subItems = null;
+            this._item.component = null;
+            this._item = null;
+            this._titleBar = null;
+            this._body = null;
+            this._content = null;
+            super.destroy();
         }
 
         /**
          * Returns the title text in the Window title bar.
          */
         title(): string {
-            return this._subItems.titleBar.label().text();
+            return this._titleBar.title();
         }
 
         /**
          * Set the title text in the Window title bar.
          */
-        setTitle(value: string) {
-            this._subItems.titleBar.label().setText(value);
+        setTitle(title: string) {
+            this._titleBar.setTitle(title);
+        }
+
+        /**
+         * Returns the central content component of the window.
+         */
+        content(): Component {
+            return this._content;
+        }
+
+        /**
+         * Set the central content component of the window.
+         *
+         * The old window content will be detached from the window.
+         *
+         * @param content The component to add to the window.
+         */
+        setContent(content: Component): void {
+            var old = this._content;
+            if (content === old) {
+                return;
+            }
+            if (old) {
+                old.detach();
+                old.removeClass(Window.ContentClass);
+            }
+            if (content) {
+                content.addClass(Window.ContentClass);
+                this._body.append(content);
+            }
+            this._content = content;
         }
 
         /**
@@ -190,12 +208,12 @@ module porcelain {
         /**
          * The resize event handler.
          *
-         * This handler will dispatch to the window body.
-         *
-         * @protected
+         * This handler dispatches the resize to the central content.
          */
         onResize(): void {
-            this._subItems.body.onResize();
+            if (this._content) {
+                this._content.onResize();
+            }
         }
 
         /**
@@ -215,41 +233,39 @@ module porcelain {
                 return;
             }
             this._windowState = state;
-            var titleBar = this._subItems.titleBar;
-            var maxBtn = titleBar.maximizeButton();
-            var rstBtn = titleBar.restoreButton();
+            var buttons = TitleBarButton.Close;
             switch (state) {
                 case WindowState.Normal:
-                case WindowState.Minimized:
-                    rstBtn.setDisplay("none");
-                    maxBtn.setDisplay("");
+                    buttons |= TitleBarButton.Minimize;
+                    buttons |= TitleBarButton.Maximize;
                     this.removeClass(CommonClass.Maximized);
-                    this.setRect(this._stored);
+                    this._item.setRect(this._stored);
+                    break;
+                case WindowState.Minimized:
+                    buttons |= TitleBarButton.Maximize;
+                    buttons |= TitleBarButton.Restore;
+                    this.removeClass(CommonClass.Maximized);
+                    this._item.setRect(this._stored);
                     break;
                 case WindowState.Maximized:
-                    maxBtn.setDisplay("none");
-                    rstBtn.setDisplay("");
-                    this._stored = this.rect();
+                    buttons |= TitleBarButton.Minimize;
+                    buttons |= TitleBarButton.Restore;
                     this.addClass(CommonClass.Maximized);
-                    this.setRect(new Rect(0, 0, -1, -1));
+                    this._stored = this._item.rect();
+                    this._item.setRect(new Rect(0, 0, -1, -1));
                     break;
                 default:
                     break;
             }
+            this._titleBar.setButtons(buttons);
         }
 
         private _stored: Rect;
-        private _subItems: IWindowSubItems;
+        private _item: ComponentItem;
+        private _titleBar: TitleBar;
+        private _body: Component;
+        private _content: Component = null;
         private _windowState = WindowState.Normal;
-    }
-
-
-    /**
-     * An interface for storing the sub items of a Window.
-     */
-    interface IWindowSubItems {
-        titleBar: TitleBar;
-        body: Component;
     }
 
 
