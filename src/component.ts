@@ -141,14 +141,16 @@ module porcelain {
         }
 
         /**
-         * Returns the id of the component and its DOM element.
+         * Returns the id of the component's DOM element.
          */
         id(): string {
             return this._element.id
         }
 
         /**
-         * Set the id of the component and its DOM element.
+         * Set the id of the component's DOM element.
+         *
+         * @param id The id string to apply to the element.
          */
         setId(id: string): void {
             this._element.id = id;
@@ -211,6 +213,8 @@ module porcelain {
 
         /**
          * Set the CSS display value for the component element.
+         *
+         * @param value The display value to apply to the element.
          */
         setDisplay(value: string): void {
             this._element.style.display = value;
@@ -225,162 +229,25 @@ module porcelain {
 
         /**
          * Set the CSS position value for the component element.
+         *
+         * @param value The position value to apply to the element.
          */
         setPosition(value: string): void {
             this._element.style.position = value;
         }
 
         /**
-         * Returns the offset position of the component.
-         */
-        pos(): Point {
-            var elem = this._element;
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            return new Point(x, y);
-        }
-
-        /**
-         * Set the offset position of the component.
-         */
-        setPos(point: Point): void {
-            var style = this._element.style;
-            style.left = point.x + "px";
-            style.top = point.y + "px";
-        }
-
-        /**
-         * Returns the offset size of the component.
-         */
-        size(): Size {
-            var elem = this._element;
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new Size(w, h);
-        }
-
-        /**
-         * Set the offset size of the component.
-         */
-        setSize(size: Size): void {
-            var style = this._element.style;
-            if (size.isValid()) {
-                style.width = size.width + "px";
-                style.height = size.height + "px";
-            } else {
-                style.width = "";
-                style.height = "";
-            }
-            this.onResize();
-        }
-
-        /**
-         * Returns the offset rect of the component.
-         */
-        rect(): Rect {
-            var elem = this._element;
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new Rect(x, y, w, h);
-        }
-
-        /**
-         * Set the offset rect of the component.
-         */
-        setRect(rect: Rect): void {
-            var style = this._element.style;
-            if (rect.isValid()) {
-                style.left = rect.left + "px";
-                style.top = rect.top + "px";
-                style.width = rect.width() + "px";
-                style.height = rect.height() + "px";
-            } else {
-                style.left = "";
-                style.top = "";
-                style.width = "";
-                style.height = "";
-            }
-            this.onResize();
-        }
-
-        /**
-         * Returns the minimum size of the component.
-         */
-        minimumSize(): Size {
-            var style = window.getComputedStyle(this._element);
-            var w = parseInt(style.minWidth)
-            var h = parseInt(style.minHeight)
-            if (w !== w || h !== h) {  // fast isNaN
-                return new Size();
-            }
-            return new Size(w, h);
-        }
-
-        /**
-         * Set the minimum size of the component.
-         */
-        setMinimumSize(size: Size): void {
-            var style = this._element.style;
-            if (size.isValid()) {
-                style.minWidth = size.width + "px";
-                style.minHeight = size.height + "px";
-            } else {
-                style.minWidth = "";
-                style.minHeight = "";
-            }
-            this.onResize();
-        }
-
-        /**
-         * Returns the maximum size of the component.
-         */
-        maximumSize(): Size {
-            var style = window.getComputedStyle(this._element);
-            var w = parseInt(style.maxWidth)
-            var h = parseInt(style.maxHeight)
-            if (w !== w || h !== h) {  // fast isNaN
-                return new Size();
-            }
-            return new Size(w, h);
-        }
-
-        /**
-         * Set the maximum size of the component.
-         */
-        setMaximumSize(size: Size): void {
-            var style = this._element.style;
-            if (size.isValid()) {
-                style.maxWidth = size.width + "px";
-                style.maxHeight = size.height + "px";
-            } else {
-                style.maxWidth = "";
-                style.maxHeight = "";
-            }
-            this.onResize();
-        }
-
-        /**
-         * Invoked when the component is resized.
+         * Invoked when the component is resized by the framework.
          *
-         * This will be invoked when the geometry of the component is
-         * changed through the geometry methods, or when the parent of
-         * the component can safely assume that the component's size
-         * has been changed due to some user interaction.
-         *
-         * This method is invoked whenever it is *reasonable* to assume
-         * that the size of the component has changed. Since it may be
-         * invoked when the size has not actually changed, components
-         * which perform expensive computation on a resize should cache
-         * the previous size value and only take action when the size
-         * has actually changed.
+         * This method is invoked whenever the framework can reasonably
+         * assume that the size of the component has changed. Since the
+         * assumption may be wrong, components which perform expensive
+         * computation on a resize should cache the previous size value
+         * and only take action when the sizehas actually changed.
          *
          * The default implementation of this method does nothing. A
          * subclass should reimplement this method as needed to handle
          * the resize event and/or dispatch to the appropriate children.
-         *
-         * @protected
          */
         onResize(): void { }
 
@@ -390,6 +257,9 @@ module porcelain {
          * This computes the natural size of the component and is used
          * by the procedural layout system. The default implementation
          * of this method returns an invalid size.
+         *
+         * This should be implemented by subclasses which wish to be
+         * used effectively by the procedural layout system.
          *
          * @protected
          */
