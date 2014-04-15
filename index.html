@@ -4,18 +4,41 @@
     <title>Sample</title>
     <link rel="stylesheet" href="css/porcelain.css" type="text/css" />
     <script src="thirdparty/lodash.min.js"></script>
+    <script src="thirdparty/tsutils.js"></script>
+    <script src="thirdparty/kiwi.js"></script>
     <script src="bin/porcelain.js"></script>
     <script type="text/javascript">
         window.onload = function () {
-            for (var i = 0; i < 1; ++i) {
-                var col = i % 5;
-                var row = Math.floor(i / 5);
-                var w = new porcelain.Window();
-                var p = { x: 50 + 200 * col, y: 50 + row * 200 };
-                w.setTitle("Window Number " + (i + 1));
-                w.attach();
+            var win= new porcelain.Window();
+            win.setTitle("The Window");
+
+            var c1 = new porcelain.Component();
+            var b1 = new porcelain.PushButton("Ok");
+            var b2 = new porcelain.PushButton("Cancel");
+            var b3 = new porcelain.PushButton("Apply");
+            c1.append(b1, b2, b3);
+
+
+            var c2 = new porcelain.Component();
+            var b4 = new porcelain.PushButton("First");
+            var b5 = new porcelain.PushButton("Second");
+            c2.append(b4, b5);
+
+            function swap1() {
+                win.setContent(c2);
             }
-            window.theWindow = w;
+
+            function swap2() {
+                win.setContent(c1);
+            }
+
+            b1.clicked.connect(swap1);
+            b4.clicked.connect(swap2);
+
+            win.setContent(c1);
+
+            win.attach();
+            window.theWindow = win;
         };
     </script>
 </head>
