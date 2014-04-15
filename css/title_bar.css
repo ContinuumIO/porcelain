@@ -47,7 +47,7 @@
     width: 45px;
     height: 20px;
     margin-left: 1px;
-    background-image: url("/media/close.png");
+    background-image: url("images/close.png");
     background-color: #C75050;
 }
 
@@ -59,15 +59,15 @@
 }
 
 .p-TitleBar-restoreButton {
-    background-image: url("/media/restore.png");
+    background-image: url("images/restore.png");
 }
 
 .p-TitleBar-minimizeButton {
-    background-image: url("/media/minimize.png");
+    background-image: url("images/minimize.png");
 }
 
 .p-TitleBar-maximizeButton {
-    background-image: url("/media/maximize.png");
+    background-image: url("images/maximize.png");
 }
 
 .p-TitleBar-closeButton:hover {
@@ -85,15 +85,15 @@
 }
 
 .p-TitleBar-restoreButton:hover {
-    background-image: url("/media/restorehover.png");
+    background-image: url("images/restorehover.png");
 }
 
 .p-TitleBar-minimizeButton:hover {
-    background-image: url("/media/minimizehover.png");
+    background-image: url("images/minimizehover.png");
 }
 
 .p-TitleBar-maximizeButton:hover {
-    background-image: url("/media/maximizehover.png");
+    background-image: url("images/maximizehover.png");
 }
 
 .p-TitleBar-restoreButton.p-pressed:hover,
