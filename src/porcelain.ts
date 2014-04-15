@@ -7,6 +7,8 @@
 |----------------------------------------------------------------------------*/
 
 /// <reference path="../thirdparty/lodash.d.ts"/>
+/// <reference path="../thirdparty/tsutils.d.ts"/>
+/// <reference path="../thirdparty/kiwi.d.ts"/>
 
 /// <reference path="point.ts"/>
 /// <reference path="size.ts"/>
