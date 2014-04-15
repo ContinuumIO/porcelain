@@ -6,9 +6,12 @@
 | The full license is in the file COPYING.txt, distributed with this software.
 |----------------------------------------------------------------------------*/
 .p-Window {
+    position: absolute;
     border: 1px solid #4C8AC0;
     background-color: #63B4FB;
     box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.1);
+    min-width: 192px;
+    min-height: 192px;
 }
 
 .p-Window-titleBar {
