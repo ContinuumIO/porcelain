@@ -8,22 +8,22 @@
 module porcelain {
 
     /**
-     * The maximimum allowed width or height of an item.
+     * The maximimum allowed layout width or height of an object.
      */
     export
-    var MAX_ITEM_DIM = 1073741823;  // (1 << 30) - 1;
+    var MAX_LAYOUT_DIM = 1073741823;  // (1 << 30) - 1;
 
     /**
-     * The minimum allowed size of an item.
+     * The minimum allowed layout size of an object.
      */
     export
-    var MIN_ITEM_SIZE = new Size(0, 0);
+    var MIN_LAYOUT_SIZE = new Size(0, 0);
 
     /**
-     * The maximum allowed size of an item.
+     * The maximum allowed layout size of an object.
      */
     export
-    var MAX_ITEM_SIZE = new Size(MAX_ITEM_DIM, MAX_ITEM_DIM);
+    var MAX_LAYOUT_SIZE = new Size(MAX_LAYOUT_DIM, MAX_LAYOUT_DIM);
 
 
     /**
@@ -48,83 +48,14 @@ module porcelain {
         sizeHint(): Size;
 
         /**
-         * Returns the object's offset rect.
+         * Returns the object's layout rect.
          */
         rect(): Rect;
 
         /**
-         * Sets the object's offset rect.
+         * Sets the object's layout rect.
          */
         setRect(rect: Rect): void;
-    }
-
-
-    /**
-     * A class which implements ILayoutItem for a Component.
-     *
-     * @class
-     */
-    export
-    class ComponentItem implements ILayoutItem {
-
-        /**
-         * Construct a new ComponentItem.
-         *
-         * @param component The component to manipulate.
-         */
-        constructor(public component: Component) { }
-
-        /**
-         * Compute the minimum size of the component.
-         */
-        minimumSize(): Size {
-            var component = this.component;
-            var size = component.minimumSize();
-            if (size.isValid()) {
-                size = size.boundedTo(MAX_ITEM_SIZE);
-                size = size.expandedTo(MIN_ITEM_SIZE);
-                return size;
-            }
-            return new Size(MIN_ITEM_SIZE);
-        }
-
-        /**
-         * Compute the maximum size of the component.
-         */
-        maximumSize(): Size {
-            var component = this.component;
-            var size = component.maximumSize();
-            if (size.isValid()) {
-                size = size.boundedTo(MAX_ITEM_SIZE);
-                size = size.expandedTo(MIN_ITEM_SIZE);
-                return size;
-            }
-            return new Size(MAX_ITEM_SIZE);
-        }
-
-        /**
-         * Compute the preferred size of the component.
-         */
-        sizeHint(): Size {
-            var size = this.component.sizeHint();
-            size = size.boundedTo(this.maximumSize());
-            size = size.expandedTo(this.minimumSize());
-            return size;
-        }
-
-        /**
-         * Returns the offset rect of the component.
-         */
-        rect(): Rect {
-            return this.component.rect();
-        }
-
-        /**
-         * Sets the offset rect of the component.
-         */
-        setRect(rect: Rect): void {
-            this.component.setRect(rect);
-        }
     }
 
 }
