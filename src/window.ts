@@ -67,13 +67,13 @@ module porcelain {
             // The size grips for interactive window resizing.
             var gripAreas = enumValues<GripArea>(GripArea);
             for (var i = 0, n = gripAreas.length; i < n; ++i) {
-                var grip = new SizeGrip(gripAreas[i], this);
+                var grip = new SizeGrip(gripAreas[i], this._item);
                 grip.addClass(Window.SizeGripClass);
                 children.push(grip);
             }
 
             // The window title bar.
-            var titleBar = this._titleBar = new TitleBar(this);
+            var titleBar = this._titleBar = new TitleBar(this._item);
             titleBar.addClass(Window.TitleBarClass);
             children.push(titleBar);
 
@@ -99,7 +99,6 @@ module porcelain {
         destroy(): void {
             normalWindowStack.remove(this);
             this.evtMouseDown.destroy();
-            this._item.component = null;
             this._item = null;
             this._titleBar = null;
             this._body = null;
@@ -203,17 +202,6 @@ module porcelain {
         close(): void {
             this.setDisplay("none");
             this.destroy();
-        }
-
-        /**
-         * The resize event handler.
-         *
-         * This handler dispatches the resize to the central content.
-         */
-        onResize(): void {
-            if (this._content) {
-                this._content.onResize();
-            }
         }
 
         /**
