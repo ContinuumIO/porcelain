@@ -20,138 +20,87 @@ module porcelain {
          *
          * @param component The component to manipulate.
          */
-        constructor(public component: Component) { }
-
-        /**
-         * Compute the minimum size of the component.
-         */
-        minimumSize(): Size {
-            var style = this.component.computedStyle();
-            var w = parseInt(style.minWidth);
-            var h = parseInt(style.minHeight);
-            if (w !== w || h !== h) {  // fast isNaN
-                return new Size(MIN_LAYOUT_SIZE);
-            }
-            var size = new Size(w, h);
-            size = size.boundedTo(MAX_LAYOUT_SIZE);
-            size = size.expandedTo(MIN_LAYOUT_SIZE);
-            return size;
+        constructor(component: Component) {
+            this._component = component;
         }
 
         /**
-         * Set the minimum size of the component.
-         *
-         * @param size The minimum size to apply to the component.
+         * Returns the component handled by this item.
          */
-        setMinimumSize(size: Size): void {
-            var style = this.component.style();
-            if (size.isValid()) {
-                style.minWidth = size.width + "px";
-                style.minHeight = size.height + "px";
-            } else {
-                style.minWidth = "";
-                style.minHeight = "";
+        component(): Component {
+            return this._component;
+        }
+
+        /**
+         * Returns the computed minimum size of the component.
+         */
+        minimumSize(): Size {
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var minSize = cache.minimumSize;
+            if (!minSize) {
+                var style = component.computedStyle();
+                var w = parseInt(style.minWidth) || 0;
+                var h = parseInt(style.minHeight) || 0;
+                w = Math.min(Math.max(0, w), MAX_LAYOUT_DIM);
+                h = Math.min(Math.max(0, h), MAX_LAYOUT_DIM);
+                minSize = cache.minimumSize = new Size(w, h);
             }
-            this.component.onResize();
+            return new Size(minSize);
         }
 
         /**
          * Compute the maximum size of the component.
          */
         maximumSize(): Size {
-            var style = this.component.computedStyle();
-            var w = parseInt(style.maxWidth);
-            var h = parseInt(style.maxHeight);
-            if (w !== w || h !== h) {  // fast isNaN
-                return new Size(MAX_LAYOUT_SIZE);
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var maxSize = cache.maximumSize;
+            if (!maxSize) {
+                var style = component.computedStyle();
+                var w = parseInt(style.maxWidth) || MAX_LAYOUT_DIM;
+                var h = parseInt(style.maxHeight) || MAX_LAYOUT_DIM;
+                w = Math.min(Math.max(0, w), MAX_LAYOUT_DIM);
+                h = Math.min(Math.max(0, h), MAX_LAYOUT_DIM);
+                maxSize = cache.maximumSize = new Size(w, h);
             }
-            var size = new Size(w, h);
-            size = size.boundedTo(MAX_LAYOUT_SIZE);
-            size = size.expandedTo(MIN_LAYOUT_SIZE);
-            return size;
-        }
-
-        /**
-         * Set the maximum size of the component.
-         *
-         * @param size The maximum size to apply to the component.
-         */
-        setMaximumSize(size: Size): void {
-            var style = this.component.style();
-            if (size.isValid()) {
-                style.maxWidth = size.width + "px";
-                style.maxHeight = size.height + "px";
-            } else {
-                style.maxWidth = "";
-                style.maxHeight = "";
-            }
-            this.component.onResize();
+            return new Size(maxSize);
         }
 
         /**
          * Compute the preferred size of the component.
          */
         sizeHint(): Size {
-            var size = this.component.sizeHint();
-            size = size.boundedTo(this.maximumSize());
-            size = size.expandedTo(this.minimumSize());
-            return size;
-        }
-
-        /**
-         * Returns the layout position of the component.
-         */
-        pos(): Point {
-            var elem = this.component.element();
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            return new Point(x, y);
-        }
-
-        /**
-         * Set the layout position of the component.
-         */
-        setPos(point: Point): void {
-            var style = this.component.style();
-            style.left = point.x + "px";
-            style.top = point.y + "px";
-        }
-
-        /**
-         * Returns the layout size of the component.
-         */
-        size(): Size {
-            var elem = this.component.element();
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new Size(w, h);
-        }
-
-        /**
-         * Set the layout size of the component.
-         */
-        setSize(size: Size): void {
-            var style = this.component.style();
-            if (size.isValid()) {
-                style.width = size.width + "px";
-                style.height = size.height + "px";
-            } else {
-                style.width = "";
-                style.height = "";
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var sizeHint = cache.sizeHint;
+            if (!sizeHint) {
+                var ns = this.minimumSize();
+                var xs = this.maximumSize();
+                var sh = component.sizeHint();
+                var w = Math.min(Math.max(ns.width, sh.width), xs.width);
+                var h = Math.min(Math.max(ns.height, sh.height), xs.height);
+                sizeHint = cache.sizeHint = new Size(w, h);
             }
-            this.component.onResize();
+            return new Size(sizeHint);
         }
 
         /**
          * Returns the layout rect of the component.
          */
         rect(): Rect {
-            var elem = this.component.element();
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new Rect(x, y, w, h);
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var rect = cache.rect;
+            if (!rect) {
+                var elem = component.element();
+                var x = elem.offsetLeft;
+                var y = elem.offsetTop;
+                var w = elem.offsetWidth;
+                var h = elem.offsetHeight;
+                rect = cache.rect = new Rect(x, y, w, h);
+            }
+            return new Rect(rect);
         }
 
         /**
@@ -160,20 +109,23 @@ module porcelain {
          * @param rect The layout rect to apply to the component.
          */
         setRect(rect: Rect): void {
-            var style = this.component.style();
-            if (rect.isValid()) {
-                style.left = rect.left + "px";
-                style.top = rect.top + "px";
-                style.width = rect.width() + "px";
-                style.height = rect.height() + "px";
-            } else {
-                style.left = "";
-                style.top = "";
-                style.width = "";
-                style.height = "";
-            }
-            this.component.onResize();
+            var min = this.minimumSize();
+            var max = this.maximumSize();
+            var x = rect.left;
+            var y = rect.top;
+            var w = Math.min(Math.max(min.width, rect.width()), max.width);
+            var h = Math.min(Math.max(min.height, rect.height()), max.height);
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var style = component.style();
+            cache.rect = new Rect(x, y, w, h);
+            style.left = x + "px";
+            style.top = y + "px";
+            style.width = w + "px";
+            style.height = h + "px";
         }
+
+        private _component: Component;
     }
 
 }
