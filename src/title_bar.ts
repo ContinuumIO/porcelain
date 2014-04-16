@@ -75,9 +75,9 @@ module porcelain {
         /**
          * Construct a new TitleBar
          *
-         * @param target The component to move with the title bar.
+         * @param target The layout item to move with the title bar.
          */
-        constructor(target: Component) {
+        constructor(target: ILayoutItem) {
             super(target);
             this.addClass(TitleBar.Class);
 

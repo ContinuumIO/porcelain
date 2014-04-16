@@ -60,12 +60,12 @@ module porcelain {
          * Construct a new SizeGrip.
          *
          * @param gripArea The grip area defining the size grip behavior.
-         * @param target The component to resize with the grip.
+         * @param target The layout item to resize with the grip.
          */
-        constructor(gripArea: GripArea, target: Component) {
+        constructor(gripArea: GripArea, target: ILayoutItem) {
             super();
             this._gripArea = gripArea;
-            this._item = new ComponentItem(target);
+            this._target = target;
             this.addClass(SizeGrip.Class);
             this.addClass(SizeGrip.GripAreaPrefix + GripArea[gripArea]);
             this.evtMouseDown.bind(this.onMouseDown, this);
@@ -78,8 +78,7 @@ module porcelain {
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
-            this._item.component = null;
-            this._item = null;
+            this._target = null;
             super.destroy();
         }
 
@@ -91,10 +90,10 @@ module porcelain {
         }
 
         /**
-         * Returns the target component resized by the size grip.
+         * Returns the target layout item resized by the size grip.
          */
-        target(): Component {
-            return this._item.component;
+        target(): ILayoutItem {
+            return this._target;
         }
 
         /**
@@ -109,7 +108,7 @@ module porcelain {
             event.preventDefault();
             this.evtMouseUp.bind(this.onMouseUp, this);
             this.evtMouseMove.bind(this.onMouseMove, this);
-            var rect = this._item.rect();
+            var rect = this._target.rect();
             switch (this._gripArea) {
                 case GripArea.Left:
                 case GripArea.TopLeft:
@@ -162,10 +161,10 @@ module porcelain {
         onMouseMove(event: MouseEvent): void {
             event.preventDefault();
             var vp = Viewport;
-            var item = this._item;
-            var rect = item.rect();
-            var minSize = item.minimumSize();
-            var maxSize = item.maximumSize();
+            var target = this._target;
+            var rect = target.rect();
+            var minSize = target.minimumSize();
+            var maxSize = target.maximumSize();
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
             x = Math.min(Math.max(vp.left(), x), vp.windowRight());
@@ -208,11 +207,11 @@ module porcelain {
                 default:
                     break;
             }
-            item.setRect(rect);
+            target.setRect(rect);
         }
 
         private _gripArea: GripArea;
-        private _item: ComponentItem;
+        private _target: ILayoutItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }

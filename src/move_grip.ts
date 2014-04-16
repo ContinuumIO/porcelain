@@ -44,11 +44,11 @@ module porcelain {
         /**
          * Construct a new MoveGrip.
          *
-         * @param target The component to move with the grip.
+         * @param item The layout item to manipulate with the grip.
          */
-        constructor(target: Component) {
+        constructor(target: ILayoutItem) {
             super();
-            this._item = new ComponentItem(target);
+            this._target = target;
             this.addClass(MoveGrip.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
@@ -60,16 +60,15 @@ module porcelain {
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
-            this._item.component = null;
-            this._item = null;
+            this._target = null;
             super.destroy();
         }
 
         /**
-         * The target component moved by the grip.
+         * The target layout item manipulated by the grip.
          */
-        target(): Component {
-            return this._item.component;
+        target(): ILayoutItem {
+            return this._target;
         }
 
         /**
@@ -84,9 +83,9 @@ module porcelain {
             event.preventDefault();
             this.evtMouseUp.bind(this.onMouseUp, this);
             this.evtMouseMove.bind(this.onMouseMove, this);
-            var pos = this._item.pos();
-            this._offsetX = event.pageX - pos.x;
-            this._offsetY = event.pageY - pos.y;
+            var rect = this._target.rect();
+            this._offsetX = event.pageX - rect.left;
+            this._offsetY = event.pageY - rect.top;
         }
 
         /**
@@ -115,10 +114,13 @@ module porcelain {
             var v = Viewport;
             var x = Math.min(Math.max(v.left(), event.pageX), v.windowRight());
             var y = Math.min(Math.max(v.top(), event.pageY), v.windowBottom());
-            this._item.setPos(new Point(x - this._offsetX, y - this._offsetY));
+            var rect = this._target.rect();
+            rect.moveLeft(x - this._offsetX);
+            rect.moveTop(y - this._offsetY);
+            this._target.setRect(rect);
         }
 
-        private _item: ComponentItem;
+        private _target: ILayoutItem;
         private _offsetX: number = 0;
         private _offsetY: number = 0;
     }
