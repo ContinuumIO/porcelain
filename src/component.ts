@@ -237,19 +237,24 @@ module porcelain {
         }
 
         /**
-         * Invoked when the component is resized by the framework.
+         * Returns the cached geometry data for the object.
          *
-         * This method is invoked whenever the framework can reasonably
-         * assume that the size of the component has changed. Since the
-         * assumption may be wrong, components which perform expensive
-         * computation on a resize should cache the previous size value
-         * and only take action when the sizehas actually changed.
-         *
-         * The default implementation of this method does nothing. A
-         * subclass should reimplement this method as needed to handle
-         * the resize event and/or dispatch to the appropriate children.
+         * This is intended for internal use by the framework. It is
+         * subject to change without notice and should not be used
+         * directly by user code.
          */
-        onResize(): void { }
+        cachedGeometry(): IGeometryCache {
+            var cache = this._geometryCache;
+            if (!cache) {
+                cache = this._geometryCache = {
+                    rect: null,
+                    sizeHint: null,
+                    minimumSize: null,
+                    maximumSize: null,
+                };
+            }
+            return cache;
+        }
 
         /**
          * Returns the preferred size of the component.
@@ -344,6 +349,22 @@ module porcelain {
         private _element: HTMLElement;
         private _parent: Component = null;
         private _children: Component[] = null;
+        private _geometryCache: IGeometryCache = null;
+    }
+
+    /**
+     * An interface which defines the component geometry cache.
+     *
+     * This is intended for internal use by the framework. It is
+     * subject to change without notice and should not be used
+     * directly by user code.
+     */
+    export
+    interface IGeometryCache {
+        rect: Rect;
+        sizeHint: Size;
+        minimumSize: Size;
+        maximumSize: Size;
     }
 
 }
