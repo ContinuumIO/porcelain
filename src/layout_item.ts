@@ -48,12 +48,14 @@ module porcelain {
         sizeHint(): Size;
 
         /**
-         * Returns the object's layout rect.
+         * Returns the object's current layout rect.
          */
         rect(): Rect;
 
         /**
-         * Sets the object's layout rect.
+         * Set the object's layout rect.
+         *
+         * @param rect The desired layout rect of the object.
          */
         setRect(rect: Rect): void;
     }
