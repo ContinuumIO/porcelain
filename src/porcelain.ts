@@ -22,8 +22,10 @@
 /// <reference path="signal.ts"/>
 
 /// <reference path="component.ts"/>
-/// <reference path="layout_item.ts"/>
+
+/// <reference path="layout.ts"/>
 /// <reference path="component_item.ts"/>
+
 /// <reference path="z_stack.ts"/>
 
 /// <reference path="button.ts"/>
