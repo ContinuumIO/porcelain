@@ -1,4 +1,4 @@
-﻿/*-----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------
 | Copyright (c) 2014, Nucleic Development Team.
 |
 | Distributed under the terms of the Modified BSD License.
@@ -58,6 +58,47 @@ module porcelain {
          * @param rect The desired layout rect of the object.
          */
         setRect(rect: Rect): void;
+    }
+
+
+    /**
+     * The interface definition for a layout object.
+     */
+    export
+    interface ILayout {
+
+        /**
+         * Update the layout of the managed components.
+         *
+         * This method is called automatically by the framework at
+         * the appropriate times, and will not typically need to be
+         * invoked by user code.
+         */
+        update(): void;
+
+        /**
+         * Invalidate any cached information in the layout.
+         *
+         * This method is called automatically by the framework at
+         * the appropriate times, and will not typically need to be
+         * invoked by user code.
+         */
+        invalidate(): void;
+
+        /**
+         * Compute the preferred size of the layout area.
+         */
+        sizeHint(): Size;
+
+        /**
+         * Compute the minimum required size of the layout area.
+         */
+        minimumSize(): Size;
+
+        /**
+         * Compute the maximum allowed size of the layou area.
+         */
+        maximumSize(): Size;
     }
 
 }
