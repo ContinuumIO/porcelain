@@ -1188,6 +1188,7 @@ var porcelain;
             this.destroyed = new porcelain.Signal();
             this._parent = null;
             this._children = null;
+            this._geometryCache = null;
             this._element = this.createElement();
             this.addClass(Component.Class);
         }
@@ -1405,19 +1406,23 @@ var porcelain;
         };
 
         /**
-        * Invoked when the component is resized by the framework.
+        * Returns the cached geometry data for the object.
         *
-        * This method is invoked whenever the framework can reasonably
-        * assume that the size of the component has changed. Since the
-        * assumption may be wrong, components which perform expensive
-        * computation on a resize should cache the previous size value
-        * and only take action when the sizehas actually changed.
-        *
-        * The default implementation of this method does nothing. A
-        * subclass should reimplement this method as needed to handle
-        * the resize event and/or dispatch to the appropriate children.
+        * This is intended for internal use by the framework. It is
+        * subject to change without notice and should not be used
+        * directly by user code.
         */
-        Component.prototype.onResize = function () {
+        Component.prototype.cachedGeometry = function () {
+            var cache = this._geometryCache;
+            if (!cache) {
+                cache = this._geometryCache = {
+                    rect: null,
+                    sizeHint: null,
+                    minimumSize: null,
+                    maximumSize: null
+                };
+            }
+            return cache;
         };
 
         /**
@@ -1513,6 +1518,8 @@ var porcelain;
         return Component;
     })();
     porcelain.Component = Component;
+
+    
 })(porcelain || (porcelain = {}));
 /*-----------------------------------------------------------------------------
 | Copyright (c) 2014, Nucleic Development Team.
@@ -1539,6 +1546,8 @@ var porcelain;
     porcelain.MAX_LAYOUT_SIZE = new porcelain.Size(porcelain.MAX_LAYOUT_DIM, porcelain.MAX_LAYOUT_DIM);
 
     
+
+    
 })(porcelain || (porcelain = {}));
 /*-----------------------------------------------------------------------------
 | Copyright (c) 2014, Nucleic Development Team.
@@ -1561,138 +1570,85 @@ var porcelain;
         * @param component The component to manipulate.
         */
         function ComponentItem(component) {
-            this.component = component;
+            this._component = component;
         }
         /**
-        * Compute the minimum size of the component.
+        * Returns the component handled by this item.
         */
-        ComponentItem.prototype.minimumSize = function () {
-            var style = this.component.computedStyle();
-            var w = parseInt(style.minWidth);
-            var h = parseInt(style.minHeight);
-            if (w !== w || h !== h) {
-                return new porcelain.Size(porcelain.MIN_LAYOUT_SIZE);
-            }
-            var size = new porcelain.Size(w, h);
-            size = size.boundedTo(porcelain.MAX_LAYOUT_SIZE);
-            size = size.expandedTo(porcelain.MIN_LAYOUT_SIZE);
-            return size;
+        ComponentItem.prototype.component = function () {
+            return this._component;
         };
 
         /**
-        * Set the minimum size of the component.
-        *
-        * @param size The minimum size to apply to the component.
+        * Returns the computed minimum size of the component.
         */
-        ComponentItem.prototype.setMinimumSize = function (size) {
-            var style = this.component.style();
-            if (size.isValid()) {
-                style.minWidth = size.width + "px";
-                style.minHeight = size.height + "px";
-            } else {
-                style.minWidth = "";
-                style.minHeight = "";
+        ComponentItem.prototype.minimumSize = function () {
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var minSize = cache.minimumSize;
+            if (!minSize) {
+                var style = component.computedStyle();
+                var w = parseInt(style.minWidth) || 0;
+                var h = parseInt(style.minHeight) || 0;
+                w = Math.min(Math.max(0, w), porcelain.MAX_LAYOUT_DIM);
+                h = Math.min(Math.max(0, h), porcelain.MAX_LAYOUT_DIM);
+                minSize = cache.minimumSize = new porcelain.Size(w, h);
             }
-            this.component.onResize();
+            return new porcelain.Size(minSize);
         };
 
         /**
         * Compute the maximum size of the component.
         */
         ComponentItem.prototype.maximumSize = function () {
-            var style = this.component.computedStyle();
-            var w = parseInt(style.maxWidth);
-            var h = parseInt(style.maxHeight);
-            if (w !== w || h !== h) {
-                return new porcelain.Size(porcelain.MAX_LAYOUT_SIZE);
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var maxSize = cache.maximumSize;
+            if (!maxSize) {
+                var style = component.computedStyle();
+                var w = parseInt(style.maxWidth) || porcelain.MAX_LAYOUT_DIM;
+                var h = parseInt(style.maxHeight) || porcelain.MAX_LAYOUT_DIM;
+                w = Math.min(Math.max(0, w), porcelain.MAX_LAYOUT_DIM);
+                h = Math.min(Math.max(0, h), porcelain.MAX_LAYOUT_DIM);
+                maxSize = cache.maximumSize = new porcelain.Size(w, h);
             }
-            var size = new porcelain.Size(w, h);
-            size = size.boundedTo(porcelain.MAX_LAYOUT_SIZE);
-            size = size.expandedTo(porcelain.MIN_LAYOUT_SIZE);
-            return size;
-        };
-
-        /**
-        * Set the maximum size of the component.
-        *
-        * @param size The maximum size to apply to the component.
-        */
-        ComponentItem.prototype.setMaximumSize = function (size) {
-            var style = this.component.style();
-            if (size.isValid()) {
-                style.maxWidth = size.width + "px";
-                style.maxHeight = size.height + "px";
-            } else {
-                style.maxWidth = "";
-                style.maxHeight = "";
-            }
-            this.component.onResize();
+            return new porcelain.Size(maxSize);
         };
 
         /**
         * Compute the preferred size of the component.
         */
         ComponentItem.prototype.sizeHint = function () {
-            var size = this.component.sizeHint();
-            size = size.boundedTo(this.maximumSize());
-            size = size.expandedTo(this.minimumSize());
-            return size;
-        };
-
-        /**
-        * Returns the layout position of the component.
-        */
-        ComponentItem.prototype.pos = function () {
-            var elem = this.component.element();
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            return new porcelain.Point(x, y);
-        };
-
-        /**
-        * Set the layout position of the component.
-        */
-        ComponentItem.prototype.setPos = function (point) {
-            var style = this.component.style();
-            style.left = point.x + "px";
-            style.top = point.y + "px";
-        };
-
-        /**
-        * Returns the layout size of the component.
-        */
-        ComponentItem.prototype.size = function () {
-            var elem = this.component.element();
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new porcelain.Size(w, h);
-        };
-
-        /**
-        * Set the layout size of the component.
-        */
-        ComponentItem.prototype.setSize = function (size) {
-            var style = this.component.style();
-            if (size.isValid()) {
-                style.width = size.width + "px";
-                style.height = size.height + "px";
-            } else {
-                style.width = "";
-                style.height = "";
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var sizeHint = cache.sizeHint;
+            if (!sizeHint) {
+                var ns = this.minimumSize();
+                var xs = this.maximumSize();
+                var sh = component.sizeHint();
+                var w = Math.min(Math.max(ns.width, sh.width), xs.width);
+                var h = Math.min(Math.max(ns.height, sh.height), xs.height);
+                sizeHint = cache.sizeHint = new porcelain.Size(w, h);
             }
-            this.component.onResize();
+            return new porcelain.Size(sizeHint);
         };
 
         /**
         * Returns the layout rect of the component.
         */
         ComponentItem.prototype.rect = function () {
-            var elem = this.component.element();
-            var x = elem.offsetLeft;
-            var y = elem.offsetTop;
-            var w = elem.offsetWidth;
-            var h = elem.offsetHeight;
-            return new porcelain.Rect(x, y, w, h);
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var rect = cache.rect;
+            if (!rect) {
+                var elem = component.element();
+                var x = elem.offsetLeft;
+                var y = elem.offsetTop;
+                var w = elem.offsetWidth;
+                var h = elem.offsetHeight;
+                rect = cache.rect = new porcelain.Rect(x, y, w, h);
+            }
+            return new porcelain.Rect(rect);
         };
 
         /**
@@ -1701,19 +1657,20 @@ var porcelain;
         * @param rect The layout rect to apply to the component.
         */
         ComponentItem.prototype.setRect = function (rect) {
-            var style = this.component.style();
-            if (rect.isValid()) {
-                style.left = rect.left + "px";
-                style.top = rect.top + "px";
-                style.width = rect.width() + "px";
-                style.height = rect.height() + "px";
-            } else {
-                style.left = "";
-                style.top = "";
-                style.width = "";
-                style.height = "";
-            }
-            this.component.onResize();
+            var min = this.minimumSize();
+            var max = this.maximumSize();
+            var x = rect.left;
+            var y = rect.top;
+            var w = Math.min(Math.max(min.width, rect.width()), max.width);
+            var h = Math.min(Math.max(min.height, rect.height()), max.height);
+            var component = this._component;
+            var cache = component.cachedGeometry();
+            var style = component.style();
+            cache.rect = new porcelain.Rect(x, y, w, h);
+            style.left = x + "px";
+            style.top = y + "px";
+            style.width = w + "px";
+            style.height = h + "px";
         };
         return ComponentItem;
     })();
@@ -2089,7 +2046,7 @@ var porcelain;
         /**
         * Construct a new MoveGrip.
         *
-        * @param target The component to move with the grip.
+        * @param item The layout item to manipulate with the grip.
         */
         function MoveGrip(target) {
             _super.call(this);
@@ -2113,7 +2070,7 @@ var porcelain;
             this.evtMouseMove = new porcelain.EventBinder("mousemove", document);
             this._offsetX = 0;
             this._offsetY = 0;
-            this._item = new porcelain.ComponentItem(target);
+            this._target = target;
             this.addClass(MoveGrip.Class);
             this.evtMouseDown.bind(this.onMouseDown, this);
         }
@@ -2124,16 +2081,15 @@ var porcelain;
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
-            this._item.component = null;
-            this._item = null;
+            this._target = null;
             _super.prototype.destroy.call(this);
         };
 
         /**
-        * The target component moved by the grip.
+        * The target layout item manipulated by the grip.
         */
         MoveGrip.prototype.target = function () {
-            return this._item.component;
+            return this._target;
         };
 
         /**
@@ -2148,9 +2104,9 @@ var porcelain;
             event.preventDefault();
             this.evtMouseUp.bind(this.onMouseUp, this);
             this.evtMouseMove.bind(this.onMouseMove, this);
-            var pos = this._item.pos();
-            this._offsetX = event.pageX - pos.x;
-            this._offsetY = event.pageY - pos.y;
+            var rect = this._target.rect();
+            this._offsetX = event.pageX - rect.left;
+            this._offsetY = event.pageY - rect.top;
         };
 
         /**
@@ -2179,7 +2135,10 @@ var porcelain;
             var v = porcelain.Viewport;
             var x = Math.min(Math.max(v.left(), event.pageX), v.windowRight());
             var y = Math.min(Math.max(v.top(), event.pageY), v.windowBottom());
-            this._item.setPos(new porcelain.Point(x - this._offsetX, y - this._offsetY));
+            var rect = this._target.rect();
+            rect.moveLeft(x - this._offsetX);
+            rect.moveTop(y - this._offsetY);
+            this._target.setRect(rect);
         };
         MoveGrip.Class = "p-MoveGrip";
         return MoveGrip;
@@ -2375,7 +2334,7 @@ var porcelain;
         * Construct a new SizeGrip.
         *
         * @param gripArea The grip area defining the size grip behavior.
-        * @param target The component to resize with the grip.
+        * @param target The layout item to resize with the grip.
         */
         function SizeGrip(gripArea, target) {
             _super.call(this);
@@ -2394,7 +2353,7 @@ var porcelain;
             this._offsetX = 0;
             this._offsetY = 0;
             this._gripArea = gripArea;
-            this._item = new porcelain.ComponentItem(target);
+            this._target = target;
             this.addClass(SizeGrip.Class);
             this.addClass(SizeGrip.GripAreaPrefix + GripArea[gripArea]);
             this.evtMouseDown.bind(this.onMouseDown, this);
@@ -2406,8 +2365,7 @@ var porcelain;
             this.evtMouseDown.destroy();
             this.evtMouseUp.destroy();
             this.evtMouseMove.destroy();
-            this._item.component = null;
-            this._item = null;
+            this._target = null;
             _super.prototype.destroy.call(this);
         };
 
@@ -2419,10 +2377,10 @@ var porcelain;
         };
 
         /**
-        * Returns the target component resized by the size grip.
+        * Returns the target layout item resized by the size grip.
         */
         SizeGrip.prototype.target = function () {
-            return this._item.component;
+            return this._target;
         };
 
         /**
@@ -2437,7 +2395,7 @@ var porcelain;
             event.preventDefault();
             this.evtMouseUp.bind(this.onMouseUp, this);
             this.evtMouseMove.bind(this.onMouseMove, this);
-            var rect = this._item.rect();
+            var rect = this._target.rect();
             switch (this._gripArea) {
                 case 0 /* Left */:
                 case 4 /* TopLeft */:
@@ -2490,10 +2448,10 @@ var porcelain;
         SizeGrip.prototype.onMouseMove = function (event) {
             event.preventDefault();
             var vp = porcelain.Viewport;
-            var item = this._item;
-            var rect = item.rect();
-            var minSize = item.minimumSize();
-            var maxSize = item.maximumSize();
+            var target = this._target;
+            var rect = target.rect();
+            var minSize = target.minimumSize();
+            var maxSize = target.maximumSize();
             var x = event.pageX - this._offsetX;
             var y = event.pageY - this._offsetY;
             x = Math.min(Math.max(vp.left(), x), vp.windowRight());
@@ -2536,7 +2494,7 @@ var porcelain;
                 default:
                     break;
             }
-            item.setRect(rect);
+            target.setRect(rect);
         };
         SizeGrip.Class = "p-SizeGrip";
 
@@ -2580,7 +2538,7 @@ var porcelain;
         /**
         * Construct a new TitleBar
         *
-        * @param target The component to move with the title bar.
+        * @param target The layout item to move with the title bar.
         */
         function TitleBar(target) {
             _super.call(this, target);
@@ -2788,13 +2746,13 @@ var porcelain;
             // The size grips for interactive window resizing.
             var gripAreas = porcelain.enumValues(porcelain.GripArea);
             for (var i = 0, n = gripAreas.length; i < n; ++i) {
-                var grip = new porcelain.SizeGrip(gripAreas[i], this);
+                var grip = new porcelain.SizeGrip(gripAreas[i], this._item);
                 grip.addClass(Window.SizeGripClass);
                 children.push(grip);
             }
 
             // The window title bar.
-            var titleBar = this._titleBar = new porcelain.TitleBar(this);
+            var titleBar = this._titleBar = new porcelain.TitleBar(this._item);
             titleBar.addClass(Window.TitleBarClass);
             children.push(titleBar);
 
@@ -2819,7 +2777,6 @@ var porcelain;
         Window.prototype.destroy = function () {
             porcelain.normalWindowStack.remove(this);
             this.evtMouseDown.destroy();
-            this._item.component = null;
             this._item = null;
             this._titleBar = null;
             this._body = null;
@@ -2926,17 +2883,6 @@ var porcelain;
         };
 
         /**
-        * The resize event handler.
-        *
-        * This handler dispatches the resize to the central content.
-        */
-        Window.prototype.onResize = function () {
-            if (this._content) {
-                this._content.onResize();
-            }
-        };
-
-        /**
         * The mousedown event handler.
         *
         * @protected
@@ -2972,7 +2918,11 @@ var porcelain;
                     buttons |= 8 /* Restore */;
                     this.addClass(porcelain.CommonClass.Maximized);
                     this._stored = this._item.rect();
-                    this._item.setRect(new porcelain.Rect(0, 0, -1, -1));
+                    var style = this.style();
+                    style.left = "";
+                    style.top = "";
+                    style.width = "";
+                    style.height = "";
                     break;
                 default:
                     break;
@@ -3021,7 +2971,7 @@ var porcelain;
 /// <reference path="event_binder.ts"/>
 /// <reference path="signal.ts"/>
 /// <reference path="component.ts"/>
-/// <reference path="layout_item.ts"/>
+/// <reference path="layout.ts"/>
 /// <reference path="component_item.ts"/>
 /// <reference path="z_stack.ts"/>
 /// <reference path="button.ts"/>

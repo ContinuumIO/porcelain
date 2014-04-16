@@ -656,19 +656,13 @@ declare module porcelain {
         */
         public setPosition(value: string): void;
         /**
-        * Invoked when the component is resized by the framework.
+        * Returns the cached geometry data for the object.
         *
-        * This method is invoked whenever the framework can reasonably
-        * assume that the size of the component has changed. Since the
-        * assumption may be wrong, components which perform expensive
-        * computation on a resize should cache the previous size value
-        * and only take action when the sizehas actually changed.
-        *
-        * The default implementation of this method does nothing. A
-        * subclass should reimplement this method as needed to handle
-        * the resize event and/or dispatch to the appropriate children.
+        * This is intended for internal use by the framework. It is
+        * subject to change without notice and should not be used
+        * directly by user code.
         */
-        public onResize(): void;
+        public cachedGeometry(): IGeometryCache;
         /**
         * Returns the preferred size of the component.
         *
@@ -717,6 +711,20 @@ declare module porcelain {
         private _element;
         private _parent;
         private _children;
+        private _geometryCache;
+    }
+    /**
+    * An interface which defines the component geometry cache.
+    *
+    * This is intended for internal use by the framework. It is
+    * subject to change without notice and should not be used
+    * directly by user code.
+    */
+    interface IGeometryCache {
+        rect: Rect;
+        sizeHint: Size;
+        minimumSize: Size;
+        maximumSize: Size;
     }
 }
 declare module porcelain {
@@ -749,13 +757,48 @@ declare module porcelain {
         */
         sizeHint(): Size;
         /**
-        * Returns the object's layout rect.
+        * Returns the object's current layout rect.
         */
         rect(): Rect;
         /**
-        * Sets the object's layout rect.
+        * Set the object's layout rect.
+        *
+        * @param rect The desired layout rect of the object.
         */
         setRect(rect: Rect): void;
+    }
+    /**
+    * The interface definition for a layout object.
+    */
+    interface ILayout {
+        /**
+        * Update the layout of the managed components.
+        *
+        * This method is called automatically by the framework at
+        * the appropriate times, and will not typically need to be
+        * invoked by user code.
+        */
+        update(): void;
+        /**
+        * Invalidate any cached information in the layout.
+        *
+        * This method is called automatically by the framework at
+        * the appropriate times, and will not typically need to be
+        * invoked by user code.
+        */
+        invalidate(): void;
+        /**
+        * Compute the preferred size of the layout area.
+        */
+        sizeHint(): Size;
+        /**
+        * Compute the minimum required size of the layout area.
+        */
+        minimumSize(): Size;
+        /**
+        * Compute the maximum allowed size of the layou area.
+        */
+        maximumSize(): Size;
     }
 }
 declare module porcelain {
@@ -765,7 +808,6 @@ declare module porcelain {
     * @class
     */
     class ComponentItem implements ILayoutItem {
-        public component: Component;
         /**
         * Construct a new ComponentItem.
         *
@@ -773,45 +815,21 @@ declare module porcelain {
         */
         constructor(component: Component);
         /**
-        * Compute the minimum size of the component.
+        * Returns the component handled by this item.
+        */
+        public component(): Component;
+        /**
+        * Returns the computed minimum size of the component.
         */
         public minimumSize(): Size;
-        /**
-        * Set the minimum size of the component.
-        *
-        * @param size The minimum size to apply to the component.
-        */
-        public setMinimumSize(size: Size): void;
         /**
         * Compute the maximum size of the component.
         */
         public maximumSize(): Size;
         /**
-        * Set the maximum size of the component.
-        *
-        * @param size The maximum size to apply to the component.
-        */
-        public setMaximumSize(size: Size): void;
-        /**
         * Compute the preferred size of the component.
         */
         public sizeHint(): Size;
-        /**
-        * Returns the layout position of the component.
-        */
-        public pos(): Point;
-        /**
-        * Set the layout position of the component.
-        */
-        public setPos(point: Point): void;
-        /**
-        * Returns the layout size of the component.
-        */
-        public size(): Size;
-        /**
-        * Set the layout size of the component.
-        */
-        public setSize(size: Size): void;
         /**
         * Returns the layout rect of the component.
         */
@@ -822,6 +840,7 @@ declare module porcelain {
         * @param rect The layout rect to apply to the component.
         */
         public setRect(rect: Rect): void;
+        private _component;
     }
 }
 declare module porcelain {
@@ -1027,17 +1046,17 @@ declare module porcelain {
         /**
         * Construct a new MoveGrip.
         *
-        * @param target The component to move with the grip.
+        * @param item The layout item to manipulate with the grip.
         */
-        constructor(target: Component);
+        constructor(target: ILayoutItem);
         /**
         * Destroy the MoveGrip.
         */
         public destroy(): void;
         /**
-        * The target component moved by the grip.
+        * The target layout item manipulated by the grip.
         */
-        public target(): Component;
+        public target(): ILayoutItem;
         /**
         * The mousedown handler.
         *
@@ -1056,7 +1075,7 @@ declare module porcelain {
         * @protected
         */
         public onMouseMove(event: MouseEvent): void;
-        private _item;
+        private _target;
         private _offsetX;
         private _offsetY;
     }
@@ -1180,9 +1199,9 @@ declare module porcelain {
         * Construct a new SizeGrip.
         *
         * @param gripArea The grip area defining the size grip behavior.
-        * @param target The component to resize with the grip.
+        * @param target The layout item to resize with the grip.
         */
-        constructor(gripArea: GripArea, target: Component);
+        constructor(gripArea: GripArea, target: ILayoutItem);
         /**
         * Destroy the SizeGrip.
         */
@@ -1192,9 +1211,9 @@ declare module porcelain {
         */
         public gripArea(): GripArea;
         /**
-        * Returns the target component resized by the size grip.
+        * Returns the target layout item resized by the size grip.
         */
-        public target(): Component;
+        public target(): ILayoutItem;
         /**
         * The mousedown handler.
         *
@@ -1214,7 +1233,7 @@ declare module porcelain {
         */
         public onMouseMove(event: MouseEvent): void;
         private _gripArea;
-        private _item;
+        private _target;
         private _offsetX;
         private _offsetY;
     }
@@ -1275,9 +1294,9 @@ declare module porcelain {
         /**
         * Construct a new TitleBar
         *
-        * @param target The component to move with the title bar.
+        * @param target The layout item to move with the title bar.
         */
-        constructor(target: Component);
+        constructor(target: ILayoutItem);
         /**
         * Destroy the title bar.
         */
@@ -1425,12 +1444,6 @@ declare module porcelain {
         * This will hide the window and then destroy it.
         */
         public close(): void;
-        /**
-        * The resize event handler.
-        *
-        * This handler dispatches the resize to the central content.
-        */
-        public onResize(): void;
         /**
         * The mousedown event handler.
         *
