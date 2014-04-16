@@ -240,7 +240,11 @@ module porcelain {
                     buttons |= TitleBarButton.Restore;
                     this.addClass(CommonClass.Maximized);
                     this._stored = this._item.rect();
-                    this._item.setRect(new Rect(0, 0, -1, -1));
+                    var style = this.style();
+                    style.left = "";
+                    style.top = "";
+                    style.width = "";
+                    style.height = "";
                     break;
                 default:
                     break;
