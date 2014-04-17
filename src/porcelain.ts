@@ -21,6 +21,7 @@
 /// <reference path="event_binder.ts"/>
 /// <reference path="signal.ts"/>
 
+/// <reference path="node.ts"/>
 /// <reference path="component.ts"/>
 
 /// <reference path="layout_item.ts"/>
