@@ -42,8 +42,8 @@ module porcelain {
                 var style = component.computedStyle();
                 var w = parseInt(style.minWidth) || 0;
                 var h = parseInt(style.minHeight) || 0;
-                w = Math.min(Math.max(0, w), MAX_LAYOUT_DIM);
-                h = Math.min(Math.max(0, h), MAX_LAYOUT_DIM);
+                w = Math.min(Math.max(0, w), MAX_ITEM_DIM);
+                h = Math.min(Math.max(0, h), MAX_ITEM_DIM);
                 minSize = cache.minimumSize = new Size(w, h);
             }
             return new Size(minSize);
@@ -58,10 +58,10 @@ module porcelain {
             var maxSize = cache.maximumSize;
             if (!maxSize) {
                 var style = component.computedStyle();
-                var w = parseInt(style.maxWidth) || MAX_LAYOUT_DIM;
-                var h = parseInt(style.maxHeight) || MAX_LAYOUT_DIM;
-                w = Math.min(Math.max(0, w), MAX_LAYOUT_DIM);
-                h = Math.min(Math.max(0, h), MAX_LAYOUT_DIM);
+                var w = parseInt(style.maxWidth) || MAX_ITEM_DIM;
+                var h = parseInt(style.maxHeight) || MAX_ITEM_DIM;
+                w = Math.min(Math.max(0, w), MAX_ITEM_DIM);
+                h = Math.min(Math.max(0, h), MAX_ITEM_DIM);
                 maxSize = cache.maximumSize = new Size(w, h);
             }
             return new Size(maxSize);
