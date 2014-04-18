@@ -75,7 +75,7 @@ module porcelain {
         /**
          * Returns an array of child nodes of this node.
          */
-        children(): Node {
+        children(): Node[] {
             var nodes: Node[] = [];
             var child = this._firstChild;
             while (child) {
